@@ -137,7 +137,6 @@ async function handleCheckoutComplete(session) {
     let userId;
     let isNewUser = false;
 
-    console.log('[stripe] Looking up user by email...');
     const { data: existingProfile } = await supabaseAdmin
       .from('profiles')
       .select('id')
@@ -146,10 +145,8 @@ async function handleCheckoutComplete(session) {
 
     if (existingProfile) {
       userId = existingProfile.id;
-      console.log(`[stripe] Existing user found: ${userId}`);
     } else {
       // Create auth account with a temp password
-      console.log('[stripe] Creating new user...');
       const tempPassword = generateTempPassword();
       const { data: newUser, error: createErr } = await supabaseAdmin.auth.admin.createUser({
         email:         customer_email,
@@ -160,11 +157,9 @@ async function handleCheckoutComplete(session) {
       if (createErr) throw new Error(`createUser: ${createErr.message}`);
       userId = newUser.user.id;
       isNewUser = true;
-      console.log(`[stripe] New user created: ${userId}`);
     }
 
     // 2. Upsert profile
-    console.log('[stripe] Upserting profile...');
     const { error: profileErr } = await supabaseAdmin.from('profiles').upsert({
       id:         userId,
       email:      customer_email,
@@ -174,7 +169,6 @@ async function handleCheckoutComplete(session) {
     if (profileErr) throw new Error(`upsertProfile: ${profileErr.message}`);
 
     // 3. Create enrollment record
-    console.log('[stripe] Inserting enrollment...');
     const { error: enrollErr } = await supabaseAdmin.from('enrollments').insert({
       user_id:               userId,
       plan_id:               plan,
@@ -186,11 +180,10 @@ async function handleCheckoutComplete(session) {
     });
     if (enrollErr) throw new Error(`insertEnrollment: ${enrollErr.message}`);
 
-    console.log(`[stripe] Enrollment created for user=${userId} plan=${plan}`);
+    console.log(`[stripe] Enrollment created — user=${userId} plan=${plan} email=${customer_email}`);
 
     // 4. Send password setup email for new users via Resend
     if (isNewUser) {
-      console.log('[stripe] Generating password setup link...');
       const { data: linkData, error: linkErr } = await supabaseAdmin.auth.admin.generateLink({
         type:    'recovery',
         email:   customer_email,
@@ -200,7 +193,6 @@ async function handleCheckoutComplete(session) {
         console.error(`[stripe] generateLink failed: ${linkErr.message}`);
       } else {
         const actionLink = linkData?.properties?.action_link;
-        console.log(`[stripe] Action link generated: ${actionLink ? 'yes' : 'no'}`);
         const { error: emailErr } = await resend.emails.send({
           from:    process.env.EMAIL_FROM || 'BRRRR⁸ Academy <noreply@brrrr8academy.com>',
           to:      customer_email,
@@ -234,8 +226,8 @@ async function handleCheckoutComplete(session) {
             </div>
           `
         });
-        if (emailErr) console.error(`[stripe] Resend failed: ${emailErr.message}`);
-        else console.log(`[stripe] Welcome email sent to ${customer_email}`);
+        if (emailErr) console.error(`[stripe] email failed: ${emailErr.message}`);
+        else console.log(`[stripe] Welcome email sent → ${customer_email}`);
       }
     }
 

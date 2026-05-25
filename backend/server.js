@@ -16,6 +16,11 @@ const app  = express();
 const PORT = process.env.PORT || 7000;
 const ROOT = path.join(__dirname, '..');  // brrrr8/ folder
 
+// ── Trust Vercel / reverse-proxy headers ─────────────────────────
+// Required for express-rate-limit to correctly identify client IPs
+// behind Vercel's edge network (X-Forwarded-For header).
+app.set('trust proxy', 1);
+
 // ── Security headers ──────────────────────────────────────────────
 app.use(helmet({
   contentSecurityPolicy: {
