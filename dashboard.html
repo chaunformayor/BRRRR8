@@ -192,19 +192,19 @@
   <!-- Plan badge -->
   <div class="plan-badge" id="plan-badge">Loading…</div>
 
-  <!-- Discord onboarding banner (hidden once connected or dismissed) -->
+  <!-- Discord onboarding banner (hidden once dismissed) -->
   <div id="discord-banner" style="display:none;background:#5865F2;border-radius:10px;padding:20px 24px;margin-bottom:24px;color:#fff;">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
       <div style="flex:1;">
-        <div style="font-weight:700;font-size:16px;margin-bottom:4px;">💬 Activate your Discord community access</div>
-        <div style="font-size:13px;opacity:0.85;margin-bottom:16px;">Connect your Discord account to join the private BRRRR⁸ investor community and get your member role automatically.</div>
-        <a href="/api/auth/discord"
+        <div style="font-weight:700;font-size:16px;margin-bottom:4px;">💬 Join the private investor community</div>
+        <div style="font-size:13px;opacity:0.85;margin-bottom:16px;">Connect with fellow BRRRR investors, ask deal questions, and get support — all in our private Discord server.</div>
+        <a href="https://discord.gg/U9jB4y7Xxg" target="_blank" rel="noopener"
            style="display:inline-block;background:#fff;color:#5865F2;font-weight:700;font-size:14px;padding:10px 20px;border-radius:6px;text-decoration:none;">
-          Connect Discord &amp; Get Your Role →
+          Join Discord Community →
         </a>
         <div style="font-size:11px;opacity:0.75;margin-top:10px;">
-          You'll be taken to Discord to log in or create a free account — then brought right back here.<br/>
-          Discord is free and works in your browser. No app download required.
+          Once you're in, introduce yourself and we'll assign your member role.<br/>
+          Discord is free and works in your browser — no app download required.
         </div>
       </div>
       <button onclick="document.getElementById('discord-banner').style.display='none';localStorage.setItem('discord_banner_dismissed','1')"
@@ -285,7 +285,7 @@
       if (!enrolled) return (window.location.href = '/enroll.html');
 
       renderDashboard(user, plan, progress || [], unlockedTracks || []);
-      showDiscordBannerIfNeeded(user.discordId);
+      showDiscordBannerIfNeeded();
     } catch (err) {
       console.error('[dashboard]', err);
       redirectToLogin();
@@ -378,11 +378,9 @@
   });
 
   // ── Discord link (quick access) ───────────────────────────────────
-  // If already connected (discord_id exists), go straight to invite link
-  // If not connected, go to OAuth to connect and get role
   document.getElementById('discord-link').addEventListener('click', (e) => {
     e.preventDefault();
-    window.location.href = '/api/auth/discord';
+    window.open('https://discord.gg/U9jB4y7Xxg', '_blank', 'noopener');
   });
 
   // ── Discord onboarding banner ─────────────────────────────────────
@@ -406,10 +404,8 @@
   }
 
   // Show Discord onboarding banner if not dismissed and not already connected
-  function showDiscordBannerIfNeeded(discordId) {
-    if (discordId) return; // already connected
+  function showDiscordBannerIfNeeded() {
     if (localStorage.getItem('discord_banner_dismissed')) return; // dismissed
-    if (discordParam === 'connected') return;
     document.getElementById('discord-banner').style.display = 'block';
   }
 

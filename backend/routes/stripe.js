@@ -212,13 +212,13 @@ async function handleCheckoutComplete(session) {
                 </a>
               </div>
               <div style="background:#f0f0ff;border-radius:8px;padding:16px 20px;margin-top:24px;">
-                <p style="margin:0 0 8px;font-weight:700;color:#333;">💬 Activate your Discord community access</p>
-                <p style="margin:0 0 4px;color:#555;font-size:14px;">Connect your Discord account from your dashboard to join the private investor community and get your member role.</p>
-                <p style="margin:0 0 12px;color:#888;font-size:12px;">Don't have Discord? It's free — you can create an account in seconds when you connect.</p>
-                <a href="${process.env.APP_URL}/dashboard.html"
+                <p style="margin:0 0 8px;font-weight:700;color:#333;">💬 Join the private investor community</p>
+                <p style="margin:0 0 12px;color:#555;font-size:14px;">Click below to join the BRRRR⁸ Discord server. Once you're in, introduce yourself and we'll assign your member role.</p>
+                <a href="https://discord.gg/U9jB4y7Xxg"
                    style="display:inline-block;background:#5865F2;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px;">
-                  Go to Dashboard →
+                  Join Discord Community →
                 </a>
+                <p style="margin:8px 0 0;color:#888;font-size:12px;">Don't have Discord? It's free — create an account in seconds.</p>
               </div>
               <p style="color:#888;font-size:13px;margin-top:24px;">This password link expires in 24 hours. If you didn't purchase a course, you can safely ignore this email.</p>
               <hr style="border:none;border-top:1px solid #eee;margin:24px 0;" />
