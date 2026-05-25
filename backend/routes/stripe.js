@@ -184,7 +184,7 @@ async function handleCheckoutComplete(session) {
     );
 
   } catch (err) {
-    console.error('[stripe/webhook] handleCheckoutComplete error:', err.message);
+    console.error('[stripe/webhook] handleCheckoutComplete error:', err.message, err.stack);
   }
 }
 
