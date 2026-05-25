@@ -196,13 +196,16 @@
   <div id="discord-banner" style="display:none;background:#5865F2;border-radius:10px;padding:20px 24px;margin-bottom:24px;color:#fff;">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
       <div style="flex:1;">
-        <div style="font-weight:700;font-size:16px;margin-bottom:4px;">💬 Join your private Discord community</div>
-        <div style="font-size:13px;opacity:0.85;margin-bottom:16px;">Connect with fellow investors, get deal feedback, and join bi-monthly Q&amp;As.</div>
-        <a href="https://discord.gg/U9jB4y7Xxg" target="_blank"
+        <div style="font-weight:700;font-size:16px;margin-bottom:4px;">💬 Activate your Discord community access</div>
+        <div style="font-size:13px;opacity:0.85;margin-bottom:16px;">Connect your Discord account to join the private BRRRR⁸ investor community and get your member role automatically.</div>
+        <a href="/api/auth/discord"
            style="display:inline-block;background:#fff;color:#5865F2;font-weight:700;font-size:14px;padding:10px 20px;border-radius:6px;text-decoration:none;">
-          Join BRRRR⁸ on Discord →
+          Connect Discord &amp; Get Your Role →
         </a>
-        <div style="font-size:11px;opacity:0.7;margin-top:8px;">Works in your browser — no app required. New to Discord? You can create a free account when you arrive.</div>
+        <div style="font-size:11px;opacity:0.75;margin-top:10px;">
+          You'll be taken to Discord to log in or create a free account — then brought right back here.<br/>
+          Discord is free and works in your browser. No app download required.
+        </div>
       </div>
       <button onclick="document.getElementById('discord-banner').style.display='none';localStorage.setItem('discord_banner_dismissed','1')"
               style="background:none;border:none;color:rgba(255,255,255,0.6);cursor:pointer;font-size:20px;padding:0;flex-shrink:0;" aria-label="Dismiss">✕</button>
@@ -375,9 +378,11 @@
   });
 
   // ── Discord link (quick access) ───────────────────────────────────
+  // If already connected (discord_id exists), go straight to invite link
+  // If not connected, go to OAuth to connect and get role
   document.getElementById('discord-link').addEventListener('click', (e) => {
     e.preventDefault();
-    window.open('https://discord.gg/U9jB4y7Xxg', '_blank');
+    window.location.href = '/api/auth/discord';
   });
 
   // ── Discord onboarding banner ─────────────────────────────────────
