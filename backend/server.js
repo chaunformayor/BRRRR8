@@ -65,6 +65,18 @@ app.use('/api/admin',   adminRoutes);
 // ── Health check ──────────────────────────────────────────────────
 app.get('/api/health', (req, res) => res.json({ ok: true, ts: new Date().toISOString() }));
 
+// ── Supabase connection test (temp debug — remove after fix) ──────
+app.get('/api/debug/supabase', async (req, res) => {
+  const { supabaseAdmin } = require('./db/supabase');
+  try {
+    const { data, error } = await supabaseAdmin.from('profiles').select('count').limit(1);
+    if (error) return res.json({ ok: false, error: error.message, hint: error.hint });
+    res.json({ ok: true, supabaseUrl: process.env.SUPABASE_URL?.slice(0, 40) + '...' });
+  } catch (err) {
+    res.json({ ok: false, error: err.message });
+  }
+});
+
 // ── Static files ──────────────────────────────────────────────────
 // Serve the whole brrrr8/ folder (index.html, courses.html, etc.)
 app.use(express.static(ROOT, { index: 'index.html' }));
