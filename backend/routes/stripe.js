@@ -130,43 +130,49 @@ async function handleCheckoutComplete(session) {
   console.log(`[stripe] Checkout complete — plan=${plan} email=${customer_email}`);
 
   try {
-    // 1. Find or create the Supabase user
+    // 1. Look up existing user by email via profiles table (fast — avoids listUsers)
     let userId;
-    const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
-    const existing = existingUsers?.users?.find(u => u.email === customer_email);
+    let isNewUser = false;
 
-    if (existing) {
-      userId = existing.id;
+    console.log('[stripe] Looking up user by email...');
+    const { data: existingProfile } = await supabaseAdmin
+      .from('profiles')
+      .select('id')
+      .eq('email', customer_email)
+      .maybeSingle();
+
+    if (existingProfile) {
+      userId = existingProfile.id;
+      console.log(`[stripe] Existing user found: ${userId}`);
     } else {
-      // Create account — send a magic link so they can set their password
+      // Create auth account with a temp password
+      console.log('[stripe] Creating new user...');
       const tempPassword = generateTempPassword();
-      const { data: newUser, error } = await supabaseAdmin.auth.admin.createUser({
-        email:             customer_email,
-        password:          tempPassword,
-        email_confirm:     true,
+      const { data: newUser, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+        email:         customer_email,
+        password:      tempPassword,
+        email_confirm: true,
         user_metadata: { firstName, lastName }
       });
-      if (error) throw new Error(`createUser: ${error.message}`);
+      if (createErr) throw new Error(`createUser: ${createErr.message}`);
       userId = newUser.user.id;
-
-      // Send password setup email
-      await supabaseAdmin.auth.admin.generateLink({
-        type:       'recovery',
-        email:      customer_email,
-        options: { redirectTo: `${process.env.APP_URL}/reset-password.html` }
-      });
+      isNewUser = true;
+      console.log(`[stripe] New user created: ${userId}`);
     }
 
     // 2. Upsert profile
-    await supabaseAdmin.from('profiles').upsert({
+    console.log('[stripe] Upserting profile...');
+    const { error: profileErr } = await supabaseAdmin.from('profiles').upsert({
       id:         userId,
       email:      customer_email,
       first_name: firstName || '',
       last_name:  lastName  || ''
     }, { onConflict: 'id' });
+    if (profileErr) throw new Error(`upsertProfile: ${profileErr.message}`);
 
     // 3. Create enrollment record
-    await supabaseAdmin.from('enrollments').insert({
+    console.log('[stripe] Inserting enrollment...');
+    const { error: enrollErr } = await supabaseAdmin.from('enrollments').insert({
       user_id:               userId,
       plan_id:               plan,
       stripe_session_id:     session.id,
@@ -175,16 +181,29 @@ async function handleCheckoutComplete(session) {
       amount_paid_cents:     amount_total,
       status:                'active'
     });
+    if (enrollErr) throw new Error(`insertEnrollment: ${enrollErr.message}`);
 
     console.log(`[stripe] Enrollment created for user=${userId} plan=${plan}`);
 
-    // 4. Assign Discord role (non-blocking)
+    // 4. Send password setup email for new users
+    if (isNewUser) {
+      console.log('[stripe] Sending password setup email...');
+      const { error: linkErr } = await supabaseAdmin.auth.admin.generateLink({
+        type:    'recovery',
+        email:   customer_email,
+        options: { redirectTo: `${process.env.APP_URL}/reset-password.html` }
+      });
+      if (linkErr) console.error(`[stripe] generateLink failed: ${linkErr.message}`);
+      else console.log('[stripe] Password setup email sent.');
+    }
+
+    // 5. Assign Discord role (non-blocking)
     assignDiscordRole(userId, plan).catch(err =>
       console.error('[discord] Role assignment failed:', err.message)
     );
 
   } catch (err) {
-    console.error('[stripe/webhook] handleCheckoutComplete error:', err.message, err.stack);
+    console.error('[stripe/webhook] handleCheckoutComplete error:', err.message);
   }
 }
 
