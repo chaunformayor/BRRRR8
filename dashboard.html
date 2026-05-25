@@ -192,26 +192,17 @@
   <!-- Plan badge -->
   <div class="plan-badge" id="plan-badge">Loading…</div>
 
-  <!-- Discord onboarding banner (hidden once connected) -->
+  <!-- Discord onboarding banner (hidden once connected or dismissed) -->
   <div id="discord-banner" style="display:none;background:#5865F2;border-radius:10px;padding:20px 24px;margin-bottom:24px;color:#fff;">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
-      <div style="flex:1;min-width:200px;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+      <div style="flex:1;">
         <div style="font-weight:700;font-size:16px;margin-bottom:4px;">💬 Join your private Discord community</div>
-        <div style="font-size:13px;opacity:0.85;margin-bottom:16px;">Connect with other investors, get deal feedback, and join bi-monthly Q&amp;As.</div>
-        <div style="display:flex;gap:24px;flex-wrap:wrap;">
-          <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
-            <span style="background:rgba(255,255,255,0.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">1</span>
-            <span>New to Discord? <a href="https://discord.com/register" target="_blank" style="color:#fff;font-weight:700;text-decoration:underline;">Create a free account</a></span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
-            <span style="background:rgba(255,255,255,0.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">2</span>
-            <span><a href="https://discord.gg/U9jB4y7Xxg" target="_blank" style="color:#fff;font-weight:700;text-decoration:underline;">Join the BRRRR⁸ server</a></span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
-            <span style="background:rgba(255,255,255,0.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">3</span>
-            <span><a href="/api/auth/discord" style="color:#fff;font-weight:700;text-decoration:underline;">Connect Discord to get your member role</a></span>
-          </div>
-        </div>
+        <div style="font-size:13px;opacity:0.85;margin-bottom:16px;">Connect with fellow investors, get deal feedback, and join bi-monthly Q&amp;As.</div>
+        <a href="https://discord.gg/U9jB4y7Xxg" target="_blank"
+           style="display:inline-block;background:#fff;color:#5865F2;font-weight:700;font-size:14px;padding:10px 20px;border-radius:6px;text-decoration:none;">
+          Join BRRRR⁸ on Discord →
+        </a>
+        <div style="font-size:11px;opacity:0.7;margin-top:8px;">Works in your browser — no app required. New to Discord? You can create a free account when you arrive.</div>
       </div>
       <button onclick="document.getElementById('discord-banner').style.display='none';localStorage.setItem('discord_banner_dismissed','1')"
               style="background:none;border:none;color:rgba(255,255,255,0.6);cursor:pointer;font-size:20px;padding:0;flex-shrink:0;" aria-label="Dismiss">✕</button>
