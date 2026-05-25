@@ -1,7 +1,14 @@
 const express  = require('express');
 const router   = express.Router();
+const crypto   = require('crypto');
 const { supabase, supabaseAdmin } = require('../db/supabase');
 const { requireAuth } = require('../middleware/auth');
+
+const PLAN_ROLE_ENV = {
+  starter:    'DISCORD_ROLE_STARTER',
+  all_access: 'DISCORD_ROLE_ALL_ACCESS',
+  vip:        'DISCORD_ROLE_VIP'
+};
 
 const COOKIE_OPTS = {
   httpOnly: true,
@@ -85,6 +92,12 @@ router.post('/reset-password', async (req, res) => {
     const { error } = await supabase.auth.updateUser({ password });
     if (error) return res.status(400).json({ error: error.message });
 
+    // Log the user in automatically after setting password
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) {
+      res.cookie('sb_token', session.access_token, COOKIE_OPTS);
+    }
+
     res.json({ ok: true });
   } catch (err) {
     console.error('[reset-password]', err.message);
@@ -114,6 +127,123 @@ router.get('/me', requireAuth, async (req, res) => {
     },
     enrollment: enrollment || null
   });
+});
+
+// ── GET /api/auth/discord ─────────────────────────────────────────
+// Kicks off Discord OAuth. Requires the user to already be logged in
+// (sb_token cookie set after password reset).
+router.get('/discord', requireAuth, (req, res) => {
+  const state = crypto.randomBytes(16).toString('hex');
+  res.cookie('discord_state', state, {
+    httpOnly: true,
+    secure:   process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge:   10 * 60 * 1000   // 10 minutes
+  });
+
+  const params = new URLSearchParams({
+    client_id:     process.env.DISCORD_CLIENT_ID,
+    redirect_uri:  `${process.env.APP_URL}/api/auth/discord/callback`,
+    response_type: 'code',
+    scope:         'identify guilds.join',
+    state
+  });
+
+  res.redirect(`https://discord.com/oauth2/authorize?${params}`);
+});
+
+// ── GET /api/auth/discord/callback ────────────────────────────────
+// Discord redirects here after user authorizes.
+// Adds them to the guild and assigns their plan role via REST API.
+router.get('/discord/callback', requireAuth, async (req, res) => {
+  const { code, state } = req.query;
+  const storedState = req.cookies.discord_state;
+
+  if (!code || !state || state !== storedState) {
+    console.error('[discord/callback] State mismatch or missing code');
+    return res.redirect('/dashboard.html?discord=error');
+  }
+  res.clearCookie('discord_state');
+
+  try {
+    // 1. Exchange code for Discord access token
+    const tokenRes = await fetch('https://discord.com/api/oauth2/token', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:    new URLSearchParams({
+        client_id:     process.env.DISCORD_CLIENT_ID,
+        client_secret: process.env.DISCORD_CLIENT_SECRET,
+        grant_type:    'authorization_code',
+        code,
+        redirect_uri:  `${process.env.APP_URL}/api/auth/discord/callback`
+      })
+    });
+    const tokenData = await tokenRes.json();
+    if (!tokenData.access_token) throw new Error(`Discord token exchange failed: ${JSON.stringify(tokenData)}`);
+    const discordAccessToken = tokenData.access_token;
+
+    // 2. Get Discord user info
+    const userRes  = await fetch('https://discord.com/api/users/@me', {
+      headers: { Authorization: `Bearer ${discordAccessToken}` }
+    });
+    const discordUser = await userRes.json();
+    console.log(`[discord] OAuth user: ${discordUser.username} (${discordUser.id})`);
+
+    // 3. Look up their active enrollment to get the plan role
+    const { data: enrollment } = await supabaseAdmin
+      .from('enrollments')
+      .select('plan_id')
+      .eq('user_id', req.user.id)
+      .eq('status', 'active')
+      .order('enrolled_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    const roleId = enrollment?.plan_id ? process.env[PLAN_ROLE_ENV[enrollment.plan_id]] : null;
+
+    // 4. Add to guild + assign role in one REST call
+    const memberRes = await fetch(
+      `https://discord.com/api/guilds/${process.env.DISCORD_GUILD_ID}/members/${discordUser.id}`,
+      {
+        method:  'PUT',
+        headers: {
+          Authorization:  `Bot ${process.env.DISCORD_BOT_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          access_token: discordAccessToken,
+          roles:        roleId ? [roleId] : []
+        })
+      }
+    );
+    const memberStatus = memberRes.status;
+    console.log(`[discord] Guild add status: ${memberStatus} (201=added, 204=already member)`);
+
+    // If already a member (204), still assign the role separately
+    if (memberStatus === 204 && roleId) {
+      await fetch(
+        `https://discord.com/api/guilds/${process.env.DISCORD_GUILD_ID}/members/${discordUser.id}/roles/${roleId}`,
+        {
+          method:  'PUT',
+          headers: { Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}` }
+        }
+      );
+      console.log(`[discord] Role assigned to existing member`);
+    }
+
+    // 5. Save Discord info to their profile
+    await supabaseAdmin
+      .from('profiles')
+      .update({ discord_id: discordUser.id, discord_username: discordUser.username })
+      .eq('id', req.user.id);
+
+    console.log(`[discord] Connected ${discordUser.username} → user ${req.user.id}, plan ${enrollment?.plan_id}`);
+    res.redirect('/dashboard.html?discord=connected');
+
+  } catch (err) {
+    console.error('[discord/callback] Error:', err.message);
+    res.redirect('/dashboard.html?discord=error');
+  }
 });
 
 module.exports = router;

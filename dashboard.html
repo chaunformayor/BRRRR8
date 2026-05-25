@@ -356,6 +356,29 @@
     } catch { alert('Unable to open billing portal. Please try again.'); }
   });
 
+  // ── Discord link ──────────────────────────────────────────────────
+  document.getElementById('discord-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = '/api/auth/discord';
+  });
+
+  // ── Discord connection banner ─────────────────────────────────────
+  const discordParam = new URLSearchParams(window.location.search).get('discord');
+  if (discordParam === 'connected') {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:#D1FAE5;border:1px solid #6EE7B7;color:#065F46;padding:12px 20px;text-align:center;font-size:14px;font-weight:500;';
+    banner.textContent = '✅ Discord connected! You\'ve been added to the community and your role has been assigned.';
+    document.body.prepend(banner);
+    history.replaceState(null, '', '/dashboard.html');
+    setTimeout(() => banner.remove(), 6000);
+  } else if (discordParam === 'error') {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:#FEF2F2;border:1px solid #FECACA;color:#991B1B;padding:12px 20px;text-align:center;font-size:14px;font-weight:500;';
+    banner.innerHTML = '⚠️ Discord connection failed. <a href="/api/auth/discord" style="color:#991B1B;font-weight:700;">Try again →</a>';
+    document.body.prepend(banner);
+    history.replaceState(null, '', '/dashboard.html');
+  }
+
   init();
 })();
 </script>
