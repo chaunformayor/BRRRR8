@@ -1,9 +1,12 @@
 const express        = require('express');
 const router         = express.Router();
 const stripe         = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { Resend }     = require('resend');
 const { supabaseAdmin } = require('../db/supabase');
 const { requireAuth } = require('../middleware/auth');
 const { assignDiscordRole } = require('../discord/bot');
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Plan → Stripe price ID mapping
 const PLAN_PRICES = {
@@ -185,16 +188,46 @@ async function handleCheckoutComplete(session) {
 
     console.log(`[stripe] Enrollment created for user=${userId} plan=${plan}`);
 
-    // 4. Send password setup email for new users
+    // 4. Send password setup email for new users via Resend
     if (isNewUser) {
-      console.log('[stripe] Sending password setup email...');
-      const { error: linkErr } = await supabaseAdmin.auth.admin.generateLink({
+      console.log('[stripe] Generating password setup link...');
+      const { data: linkData, error: linkErr } = await supabaseAdmin.auth.admin.generateLink({
         type:    'recovery',
         email:   customer_email,
         options: { redirectTo: `${process.env.APP_URL}/reset-password.html` }
       });
-      if (linkErr) console.error(`[stripe] generateLink failed: ${linkErr.message}`);
-      else console.log('[stripe] Password setup email sent.');
+      if (linkErr) {
+        console.error(`[stripe] generateLink failed: ${linkErr.message}`);
+      } else {
+        const actionLink = linkData?.properties?.action_link;
+        console.log(`[stripe] Action link generated: ${actionLink ? 'yes' : 'no'}`);
+        const { error: emailErr } = await resend.emails.send({
+          from:    process.env.EMAIL_FROM || 'BRRRR⁸ Academy <noreply@brrrr8academy.com>',
+          to:      customer_email,
+          subject: 'Welcome to BRRRR⁸ Academy — Set your password',
+          html: `
+            <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;">
+              <h1 style="color:#0A1628;font-size:24px;margin-bottom:8px;">Welcome, ${firstName || 'friend'}! 🎉</h1>
+              <p style="color:#555;font-size:16px;line-height:1.6;">
+                Your enrollment in <strong>${planName}</strong> is confirmed.
+                Click below to set your password and access your courses.
+              </p>
+              <div style="text-align:center;margin:32px 0;">
+                <a href="${actionLink}"
+                   style="background:#C9A84C;color:#0A1628;padding:14px 32px;border-radius:6px;
+                          text-decoration:none;font-weight:bold;font-size:16px;display:inline-block;">
+                  Set My Password →
+                </a>
+              </div>
+              <p style="color:#888;font-size:13px;">This link expires in 24 hours. If you didn't purchase a course, you can safely ignore this email.</p>
+              <hr style="border:none;border-top:1px solid #eee;margin:24px 0;" />
+              <p style="color:#aaa;font-size:12px;text-align:center;">BRRRR⁸ Academy · St. Louis, MO</p>
+            </div>
+          `
+        });
+        if (emailErr) console.error(`[stripe] Resend failed: ${emailErr.message}`);
+        else console.log(`[stripe] Welcome email sent to ${customer_email}`);
+      }
     }
 
     // 5. Assign Discord role (non-blocking)
