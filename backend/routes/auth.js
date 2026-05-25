@@ -62,18 +62,34 @@ router.post('/forgot-password', async (req, res) => {
 });
 
 // ── POST /api/auth/reset-password ────────────────────────────────
+// Handles two Supabase flows:
+//   1. PKCE (resetPasswordForEmail)  → body has { password, code }
+//   2. Hash-based (admin.generateLink) → body has { password, accessToken, refreshToken }
 router.post('/reset-password', async (req, res) => {
-  const { password, token } = req.body;
-  if (!password || !token) return res.status(400).json({ error: 'Missing fields' });
+  const { password, code, accessToken, refreshToken } = req.body;
+  if (!password) return res.status(400).json({ error: 'Password required' });
 
-  // Exchange the recovery token for a session first
-  const { error: sessionErr } = await supabase.auth.exchangeCodeForSession(token);
-  if (sessionErr) return res.status(400).json({ error: 'Invalid or expired reset link' });
+  try {
+    if (code) {
+      // PKCE flow — exchange the code for a session
+      const { error: sessionErr } = await supabase.auth.exchangeCodeForSession(code);
+      if (sessionErr) return res.status(400).json({ error: 'Invalid or expired reset link' });
+    } else if (accessToken && refreshToken) {
+      // Hash-based flow — set the session directly from the tokens in the URL hash
+      const { error: sessionErr } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+      if (sessionErr) return res.status(400).json({ error: 'Invalid or expired reset link' });
+    } else {
+      return res.status(400).json({ error: 'Missing reset token' });
+    }
 
-  const { error } = await supabase.auth.updateUser({ password });
-  if (error) return res.status(400).json({ error: error.message });
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) return res.status(400).json({ error: error.message });
 
-  res.json({ ok: true });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[reset-password]', err.message);
+    res.status(500).json({ error: 'Password reset failed' });
+  }
 });
 
 // ── GET /api/auth/me ──────────────────────────────────────────────
