@@ -219,7 +219,12 @@ async function handleCheckoutComplete(session) {
                   Set My Password →
                 </a>
               </div>
-              <p style="color:#888;font-size:13px;">This link expires in 24 hours. If you didn't purchase a course, you can safely ignore this email.</p>
+              <p style="color:#555;font-size:14px;line-height:1.6;margin-top:24px;">
+                <strong>Join our Discord community</strong> to connect with other investors, get deal feedback, and access bi-monthly Q&amp;As:<br/>
+                <a href="https://discord.gg/U9jB4y7Xxg" style="color:#5865F2;font-weight:600;">discord.gg/U9jB4y7Xxg</a>
+                &nbsp;—&nbsp;free to join, just create a Discord account if you don't have one.
+              </p>
+              <p style="color:#888;font-size:13px;margin-top:24px;">This password link expires in 24 hours. If you didn't purchase a course, you can safely ignore this email.</p>
               <hr style="border:none;border-top:1px solid #eee;margin:24px 0;" />
               <p style="color:#aaa;font-size:12px;text-align:center;">BRRRR⁸ Academy · St. Louis, MO</p>
             </div>

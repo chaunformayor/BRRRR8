@@ -123,7 +123,8 @@ router.get('/me', requireAuth, async (req, res) => {
       firstName:       req.profile?.first_name,
       lastName:        req.profile?.last_name,
       role:            req.profile?.role ?? 'student',
-      discordUsername: req.profile?.discord_username
+      discordUsername: req.profile?.discord_username,
+      discordId:       req.profile?.discord_id
     },
     enrollment: enrollment || null
   });
