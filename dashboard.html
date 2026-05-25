@@ -399,9 +399,10 @@
   } else if (discordParam === 'error') {
     history.replaceState(null, '', '/dashboard.html');
     const toast = document.createElement('div');
-    toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#991B1B;color:#fff;padding:14px 20px;border-radius:8px;font-size:14px;font-weight:500;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);';
-    toast.innerHTML = '⚠️ Discord connection failed. <a href="/api/auth/discord" style="color:#fca5a5;font-weight:700;">Try again →</a>';
+    toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#991B1B;color:#fff;padding:14px 20px;border-radius:8px;font-size:14px;font-weight:500;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);max-width:340px;line-height:1.5;';
+    toast.innerHTML = '⚠️ Couldn\'t connect Discord.<br><span style="font-weight:400;font-size:13px;">New to Discord? Check your inbox and verify your Discord email first, then <a href="/api/auth/discord" style="color:#fca5a5;font-weight:700;">try again →</a></span>';
     document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 12000);
   }
 
   // Show Discord onboarding banner if not dismissed and not already connected
