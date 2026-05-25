@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard — BRRRR⁸ Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body { background: #F4F2ED; min-height: 100vh; }
+
+    /* ── Top nav ── */
+    .dash-nav {
+      background: var(--navy);
+      padding: 0 var(--space-6);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .dash-nav__logo { font-family: var(--font-heading); font-weight: 900; font-size: var(--text-xl); color: var(--white); text-decoration: none; }
+    .dash-nav__logo sup { color: var(--gold); font-size: 0.65em; vertical-align: super; }
+    .dash-nav__right { display: flex; align-items: center; gap: var(--space-5); }
+    .dash-nav__name { color: rgba(255,255,255,.7); font-size: var(--text-sm); }
+    .dash-nav__logout { background: none; border: 1px solid rgba(255,255,255,.25); color: rgba(255,255,255,.7); padding: 6px 14px; border-radius: 6px; font-size: var(--text-sm); cursor: pointer; font-family: var(--font-body); transition: all .15s; }
+    .dash-nav__logout:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── Layout ── */
+    .dash-shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-6);
+    }
+
+    .dash-header { margin-bottom: var(--space-8); }
+    .dash-header h1 { font-size: clamp(1.5rem, 3vw, 2rem); color: var(--navy); margin-bottom: var(--space-1); }
+    .dash-header p  { color: var(--text-muted); }
+
+    /* ── Plan badge ── */
+    .plan-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: var(--navy);
+      color: var(--gold);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: var(--text-sm);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-6);
+    }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-8);
+    }
+    .stat-card {
+      background: var(--white);
+      border-radius: 10px;
+      padding: var(--space-5) var(--space-6);
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+    .stat-card__label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: var(--space-2); }
+    .stat-card__value { font-family: var(--font-heading); font-size: var(--text-2xl); font-weight: 700; color: var(--navy); }
+    .stat-card__sub   { font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Tracks grid ── */
+    .section-title { font-size: var(--text-lg); font-weight: 700; color: var(--navy); margin-bottom: var(--space-4); }
+    .tracks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-5);
+      margin-bottom: var(--space-8);
+    }
+
+    .track-progress-card {
+      background: var(--white);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .track-progress-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.1); }
+    .track-progress-card.locked { opacity: .55; cursor: not-allowed; }
+    .track-progress-card.locked:hover { transform: none; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+
+    .track-progress-card__header {
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--white);
+    }
+    .track-progress-card__num  { font-family: var(--font-heading); font-size: var(--text-2xl); font-weight: 900; opacity: .5; }
+    .track-progress-card__name { font-weight: 700; font-size: var(--text-sm); }
+    .lock-icon { font-size: 1.2rem; }
+
+    .track-progress-card__body { padding: var(--space-4) var(--space-5); }
+    .track-progress-card__meta { font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-3); }
+
+    .progress-bar-wrap { background: #EEE; border-radius: 100px; height: 6px; overflow: hidden; margin-bottom: var(--space-2); }
+    .progress-bar-fill { height: 100%; background: var(--gold); border-radius: 100px; transition: width .4s ease; }
+    .progress-pct { font-size: var(--text-xs); color: var(--text-muted); }
+
+    .track-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--navy);
+      margin-top: var(--space-3);
+    }
+    .upgrade-pill {
+      background: #FFF3CD;
+      color: #92640A;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+
+    /* ── Quick links ── */
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: var(--space-4);
+      margin-bottom: var(--space-8);
+    }
+    .quick-link {
+      background: var(--white);
+      border-radius: 10px;
+      padding: var(--space-5);
+      text-decoration: none;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+      transition: box-shadow .15s;
+      font-weight: 600;
+      font-size: var(--text-sm);
+    }
+    .quick-link:hover { box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+    .quick-link__icon { font-size: 1.5rem; }
+
+    /* ── Loading skeleton ── */
+    .skeleton { background: linear-gradient(90deg, #EEE 25%, #F8F8F8 50%, #EEE 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 6px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    @media (max-width: 640px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .stats-row .stat-card:last-child { grid-column: 1 / -1; }
+      .dash-shell { padding: var(--space-5) var(--space-4); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="dash-nav">
+  <a href="index.html" class="dash-nav__logo" aria-label="BRRRR8 Academy home">BRRRR<sup>8</sup> Academy</a>
+  <div class="dash-nav__right">
+    <span class="dash-nav__name" id="nav-name">Loading…</span>
+    <button class="dash-nav__logout" id="logout-btn">Sign Out</button>
+  </div>
+</nav>
+
+<!-- ── Shell ── -->
+<main class="dash-shell">
+
+  <!-- Header -->
+  <div class="dash-header">
+    <h1 id="welcome-heading">Welcome back</h1>
+    <p>Pick up where you left off.</p>
+  </div>
+
+  <!-- Plan badge -->
+  <div class="plan-badge" id="plan-badge">Loading…</div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-card__label">Lessons Completed</div>
+      <div class="stat-card__value" id="stat-lessons">—</div>
+      <div class="stat-card__sub">out of <span id="stat-total-lessons">—</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__label">Tracks Unlocked</div>
+      <div class="stat-card__value" id="stat-tracks">—</div>
+      <div class="stat-card__sub">of 4 total tracks</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__label">Overall Progress</div>
+      <div class="stat-card__value" id="stat-progress">—</div>
+      <div class="stat-card__sub">of your curriculum</div>
+    </div>
+  </div>
+
+  <!-- Tracks -->
+  <h2 class="section-title">Your Tracks</h2>
+  <div class="tracks-grid" id="tracks-grid">
+    <!-- populated by JS -->
+  </div>
+
+  <!-- Quick links -->
+  <h2 class="section-title">Quick Access</h2>
+  <div class="quick-links">
+    <a href="courses.html" class="quick-link">
+      <span class="quick-link__icon">📚</span> Full Curriculum
+    </a>
+    <a href="#" class="quick-link" id="discord-link">
+      <span class="quick-link__icon">💬</span> Discord Community
+    </a>
+    <a href="#" class="quick-link" id="billing-link">
+      <span class="quick-link__icon">🧾</span> Billing & Receipts
+    </a>
+    <a href="enroll.html" class="quick-link" id="upgrade-link" style="display:none">
+      <span class="quick-link__icon">⬆️</span> Upgrade Plan
+    </a>
+  </div>
+
+</main>
+
+<script>
+(function () {
+  const TRACKS = [
+    { id: 'track1', name: 'BRRRR⁸ Core',          color: '#5C3D08', lessons: 28 },
+    { id: 'track2', name: 'Creative Finance',        color: '#0D2B52', lessons: 22 },
+    { id: 'track3', name: 'Project Management',      color: '#0A3A38', lessons: 21 },
+    { id: 'track4', name: 'Section 8 Deep Dive',     color: '#5C2800', lessons: 18 }
+  ];
+  const TOTAL_LESSONS = 89;
+
+  // ── Auth check ───────────────────────────────────────────────────
+  async function init() {
+    try {
+      const [meRes, progressRes, accessRes] = await Promise.all([
+        apiFetch('/api/auth/me'),
+        apiFetch('/api/courses/progress'),
+        apiFetch('/api/courses/my-access')
+      ]);
+
+      if (!meRes.ok) return redirectToLogin();
+      const { user }        = await meRes.json();
+      const { progress }    = await progressRes.json();
+      const { plan, tracks: unlockedTracks, enrolled } = await accessRes.json();
+
+      // Admin goes to admin panel; unenrolled goes to enroll
+      if (user.role === 'admin') return (window.location.href = '/admin/');
+      if (!enrolled) return (window.location.href = '/enroll.html');
+
+      renderDashboard(user, plan, progress || [], unlockedTracks || []);
+    } catch (err) {
+      console.error('[dashboard]', err);
+      redirectToLogin();
+    }
+  }
+
+  function apiFetch(url) {
+    // httpOnly cookie is sent automatically — no need to read it in JS
+    return fetch(url, { credentials: 'include' });
+  }
+
+  function redirectToLogin() {
+    window.location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname);
+  }
+
+  // ── Render ────────────────────────────────────────────────────────
+  function renderDashboard(user, plan, progress, unlockedTracks) {
+    // Name
+    const name = user.firstName || user.email.split('@')[0];
+    document.getElementById('nav-name').textContent = name;
+    document.getElementById('welcome-heading').textContent = `Welcome back, ${name}`;
+
+    // Plan badge
+    const planLabels = { starter: 'Starter', all_access: 'All Access', vip: 'VIP ✦' };
+    document.getElementById('plan-badge').textContent = planLabels[plan] || plan;
+
+    // Progress stats
+    const completedSet = new Set(progress.filter(p => p.completed).map(p => p.lesson_id));
+    const completed    = completedSet.size;
+    const pct          = Math.round((completed / TOTAL_LESSONS) * 100);
+
+    document.getElementById('stat-lessons').textContent       = completed;
+    document.getElementById('stat-total-lessons').textContent = TOTAL_LESSONS;
+    document.getElementById('stat-tracks').textContent        = unlockedTracks.length;
+    document.getElementById('stat-progress').textContent      = `${pct}%`;
+
+    // Tracks grid
+    const grid = document.getElementById('tracks-grid');
+    grid.innerHTML = TRACKS.map((t, i) => {
+      const locked    = !unlockedTracks.includes(t.id);
+      const trackComp = progress.filter(p => p.lesson_id?.startsWith(t.id) && p.completed).length;
+      const trackPct  = Math.round((trackComp / t.lessons) * 100);
+
+      return `
+        <a href="courses.html#${t.id}" class="track-progress-card${locked ? ' locked' : ''}"
+           ${locked ? 'onclick="return false" aria-disabled="true"' : ''}
+           style="text-decoration:none">
+          <div class="track-progress-card__header" style="background:${t.color}">
+            <div>
+              <div class="track-progress-card__num">0${i + 1}</div>
+              <div class="track-progress-card__name">${t.name}</div>
+            </div>
+            ${locked ? '<span class="lock-icon">🔒</span>' : ''}
+          </div>
+          <div class="track-progress-card__body">
+            <div class="track-progress-card__meta">${t.lessons} lessons</div>
+            ${locked ? `
+              <span class="upgrade-pill">Upgrade to unlock</span>
+            ` : `
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:${trackPct}%"></div>
+              </div>
+              <div class="progress-pct">${trackPct}% complete &middot; ${trackComp}/${t.lessons} lessons</div>
+              <span class="track-cta">Continue &rarr;</span>
+            `}
+          </div>
+        </a>`;
+    }).join('');
+
+    // Show upgrade link for non-VIP
+    if (plan !== 'vip') {
+      document.getElementById('upgrade-link').style.display = 'flex';
+    }
+  }
+
+  // ── Logout ────────────────────────────────────────────────────────
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+    window.location.href = '/login.html';
+  });
+
+  // ── Billing portal ────────────────────────────────────────────────
+  document.getElementById('billing-link').addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      const res  = await apiFetch('/api/stripe/portal');
+      const data = await res.json();
+      if (data.url) window.open(data.url, '_blank');
+    } catch { alert('Unable to open billing portal. Please try again.'); }
+  });
+
+  init();
+})();
+</script>
+</body>
+</html>

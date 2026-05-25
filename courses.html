@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Curriculum — BRRRR⁸ Academy</title>
+  <meta name="description" content="Full BRRRR⁸ Academy curriculum: 4 learning tracks, 89+ lessons covering the BRRRR strategy, Section 8, creative finance, project management, and HUD compliance." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* ── Track colour overrides (gold / blue / teal / amber) ── */
+    [data-track="1"] .track-card__header { background-color: #5C3D08; }
+    [data-track="2"] .track-card__header { background-color: #0D2B52; }
+    [data-track="3"] .track-card__header { background-color: #0A3A38; }
+    [data-track="4"] .track-card__header { background-color: #5C2800; }
+
+    /* Page hero */
+    .page-hero {
+      background-color: var(--navy);
+      padding-block: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(201,168,76,.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .page-hero__inner {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+    }
+    .page-hero p.section-label { margin-bottom: var(--space-4); display: block; }
+    .page-hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--white);
+      margin-bottom: var(--space-5);
+    }
+    .page-hero__body {
+      font-size: var(--text-lg);
+      color: rgba(255,255,255,.65);
+      line-height: 1.7;
+      margin-bottom: var(--space-8);
+    }
+    .page-hero__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    /* Plan key */
+    .plan-key {
+      background-color: var(--light-bg);
+      border-bottom: 1px solid var(--border);
+      padding-block: var(--space-5);
+    }
+    .plan-key__inner {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+    .plan-key__label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .plan-key__items {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+    .plan-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      border-radius: 999px;
+      font-size: var(--text-xs);
+      font-weight: 500;
+    }
+    .plan-chip__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .plan-chip--starter  { background: rgba(10,22,40,.07); color: var(--navy); }
+    .plan-chip--access   { background: rgba(201,168,76,.13); color: #7A5500; }
+    .plan-chip--vip      { background: rgba(92,61,8,.10); color: #5C3D08; }
+    .plan-chip--starter  .plan-chip__dot { background: #3D6B4A; }
+    .plan-chip--access   .plan-chip__dot { background: var(--gold); }
+    .plan-chip--vip      .plan-chip__dot { background: #5C3D08; }
+
+    /* Track summary row */
+    .tracks-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-10);
+    }
+    .track-thumb {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      transition: box-shadow var(--transition), transform var(--transition);
+    }
+    .track-thumb:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .track-thumb__header {
+      padding: var(--space-4) var(--space-5);
+    }
+    .track-thumb__header[data-color="1"] { background-color: #5C3D08; }
+    .track-thumb__header[data-color="2"] { background-color: #0D2B52; }
+    .track-thumb__header[data-color="3"] { background-color: #0A3A38; }
+    .track-thumb__header[data-color="4"] { background-color: #5C2800; }
+    .track-thumb__num {
+      font-family: var(--font-heading);
+      font-size: var(--text-3xl);
+      font-weight: 900;
+      color: rgba(255,255,255,.20);
+      line-height: 1;
+    }
+    .track-thumb__name {
+      font-family: var(--font-heading);
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--white);
+      margin-top: var(--space-1);
+    }
+    .track-thumb__body {
+      padding: var(--space-4) var(--space-5);
+      background: var(--white);
+    }
+    .track-thumb__stats {
+      display: flex;
+      gap: var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--muted);
+      margin-bottom: var(--space-3);
+    }
+    .track-thumb__stats span { white-space: nowrap; }
+    .track-thumb__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .badge--all-plans {
+      background: rgba(61,107,74,.10);
+      color: #2A5C38;
+    }
+    .badge--access-vip {
+      background: rgba(201,168,76,.13);
+      color: #7A5500;
+    }
+
+    /* Curriculum section */
+    .curriculum-section { padding-block: var(--space-16); }
+
+    /* Track cards stack */
+    .tracks-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    /* Module accordion inside track body */
+    .modules-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .module-item {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    .module-item__trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      text-align: left;
+      background: var(--light-bg);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--navy);
+      transition: background-color var(--transition);
+    }
+
+    .module-item__trigger:hover {
+      background-color: #EEE9DE;
+    }
+
+    .module-item.open .module-item__trigger {
+      background-color: var(--navy);
+      color: var(--white);
+    }
+
+    .module-item__trigger-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .module-item__label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-shrink: 0;
+      min-width: 68px;
+    }
+
+    .module-item.open .module-item__label {
+      color: rgba(255,255,255,.50);
+    }
+
+    .module-item__count {
+      font-size: var(--text-xs);
+      color: var(--muted);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .module-item.open .module-item__count {
+      color: rgba(255,255,255,.45);
+    }
+
+    .module-item__chevron {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform var(--transition);
+    }
+
+    .module-item__chevron svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .module-item.open .module-item__chevron {
+      transform: rotate(180deg);
+    }
+
+    .module-item__lessons {
+      display: none;
+      padding: var(--space-4) var(--space-5);
+      background: var(--white);
+    }
+
+    .module-item.open .module-item__lessons {
+      display: block;
+    }
+
+    .lesson-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      counter-reset: lesson-counter;
+    }
+
+    .lesson-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      font-size: var(--text-sm);
+      color: var(--text);
+      line-height: 1.5;
+      counter-increment: lesson-counter;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      transition: background-color var(--transition);
+    }
+
+    .lesson-item:hover {
+      background-color: var(--light-bg);
+    }
+
+    .lesson-item::before {
+      content: counter(lesson-counter);
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background-color: rgba(201,168,76,.12);
+      color: var(--gold-dark);
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+
+    .lesson-item__icon {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .lesson-item__icon svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--muted);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    /* Track card header badge */
+    .track-plan-badge {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .track-plan-badge--all {
+      background: rgba(61,107,74,.30);
+      color: #A8E6B8;
+    }
+    .track-plan-badge--access {
+      background: rgba(201,168,76,.25);
+      color: #F5D990;
+    }
+
+    /* CTA strip */
+    .cta-strip {
+      background-color: var(--navy);
+      padding-block: var(--space-12);
+      text-align: center;
+    }
+    .cta-strip h2 {
+      color: var(--white);
+      font-size: var(--text-3xl);
+      margin-bottom: var(--space-4);
+    }
+    .cta-strip p {
+      color: rgba(255,255,255,.55);
+      font-size: var(--text-lg);
+      margin-bottom: var(--space-8);
+    }
+    .cta-strip__actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    /* Footer (mirrors index.html) */
+    .footer {
+      background-color: #060e1a;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-block: var(--space-12);
+    }
+    .footer__inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-10);
+      flex-wrap: wrap;
+    }
+    .footer__brand p {
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,.40);
+      margin-top: var(--space-3);
+      max-width: 280px;
+      line-height: 1.6;
+    }
+    .footer__logo { font-family: var(--font-heading); font-size: var(--text-2xl); font-weight: 900; color: var(--white); }
+    .footer__logo sup { color: var(--gold); font-size: 0.65em; vertical-align: super; }
+    .footer__links { display: flex; flex-direction: column; gap: var(--space-3); }
+    .footer__links a { font-size: var(--text-sm); color: rgba(255,255,255,.55); text-decoration: none; transition: color var(--transition); }
+    .footer__links a:hover { color: var(--white); }
+    .footer__contact h4 { font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500; letter-spacing: 0.10em; text-transform: uppercase; color: var(--gold); margin-bottom: var(--space-4); }
+    .footer__contact a { font-size: var(--text-sm); color: rgba(255,255,255,.65); text-decoration: none; transition: color var(--transition); }
+    .footer__contact a:hover { color: var(--white); }
+    .footer__bottom { margin-top: var(--space-10); padding-top: var(--space-6); border-top: 1px solid rgba(255,255,255,.06); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4); }
+    .footer__copyright { font-size: var(--text-xs); color: rgba(255,255,255,.30); }
+    .footer__companies { font-size: var(--text-xs); color: rgba(255,255,255,.25); }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .tracks-summary { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .tracks-summary { grid-template-columns: repeat(2, 1fr); }
+      .plan-key__inner { gap: var(--space-3); }
+      .footer__inner { flex-direction: column; gap: var(--space-8); }
+      .footer__bottom { flex-direction: column; text-align: center; }
+      .nav__links, .nav__cta { display: none; }
+      .nav__hamburger { display: flex; }
+    }
+    @media (max-width: 480px) {
+      .tracks-summary { grid-template-columns: 1fr; }
+
+      /* Module trigger: tighter padding, smaller label */
+      .module-item__trigger  { padding: var(--space-3) var(--space-4); }
+      .module-item__label    { min-width: 50px; font-size: 10px; }
+      .module-item__count    { font-size: 11px; }
+      .module-item__lessons  { padding: var(--space-3) var(--space-4); }
+
+      /* Lesson items: tighter */
+      .lesson-item { padding: var(--space-2) var(--space-2); font-size: 12px; }
+
+      /* Track thumb names */
+      .track-thumb__name { font-size: var(--text-sm); }
+
+      /* CTA strip heading */
+      .cta-strip h2 { font-size: var(--text-2xl); }
+      .cta-strip p  { font-size: var(--text-base); }
+
+      /* Stack CTA buttons */
+      .cta-strip__actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .cta-strip__actions .btn {
+        text-align: center;
+        justify-content: center;
+      }
+
+      /* Plan key chips: wrap tightly */
+      .plan-key__label { width: 100%; margin-bottom: var(--space-1); }
+    }
+
+    /* 768px: plan key items wrap gracefully */
+    @media (max-width: 768px) {
+      .plan-chip { font-size: 11px; padding: var(--space-1) var(--space-3); }
+
+      /* Stack page hero CTA buttons */
+      .page-hero__actions {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAV (mirrors index.html)
+     ============================================================ -->
+<nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+  <div class="container">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" aria-label="BRRRR8 Academy home">BRRRR<sup>8</sup> Academy</a>
+
+      <ul class="nav__links" role="list">
+        <li><a href="index.html#how-it-works">How It Works</a></li>
+        <li><a href="courses.html" class="active">Curriculum</a></li>
+        <li><a href="index.html#pricing">Pricing</a></li>
+        <li><a href="index.html#faq">FAQ</a></li>
+      </ul>
+
+      <a href="enroll.html" class="btn btn-primary btn-sm nav__cta">Enroll Now</a>
+
+      <button class="nav__hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="nav__mobile" id="mobile-menu" role="menu" aria-label="Mobile navigation">
+      <a href="index.html#how-it-works" role="menuitem">How It Works</a>
+      <a href="courses.html"            role="menuitem">Curriculum</a>
+      <a href="index.html#pricing"      role="menuitem">Pricing</a>
+      <a href="index.html#faq"          role="menuitem">FAQ</a>
+      <a href="enroll.html" class="btn btn-primary btn-sm" role="menuitem">Enroll Now</a>
+    </div>
+  </div>
+</nav>
+<div class="nav-offset"></div>
+
+
+<!-- ============================================================
+     PAGE HERO
+     ============================================================ -->
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="container">
+    <div class="page-hero__inner">
+      <p class="section-label">Full Curriculum</p>
+      <h1 id="page-title">Four Tracks. One Complete System.</h1>
+      <p class="page-hero__body">
+        89+ video lessons built around the BRRRR<sup>8</sup> Academy method &mdash; from finding your first
+        distressed property to executing your third cash-out refinance. Every track is taught
+        by someone who has used this exact strategy in the real world for over 25&nbsp;years.
+      </p>
+      <div class="page-hero__actions">
+        <a href="enroll.html" class="btn btn-primary">Enroll Now</a>
+        <a href="index.html#pricing" class="btn btn-ghost">See Pricing</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     PLAN KEY
+     ============================================================ -->
+<div class="plan-key" aria-label="Plan inclusion key">
+  <div class="container">
+    <div class="plan-key__inner">
+      <span class="plan-key__label">Included in:</span>
+      <div class="plan-key__items">
+        <span class="plan-chip plan-chip--starter">
+          <span class="plan-chip__dot"></span>Starter &mdash; Track 1 only
+        </span>
+        <span class="plan-chip plan-chip--access">
+          <span class="plan-chip__dot"></span>All Access &mdash; All 4 Tracks
+        </span>
+        <span class="plan-chip plan-chip--vip">
+          <span class="plan-chip__dot"></span>VIP Coaching &mdash; All 4 Tracks + 1:1
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     TRACK OVERVIEW THUMBNAILS
+     ============================================================ -->
+<section class="curriculum-section" aria-labelledby="curriculum-heading">
+  <div class="container">
+
+    <header class="section-header">
+      <p class="section-label">At a Glance</p>
+      <h2 id="curriculum-heading">What's Inside Each Track</h2>
+    </header>
+
+    <div class="tracks-summary" role="list" aria-label="Track overview">
+
+      <div class="track-thumb" role="listitem" aria-label="Track 1: BRRRR<sup>8</sup> Academy Core">
+        <div class="track-thumb__header" data-color="1">
+          <div class="track-thumb__num">01</div>
+          <div class="track-thumb__name">BRRRR<sup>8</sup> Academy Core</div>
+        </div>
+        <div class="track-thumb__body">
+          <div class="track-thumb__stats">
+            <span>6 Modules</span>
+            <span>&middot;</span>
+            <span>28 Lessons</span>
+          </div>
+          <span class="track-thumb__badge badge--all-plans">Included in All Plans</span>
+        </div>
+      </div>
+
+      <div class="track-thumb" role="listitem" aria-label="Track 2: Creative Finance">
+        <div class="track-thumb__header" data-color="2">
+          <div class="track-thumb__num">02</div>
+          <div class="track-thumb__name">Creative Finance</div>
+        </div>
+        <div class="track-thumb__body">
+          <div class="track-thumb__stats">
+            <span>5 Modules</span>
+            <span>&middot;</span>
+            <span>22 Lessons</span>
+          </div>
+          <span class="track-thumb__badge badge--access-vip">All Access + VIP</span>
+        </div>
+      </div>
+
+      <div class="track-thumb" role="listitem" aria-label="Track 3: Project Management">
+        <div class="track-thumb__header" data-color="3">
+          <div class="track-thumb__num">03</div>
+          <div class="track-thumb__name">Project Management</div>
+        </div>
+        <div class="track-thumb__body">
+          <div class="track-thumb__stats">
+            <span>5 Modules</span>
+            <span>&middot;</span>
+            <span>21 Lessons</span>
+          </div>
+          <span class="track-thumb__badge badge--access-vip">All Access + VIP</span>
+        </div>
+      </div>
+
+      <div class="track-thumb" role="listitem" aria-label="Track 4: Section 8 Deep Dive">
+        <div class="track-thumb__header" data-color="4">
+          <div class="track-thumb__num">04</div>
+          <div class="track-thumb__name">Section 8 Deep Dive</div>
+        </div>
+        <div class="track-thumb__body">
+          <div class="track-thumb__stats">
+            <span>4 Modules</span>
+            <span>&middot;</span>
+            <span>18 Lessons</span>
+          </div>
+          <span class="track-thumb__badge badge--access-vip">All Access + VIP</span>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ============================================================
+         TRACK CARDS — EXPANDABLE
+         ============================================================ -->
+    <div class="tracks-stack" role="list" aria-label="Full curriculum">
+
+
+      <!-- ── TRACK 1: BRRRR<sup>8</sup> Academy Core ── -->
+      <div class="track-card open" data-track="1" role="listitem" aria-label="Track 1: BRRRR<sup>8</sup> Academy Core">
+        <div class="track-card__header" data-track-toggle role="button" tabindex="0" aria-expanded="true">
+          <div class="track-card__header-left">
+            <div class="track-card__num">01</div>
+            <div>
+              <div class="track-card__title">BRRRR<sup>8</sup> Academy Core</div>
+              <div class="track-card__meta">6 Modules &middot; 28 Lessons &middot; Foundation strategy, Section 8 basics, first refinance</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:var(--space-3); flex-shrink:0;">
+            <span class="track-plan-badge track-plan-badge--all">All Plans</span>
+            <div class="track-card__toggle">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="track-card__body">
+          <div class="modules-list">
+
+            <!-- Module 1 -->
+            <div class="module-item open">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="true">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 1</span>
+                  <span>The BRRRR<sup>8</sup> Academy Foundation</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">5 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">What Is BRRRR<sup>8</sup> Academy and Why Section 8 Changes the Math</li>
+                  <li class="lesson-item">How Government-Backed Rent Removes Your Biggest Risk</li>
+                  <li class="lesson-item">Setting Your Investment Criteria Before You Search</li>
+                  <li class="lesson-item">Understanding Cash-on-Cash vs. Total Return</li>
+                  <li class="lesson-item">Building Your Core Team: Agent, Lender, Contractor, Property Manager</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 2</span>
+                  <span>Finding the Right Deal</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">5 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">Sourcing Distressed Properties: MLS, Wholesalers, and Off-Market</li>
+                  <li class="lesson-item">Reading a Neighborhood for Section 8 Demand</li>
+                  <li class="lesson-item">Driving for Dollars and Direct Mail on a Budget</li>
+                  <li class="lesson-item">Analyzing a Deal in Under 10 Minutes</li>
+                  <li class="lesson-item">Making Offers: Price, Terms, and Negotiation Strategy</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 3 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 3</span>
+                  <span>Financing Your Purchase</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">4 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">Hard Money vs. Private Lending: When to Use Each</li>
+                  <li class="lesson-item">How to Qualify When You're New or Self-Employed</li>
+                  <li class="lesson-item">DSCR Loans and Non-QM Options for Buy-and-Hold Investors</li>
+                  <li class="lesson-item">Structuring Your Purchase to Maximize the Refinance</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 4 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 4</span>
+                  <span>Rehab Fundamentals</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">5 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">Scoping the Work Before You Make an Offer</li>
+                  <li class="lesson-item">Getting Accurate Contractor Bids the First Time</li>
+                  <li class="lesson-item">Managing the Rehab Timeline to Protect Your Carry Costs</li>
+                  <li class="lesson-item">Which Upgrades Add ARV &mdash; and Which Are a Waste</li>
+                  <li class="lesson-item">HUD-Ready Finishes: Exactly What Passes the HCV Inspection</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 5 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 5</span>
+                  <span>Section 8 Fundamentals</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">5 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">How the Housing Choice Voucher Program Actually Works</li>
+                  <li class="lesson-item">Finding and Registering with Your Local PHA</li>
+                  <li class="lesson-item">The HCV Inspection Process from Application to Approval</li>
+                  <li class="lesson-item">Setting Your Rent: Payment Standards, FMR, and How to Negotiate</li>
+                  <li class="lesson-item">Placing Your First Section 8 Tenant: RFTA, HAP Contract, and Move-In</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 6 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 6</span>
+                  <span>Refinancing &amp; Scaling</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">4 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">The Cash-Out Refinance: Timing, Lenders, and Seasoning Requirements</li>
+                  <li class="lesson-item">How to Maximize Your Appraised Value Post-Rehab</li>
+                  <li class="lesson-item">Reinvesting Your Equity and Starting the Next Cycle</li>
+                  <li class="lesson-item">Building Systems to Scale Beyond 10 Doors</li>
+                </ol>
+              </div>
+            </div>
+
+          </div><!-- /modules-list -->
+        </div><!-- /track-card__body -->
+      </div><!-- /track 1 -->
+
+
+      <!-- ── TRACK 2: Creative Finance ── -->
+      <div class="track-card" data-track="2" role="listitem" aria-label="Track 2: Creative Finance">
+        <div class="track-card__header" data-track-toggle role="button" tabindex="0" aria-expanded="false">
+          <div class="track-card__header-left">
+            <div class="track-card__num">02</div>
+            <div>
+              <div class="track-card__title">Creative Finance</div>
+              <div class="track-card__meta">5 Modules &middot; 22 Lessons &middot; Subject-to, seller finance, DSCR, private lending, joint ventures</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:var(--space-3); flex-shrink:0;">
+            <span class="track-plan-badge track-plan-badge--access">All Access + VIP</span>
+            <div class="track-card__toggle">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="track-card__body">
+          <div class="modules-list">
+
+            <!-- Module 1 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 1</span>
+                  <span>Subject-To Acquisitions</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">5 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">What Subject-To Means and Why Sellers Accept It</li>
+                  <li class="lesson-item">Finding Motivated Sellers Who Will Consider Subject-To</li>
+                  <li class="lesson-item">Due-on-Sale Clause: Real Risk vs. Manageable Risk</li>
+                  <li class="lesson-item">Structuring and Documenting the Subject-To Agreement</li>
+                  <li class="lesson-item">Transitioning a Subject-To Property into a Section 8 Rental</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 2</span>
+                  <span>Seller Financing</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">4 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">How Seller Financing Works: Rate, Amortization, and Term</li>
+                  <li class="lesson-item">Negotiating Seller Finance on BRRRR Target Properties</li>
+                  <li class="lesson-item">Balloon Payments and the Refinance Exit Strategy</li>
+                  <li class="lesson-item">Seller Finance Contracts, Title Considerations, and Legal Basics</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 3 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 3</span>
+                  <span>Hard Money &amp; Private Lending</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">4 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">How to Find Private Lenders in Your Market</li>
+                  <li class="lesson-item">Structuring a Private Lending Agreement That Protects Both Sides</li>
+                  <li class="lesson-item">Using Hard Money to Move Fast and Win Deals</li>
+                  <li class="lesson-item">Paying Off Hard Money with the BRRRR Cash-Out Refinance</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 4 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 4</span>
+                  <span>DSCR &amp; Portfolio Loans</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">4 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">What Is a DSCR Loan and Who Qualifies</li>
+                  <li class="lesson-item">How Section 8 Guaranteed Rent Improves Your Debt-Service Coverage</li>
+                  <li class="lesson-item">Portfolio Lenders vs. Conventional: Which Scales Faster</li>
+                  <li class="lesson-item">Blanket Loans: Financing Multiple Doors Under One Note</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 5 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 5</span>
+                  <span>Stacking Strategies</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">5 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">Combining Subject-To and Seller Finance on the Same Deal</li>
+                  <li class="lesson-item">Using OPM (Other People's Money) to Scale Without Your Own Capital</li>
+                  <li class="lesson-item">Joint Ventures: Deal Structure, Equity Splits, and Operating Agreements</li>
+                  <li class="lesson-item">Self-Directed IRAs and Real Estate: What's Allowed</li>
+                  <li class="lesson-item">Building a Repeatable Creative Finance Deal Pipeline</li>
+                </ol>
+              </div>
+            </div>
+
+          </div><!-- /modules-list -->
+        </div>
+      </div><!-- /track 2 -->
+
+
+      <!-- ── TRACK 3: Project Management ── -->
+      <div class="track-card" data-track="3" role="listitem" aria-label="Track 3: Project Management">
+        <div class="track-card__header" data-track-toggle role="button" tabindex="0" aria-expanded="false">
+          <div class="track-card__header-left">
+            <div class="track-card__num">03</div>
+            <div>
+              <div class="track-card__title">Project Management</div>
+              <div class="track-card__meta">5 Modules &middot; 21 Lessons &middot; Scoping, contractor management, budget control, HUD inspection prep</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:var(--space-3); flex-shrink:0;">
+            <span class="track-plan-badge track-plan-badge--access">All Access + VIP</span>
+            <div class="track-card__toggle">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="track-card__body">
+          <div class="modules-list">
+
+            <!-- Module 1 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 1</span>
+                  <span>Scoping &amp; Estimating</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">4 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">The Pre-Offer Walkthrough Checklist</li>
+                  <li class="lesson-item">Building a Room-by-Room Scope of Work</li>
+                  <li class="lesson-item">Estimating Costs Before You Have a Contractor on Site</li>
+                  <li class="lesson-item">Budget Buffers, Contingency Lines, and Why They Matter</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 2</span>
+                  <span>Contractor Management</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">5 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">Finding Reliable Contractors in Any Market, Including Remotely</li>
+                  <li class="lesson-item">Vetting Bids: What a Fair Price Looks Like Line by Line</li>
+                  <li class="lesson-item">Writing a Contractor Agreement That Protects Your Budget</li>
+                  <li class="lesson-item">Draw Schedules: Pay for Verified Progress, Not Promises</li>
+                  <li class="lesson-item">Handling Disputes, Walkoffs, and Problem Contractors Mid-Job</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 3 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 3</span>
+                  <span>Budget Control</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">4 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">Tracking Every Dollar with a Live Rehab Budget Sheet</li>
+                  <li class="lesson-item">The Most Common Budget Overruns &mdash; and How to Prevent Them</li>
+                  <li class="lesson-item">When to Approve Change Orders and When to Push Back</li>
+                  <li class="lesson-item">Keeping ARV in Sight: Spend Decisions Through the Lens of Appraisal</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 4 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 4</span>
+                  <span>Timeline &amp; Scheduling</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">4 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">Building a Realistic Rehab Schedule from Day One</li>
+                  <li class="lesson-item">Sequencing Trades to Avoid Costly Delays and Rework</li>
+                  <li class="lesson-item">What to Do When a Contractor Goes Silent or Falls Behind</li>
+                  <li class="lesson-item">Permits, Inspections, and City Sign-Offs: Managing the Process</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 5 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 5</span>
+                  <span>Punch Lists &amp; Quality Control</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">4 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">How to Run a Thorough Punch List Walkthrough</li>
+                  <li class="lesson-item">HUD Inspection Prep: The 20 Most Common Fail Points</li>
+                  <li class="lesson-item">Final Finishes That Appeal to Section 8 Tenants and Pass Inspection</li>
+                  <li class="lesson-item">Documenting the Finished Property for the Lender's Appraiser</li>
+                </ol>
+              </div>
+            </div>
+
+          </div><!-- /modules-list -->
+        </div>
+      </div><!-- /track 3 -->
+
+
+      <!-- ── TRACK 4: Section 8 Deep Dive ── -->
+      <div class="track-card" data-track="4" role="listitem" aria-label="Track 4: Section 8 Deep Dive">
+        <div class="track-card__header" data-track-toggle role="button" tabindex="0" aria-expanded="false">
+          <div class="track-card__header-left">
+            <div class="track-card__num">04</div>
+            <div>
+              <div class="track-card__title">Section 8 Deep Dive</div>
+              <div class="track-card__meta">4 Modules &middot; 18 Lessons &middot; HUD, PHA, NSPIRE inspections, tenant placement, long-term management</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:var(--space-3); flex-shrink:0;">
+            <span class="track-plan-badge track-plan-badge--access">All Access + VIP</span>
+            <div class="track-card__toggle">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="track-card__body">
+          <div class="modules-list">
+
+            <!-- Module 1 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 1</span>
+                  <span>HUD &amp; PHA Overview</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">5 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">The History and Federal Structure of the HCV Program</li>
+                  <li class="lesson-item">How Local PHAs Administer Vouchers and Set Policy</li>
+                  <li class="lesson-item">Payment Standards: How Rent Limits Are Set and Adjusted</li>
+                  <li class="lesson-item">The Request for Tenancy Approval (RFTA) Process Step by Step</li>
+                  <li class="lesson-item">Your Rights and Obligations as a Section 8 Landlord</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 2</span>
+                  <span>Inspections &amp; Compliance</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">4 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">HQS vs. NSPIRE: What Changed and What It Means for Your Property</li>
+                  <li class="lesson-item">The 20 Most Common HCV Inspection Fail Points and How to Fix Them</li>
+                  <li class="lesson-item">How to Prepare a Property for Its First HCV Inspection</li>
+                  <li class="lesson-item">Handling Failed Inspections, Abatements, and Re-Inspection Timelines</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 3 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 3</span>
+                  <span>Tenant Screening &amp; Placement</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">5 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">Marketing Your Rental to Voucher Holders: Where and How</li>
+                  <li class="lesson-item">How Voucher Amounts Work and What Tenants Actually Owe</li>
+                  <li class="lesson-item">Screening Section 8 Applicants: What You Can and Cannot Ask</li>
+                  <li class="lesson-item">The Move-In Process: RFTA Submission, Lease Execution, and HAP Contract</li>
+                  <li class="lesson-item">Setting Expectations with Your Tenant on Day One</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Module 4 -->
+            <div class="module-item">
+              <button class="module-item__trigger" data-module-toggle aria-expanded="false">
+                <span class="module-item__trigger-left">
+                  <span class="module-item__label">Module 4</span>
+                  <span>Long-Term Section 8 Management</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:var(--space-3);">
+                  <span class="module-item__count">4 lessons</span>
+                  <span class="module-item__chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </span>
+              </button>
+              <div class="module-item__lessons">
+                <ol class="lesson-list">
+                  <li class="lesson-item">Annual Re-Inspections: What to Expect and How to Prepare</li>
+                  <li class="lesson-item">Requesting a Rent Increase: Payment Standard Reviews and Timing</li>
+                  <li class="lesson-item">Handling Tenant Issues with PHA Support Behind You</li>
+                  <li class="lesson-item">Building a Long-Term, Low-Maintenance Section 8 Portfolio</li>
+                </ol>
+              </div>
+            </div>
+
+          </div><!-- /modules-list -->
+        </div>
+      </div><!-- /track 4 -->
+
+
+    </div><!-- /tracks-stack -->
+  </div><!-- /container -->
+</section>
+
+
+<!-- ============================================================
+     CTA STRIP
+     ============================================================ -->
+<section class="cta-strip" aria-labelledby="courses-cta-heading">
+  <div class="container">
+    <h2 id="courses-cta-heading">Ready to Work Through All 89 Lessons?</h2>
+    <p>All Access and VIP unlock every track. Starter gets you the Core and everything you need to close your first deal.</p>
+    <div class="cta-strip__actions">
+      <a href="enroll.html" class="btn btn-primary btn-lg">Enroll Now</a>
+      <a href="index.html#pricing" class="btn btn-ghost btn-lg">Compare Plans</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     FOOTER (mirrors index.html)
+     ============================================================ -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__inner">
+
+      <div class="footer__brand">
+        <a href="index.html" class="footer__logo" aria-label="BRRRR8 Academy home">BRRRR<sup>8</sup> Academy</a>
+        <p>A real estate education platform built on 25+ years of St.&nbsp;Louis investing and contracting experience. Practical strategy, real numbers, guaranteed rent.</p>
+      </div>
+
+      <nav class="footer__links" aria-label="Footer navigation">
+        <a href="index.html">Home</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="courses.html">Curriculum</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="index.html#faq">FAQ</a>
+        <a href="enroll.html">Enroll</a>
+      </nav>
+
+      <div class="footer__contact">
+        <h4>Contact</h4>
+        <a href="mailto:info@midwestinvestorservices.com">info@midwestinvestorservices.com</a>
+      </div>
+
+    </div>
+
+    <div class="footer__bottom">
+      <p class="footer__copyright">&copy; 2025 BRRRR<sup>8</sup> Academy. All rights reserved.</p>
+      <p class="footer__companies">Midwest Investor Services &middot; Missouri Construction Service &middot; Luxe Property Solutions</p>
+    </div>
+  </div>
+</footer>
+
+
+<script src="js/main.js"></script>
+</body>
+</html>

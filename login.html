@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — BRRRR⁸ Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body { background: var(--navy); min-height: 100vh; display: flex; flex-direction: column; }
+
+    .login-shell {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8) var(--space-4);
+    }
+
+    .login-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: var(--space-10) var(--space-8);
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .login-logo {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: var(--text-2xl);
+      color: var(--navy);
+      text-decoration: none;
+      display: block;
+      margin-bottom: var(--space-6);
+    }
+    .login-logo sup { color: var(--gold); font-size: 0.65em; vertical-align: super; }
+
+    .login-card h1 { font-size: var(--text-xl); margin-bottom: var(--space-1); color: var(--navy); }
+    .login-card p.sub { color: var(--text-muted); font-size: var(--text-sm); margin-bottom: var(--space-6); }
+
+    .form-group { margin-bottom: var(--space-4); }
+    .form-label { display: block; font-size: var(--text-sm); font-weight: 500; margin-bottom: var(--space-1); color: var(--navy); }
+    .form-input {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid #D4C9B8;
+      border-radius: 6px;
+      font-size: var(--text-base);
+      font-family: var(--font-body);
+      color: var(--navy);
+      transition: border-color 0.15s;
+      box-sizing: border-box;
+    }
+    .form-input:focus { outline: none; border-color: var(--gold); }
+    .form-input.error { border-color: #C0392B; }
+
+    .forgot-link {
+      display: block;
+      text-align: right;
+      font-size: var(--text-xs);
+      color: var(--gold-dark);
+      text-decoration: none;
+      margin-top: var(--space-1);
+    }
+    .forgot-link:hover { text-decoration: underline; }
+
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: var(--space-5);
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+    }
+    .btn-login:hover:not(:disabled) { background: var(--gold-dark); }
+    .btn-login:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    .error-msg {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      color: #C0392B;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-4);
+      display: none;
+    }
+    .error-msg.visible { display: block; }
+
+    .enroll-prompt {
+      text-align: center;
+      margin-top: var(--space-6);
+      padding-top: var(--space-5);
+      border-top: 1px solid #EEE;
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+    }
+    .enroll-prompt a { color: var(--gold-dark); font-weight: 600; text-decoration: none; }
+    .enroll-prompt a:hover { text-decoration: underline; }
+
+    /* Forgot password view */
+    #forgot-view { display: none; }
+    #login-view  { display: block; }
+
+    .back-link {
+      background: none; border: none; padding: 0;
+      color: var(--gold-dark); font-size: var(--text-sm);
+      font-family: var(--font-body); cursor: pointer;
+      text-decoration: underline; margin-bottom: var(--space-4);
+      display: block;
+    }
+
+    .success-msg {
+      background: #F0FFF4;
+      border: 1px solid #9AE6B4;
+      color: #276749;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-4);
+      display: none;
+    }
+    .success-msg.visible { display: block; }
+
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(10,22,40,.3);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .login-footer { text-align: center; padding: var(--space-6); }
+    .login-footer a { color: rgba(255,255,255,.45); font-size: var(--text-xs); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<main class="login-shell">
+  <div class="login-card">
+    <a href="index.html" class="login-logo">BRRRR<sup>8</sup> Academy</a>
+
+    <!-- ── Login view ── -->
+    <div id="login-view">
+      <h1>Sign in to your account</h1>
+      <p class="sub">Access your courses, track progress, and join the community.</p>
+
+      <div class="error-msg" id="login-error" role="alert"></div>
+
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="email">Email address</label>
+          <input class="form-input" type="email" id="email" name="email" autocomplete="email" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input class="form-input" type="password" id="password" name="password" autocomplete="current-password" required />
+          <a href="#" class="forgot-link" id="forgot-trigger">Forgot password?</a>
+        </div>
+        <button class="btn-login" type="submit" id="login-btn">
+          <span class="spinner" id="login-spinner"></span>
+          <span id="login-btn-text">Sign In</span>
+        </button>
+      </form>
+
+      <div class="enroll-prompt">
+        Don't have an account? <a href="enroll.html">Enroll now &rarr;</a>
+      </div>
+    </div>
+
+    <!-- ── Forgot password view ── -->
+    <div id="forgot-view">
+      <button class="back-link" id="back-to-login">&larr; Back to sign in</button>
+      <h1>Reset your password</h1>
+      <p class="sub">Enter your email and we'll send a reset link.</p>
+
+      <div class="error-msg"   id="forgot-error"   role="alert"></div>
+      <div class="success-msg" id="forgot-success" role="status"></div>
+
+      <form id="forgot-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="forgot-email">Email address</label>
+          <input class="form-input" type="email" id="forgot-email" name="email" autocomplete="email" required />
+        </div>
+        <button class="btn-login" type="submit" id="forgot-btn">
+          <span class="spinner" id="forgot-spinner"></span>
+          <span id="forgot-btn-text">Send Reset Link</span>
+        </button>
+      </form>
+    </div>
+
+  </div>
+</main>
+
+<footer class="login-footer">
+  <a href="index.html">&copy; 2025 BRRRR⁸ Academy &nbsp;&middot;&nbsp; Back to home</a>
+</footer>
+
+<script>
+(function () {
+  // If already logged in, redirect
+  fetch('/api/auth/me', { credentials: 'include' })
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      if (d?.user) {
+        window.location.href = d.user.role === 'admin' ? '/admin/' : '/dashboard.html';
+      }
+    }).catch(() => {});
+
+  // Check for ?redirect param
+  const redirectTo = new URLSearchParams(location.search).get('redirect') || null;
+
+  // ── Login form ─────────────────────────────────────────────────
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const errEl    = document.getElementById('login-error');
+    const btn      = document.getElementById('login-btn');
+    const spinner  = document.getElementById('login-spinner');
+    const btnText  = document.getElementById('login-btn-text');
+
+    errEl.classList.remove('visible');
+    btn.disabled = true;
+    spinner.style.display = 'inline-block';
+    btnText.textContent = 'Signing in…';
+
+    try {
+      const res  = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Sign in failed');
+      window.location.href = redirectTo || data.redirectTo || '/dashboard.html';
+
+    } catch (err) {
+      errEl.textContent = err.message;
+      errEl.classList.add('visible');
+      btn.disabled = false;
+      spinner.style.display = 'none';
+      btnText.textContent = 'Sign In';
+    }
+  });
+
+  // ── Forgot password toggle ─────────────────────────────────────
+  document.getElementById('forgot-trigger').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('login-view').style.display  = 'none';
+    document.getElementById('forgot-view').style.display = 'block';
+  });
+
+  document.getElementById('back-to-login').addEventListener('click', () => {
+    document.getElementById('login-view').style.display  = 'block';
+    document.getElementById('forgot-view').style.display = 'none';
+  });
+
+  // ── Forgot password form ───────────────────────────────────────
+  document.getElementById('forgot-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email   = document.getElementById('forgot-email').value.trim();
+    const errEl   = document.getElementById('forgot-error');
+    const succEl  = document.getElementById('forgot-success');
+    const btn     = document.getElementById('forgot-btn');
+    const spinner = document.getElementById('forgot-spinner');
+    const btnText = document.getElementById('forgot-btn-text');
+
+    errEl.classList.remove('visible');
+    succEl.classList.remove('visible');
+    btn.disabled = true;
+    spinner.style.display = 'inline-block';
+    btnText.textContent = 'Sending…';
+
+    try {
+      await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      succEl.textContent = 'Check your inbox — a reset link is on its way.';
+      succEl.classList.add('visible');
+    } catch {
+      errEl.textContent = 'Something went wrong. Please try again.';
+      errEl.classList.add('visible');
+    } finally {
+      btn.disabled = false;
+      spinner.style.display = 'none';
+      btnText.textContent = 'Send Reset Link';
+    }
+  });
+})();
+</script>
+</body>
+</html>

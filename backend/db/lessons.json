@@ -1,0 +1,52 @@
+{
+  "_readme": "Map lesson IDs to Bunny.net video GUIDs. Format: 'trackX-modY-lessonZ': { 'bunnyVideoId': 'guid-from-bunny', 'title': 'Lesson Title', 'duration': 600 }",
+
+  "track1-mod1-lesson1": { "bunnyVideoId": "", "title": "What Is BRRRR⁸ and Why Section 8 Changes the Math", "duration": 0 },
+  "track1-mod1-lesson2": { "bunnyVideoId": "", "title": "How Government-Backed Rent Removes Your Biggest Risk", "duration": 0 },
+  "track1-mod1-lesson3": { "bunnyVideoId": "", "title": "The Section 8 Tenant Profile: Who They Are and Why They Stay", "duration": 0 },
+  "track1-mod1-lesson4": { "bunnyVideoId": "", "title": "Overview of the HCV Program and How Payments Work", "duration": 0 },
+  "track1-mod1-lesson5": { "bunnyVideoId": "", "title": "Setting Your 12-Month Portfolio Goal", "duration": 0 },
+
+  "track1-mod2-lesson1": { "bunnyVideoId": "", "title": "Reading a Deal: ARV, Repair Cost, and the 70% Rule", "duration": 0 },
+  "track1-mod2-lesson2": { "bunnyVideoId": "", "title": "The BRRRR⁸ Deal Analyzer Walkthrough", "duration": 0 },
+  "track1-mod2-lesson3": { "bunnyVideoId": "", "title": "Finding Distressed Properties in Any Market", "duration": 0 },
+  "track1-mod2-lesson4": { "bunnyVideoId": "", "title": "Working with Wholesalers and On-Market Deals", "duration": 0 },
+  "track1-mod2-lesson5": { "bunnyVideoId": "", "title": "Making Offers That Get Accepted at the Right Price", "duration": 0 },
+
+  "track1-mod3-lesson1": { "bunnyVideoId": "", "title": "Hard Money vs. Private Money vs. DSCR Loans", "duration": 0 },
+  "track1-mod3-lesson2": { "bunnyVideoId": "", "title": "Building Your Lender Relationships Before You Need Them", "duration": 0 },
+  "track1-mod3-lesson3": { "bunnyVideoId": "", "title": "The Acquisition Closing Checklist", "duration": 0 },
+
+  "track1-mod4-lesson1": { "bunnyVideoId": "", "title": "Scoping the Rehab for a Section 8 Tenant", "duration": 0 },
+  "track1-mod4-lesson2": { "bunnyVideoId": "", "title": "HQS and NSPIRE Standards: What Inspectors Check", "duration": 0 },
+  "track1-mod4-lesson3": { "bunnyVideoId": "", "title": "Managing Contractors: Bids, Contracts, and Draws", "duration": 0 },
+  "track1-mod4-lesson4": { "bunnyVideoId": "", "title": "Passing Your First HQS Inspection First Try", "duration": 0 },
+  "track1-mod4-lesson5": { "bunnyVideoId": "", "title": "The Punch List: Final Walkthrough Before Inspection", "duration": 0 },
+
+  "track1-mod5-lesson1": { "bunnyVideoId": "", "title": "How to Apply to Become a Section 8 Landlord", "duration": 0 },
+  "track1-mod5-lesson2": { "bunnyVideoId": "", "title": "Listing Your Unit on the HCV Waiting List", "duration": 0 },
+  "track1-mod5-lesson3": { "bunnyVideoId": "", "title": "Screening Section 8 Tenants: What You Can and Can't Ask", "duration": 0 },
+  "track1-mod5-lesson4": { "bunnyVideoId": "", "title": "The HAP Contract: Understanding What You're Signing", "duration": 0 },
+  "track1-mod5-lesson5": { "bunnyVideoId": "", "title": "First Rent Payment: Direct Deposit Setup with Your PHA", "duration": 0 },
+
+  "track1-mod6-lesson1": { "bunnyVideoId": "", "title": "Seasoning Requirements by Lender Type", "duration": 0 },
+  "track1-mod6-lesson2": { "bunnyVideoId": "", "title": "The Cash-Out Refinance Process Step by Step", "duration": 0 },
+  "track1-mod6-lesson3": { "bunnyVideoId": "", "title": "Using HAP Income to Qualify for the Refinance", "duration": 0 },
+  "track1-mod6-lesson4": { "bunnyVideoId": "", "title": "Recycling Your Capital Into Deal #2", "duration": 0 },
+  "track1-mod6-lesson5": { "bunnyVideoId": "", "title": "Building a Repeatable System: The BRRRR⁸ Cycle at Scale", "duration": 0 },
+
+  "track2-mod1-lesson1": { "bunnyVideoId": "", "title": "Why Creative Finance Works Better with Section 8 Income", "duration": 0 },
+  "track2-mod1-lesson2": { "bunnyVideoId": "", "title": "Subject-To Deals: Taking Over Existing Mortgages", "duration": 0 },
+  "track2-mod1-lesson3": { "bunnyVideoId": "", "title": "Seller Financing Structures for Rental Properties", "duration": 0 },
+  "track2-mod1-lesson4": { "bunnyVideoId": "", "title": "Lease Options and Sandwich Deals", "duration": 0 },
+  "track2-mod1-lesson5": { "bunnyVideoId": "", "title": "Presenting Creative Offers to Motivated Sellers", "duration": 0 },
+
+  "track3-mod1-lesson1": { "bunnyVideoId": "", "title": "Building Your Contractor Network in Any City", "duration": 0 },
+  "track3-mod1-lesson2": { "bunnyVideoId": "", "title": "Scopes of Work That Protect You Legally and Financially", "duration": 0 },
+  "track3-mod1-lesson3": { "bunnyVideoId": "", "title": "Project Management Software for Small Landlords", "duration": 0 },
+
+  "track4-mod1-lesson1": { "bunnyVideoId": "", "title": "The Housing Choice Voucher Program: Deep Dive", "duration": 0 },
+  "track4-mod1-lesson2": { "bunnyVideoId": "", "title": "Working with PHAs: Contacts, Portals, and Relationships", "duration": 0 },
+  "track4-mod1-lesson3": { "bunnyVideoId": "", "title": "NSPIRE vs. HQS: What Changed and What to Expect", "duration": 0 },
+  "track4-mod1-lesson4": { "bunnyVideoId": "", "title": "Maximizing Your Payment Standard in Every Market", "duration": 0 }
+}

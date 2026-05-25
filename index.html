@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BRRRR⁸ Academy — Buy. Rehab. Rent. Refinance. Repeat. Section 8.</title>
+  <meta name="description" content="The only real estate course that combines the BRRRR investment strategy with Section 8 guaranteed rent. BRRRR⁸ Academy is built on 25+ years of St. Louis investor experience. 4 tracks, 89+ lessons." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* ── Page-specific overrides ── */
+
+    /* Hero */
+    .hero {
+      background-color: var(--navy);
+      padding-block: var(--space-24);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 40%, rgba(201,168,76,.07) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 80% at 10% 80%, rgba(201,168,76,.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero__inner {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+    }
+
+    .hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: var(--space-6);
+    }
+
+    .hero__eyebrow::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 2px;
+      background-color: var(--gold);
+      border-radius: 2px;
+    }
+
+    .hero__headline {
+      font-family: var(--font-heading);
+      font-size: clamp(3.5rem, 10vw, 6.5rem);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-5);
+    }
+
+    .hero__headline .accent {
+      color: var(--gold);
+    }
+
+    .hero__subhead {
+      font-family: var(--font-body);
+      font-size: var(--text-lg);
+      font-weight: 500;
+      color: rgba(255,255,255,.55);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-8);
+    }
+
+    .hero__body {
+      font-size: var(--text-lg);
+      color: rgba(255,255,255,.70);
+      line-height: 1.75;
+      max-width: 600px;
+      margin-bottom: var(--space-10);
+    }
+
+    .hero__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    /* Who It's For */
+    .for-card__icon {
+      font-size: 2rem;
+      margin-bottom: var(--space-4);
+    }
+
+    /* Testimonials */
+    .testimonial-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-8);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .testimonial-card__quote {
+      font-size: var(--text-base);
+      color: var(--text);
+      line-height: 1.75;
+      flex: 1;
+      margin-bottom: var(--space-6);
+    }
+
+    .testimonial-card__footer {
+      border-top: 1px solid var(--border);
+      padding-top: var(--space-5);
+    }
+
+    .testimonial-card__name {
+      font-family: var(--font-heading);
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .testimonial-card__location {
+      font-size: var(--text-sm);
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .testimonial-card__result {
+      display: inline-block;
+      margin-top: var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--gold-dark);
+      background: rgba(201,168,76,.10);
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    /* What's Included */
+    .includes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+    }
+
+    /* Final CTA section */
+    .final-cta {
+      background-color: var(--navy);
+      padding-block: var(--space-24);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(201,168,76,.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .final-cta__inner {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      margin-inline: auto;
+    }
+
+    .final-cta h2 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--white);
+      margin-bottom: var(--space-5);
+    }
+
+    .final-cta p {
+      font-size: var(--text-lg);
+      color: rgba(255,255,255,.65);
+      margin-bottom: var(--space-10);
+      line-height: 1.7;
+    }
+
+    .final-cta__actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .final-cta__note {
+      margin-top: var(--space-5);
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,.40);
+    }
+
+    /* Footer */
+    .footer {
+      background-color: #060e1a;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-block: var(--space-12);
+    }
+
+    .footer__inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-10);
+      flex-wrap: wrap;
+    }
+
+    .footer__brand p {
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,.40);
+      margin-top: var(--space-3);
+      max-width: 280px;
+      line-height: 1.6;
+    }
+
+    .footer__logo {
+      font-family: var(--font-heading);
+      font-size: var(--text-2xl);
+      font-weight: 900;
+      color: var(--white);
+    }
+
+    .footer__logo sup { color: var(--gold); font-size: 0.65em; vertical-align: super; }
+
+    .footer__links {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .footer__links a {
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,.55);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+
+    .footer__links a:hover { color: var(--white); }
+
+    .footer__contact h4 {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: var(--space-4);
+    }
+
+    .footer__contact a {
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,.65);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+
+    .footer__contact a:hover { color: var(--white); }
+
+    .footer__bottom {
+      margin-top: var(--space-10);
+      padding-top: var(--space-6);
+      border-top: 1px solid rgba(255,255,255,.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+    }
+
+    .footer__copyright {
+      font-size: var(--text-xs);
+      color: rgba(255,255,255,.30);
+    }
+
+    .footer__companies {
+      font-size: var(--text-xs);
+      color: rgba(255,255,255,.25);
+    }
+
+    /* Responsive for page-specific styles */
+    @media (max-width: 768px) {
+      .includes-grid { grid-template-columns: 1fr; }
+      .footer__inner { flex-direction: column; gap: var(--space-8); }
+      .footer__bottom { flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .hero         { padding-block: var(--space-16); }
+      .final-cta    { padding-block: var(--space-16); }
+
+      /* Hero subhead: too wide with letter-spacing at full size */
+      .hero__subhead {
+        font-size: var(--text-xs);
+        letter-spacing: 0.10em;
+        line-height: 1.9;
+      }
+
+      /* Stack CTA buttons full-width */
+      .hero__actions,
+      .final-cta__actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .hero__actions .btn,
+      .final-cta__actions .btn {
+        text-align: center;
+        justify-content: center;
+      }
+
+      /* Testimonial cards: reduce padding */
+      .testimonial-card { padding: var(--space-5); }
+
+      /* Step-strip section label */
+      .step__desc { font-size: var(--text-xs); }
+    }
+
+    @media (min-width: 769px) {
+      .includes-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 1024px) and (min-width: 769px) {
+      .includes-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     1. STICKY NAV
+     ============================================================ -->
+<nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+  <div class="container">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" aria-label="BRRRR8 Academy home">BRRRR<sup>8</sup> Academy</a>
+
+      <ul class="nav__links" role="list">
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="courses.html">Curriculum</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+
+      <a href="enroll.html" class="btn btn-primary btn-sm nav__cta">Enroll Now</a>
+
+      <button class="nav__hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <div class="nav__mobile" id="mobile-menu" role="menu" aria-label="Mobile navigation">
+      <a href="#how-it-works" role="menuitem">How It Works</a>
+      <a href="courses.html"  role="menuitem">Curriculum</a>
+      <a href="#pricing"      role="menuitem">Pricing</a>
+      <a href="#faq"          role="menuitem">FAQ</a>
+      <a href="enroll.html"   class="btn btn-primary btn-sm" role="menuitem">Enroll Now</a>
+    </div>
+  </div>
+</nav>
+
+<div class="nav-offset"></div>
+
+
+<!-- ============================================================
+     2. HERO
+     ============================================================ -->
+<section class="hero" aria-labelledby="hero-headline">
+  <div class="container">
+    <div class="hero__inner">
+      <p class="hero__eyebrow">Real Estate Education &mdash; St. Louis</p>
+
+      <h1 class="hero__headline" id="hero-headline">
+        BRR<span class="accent">RR</span>8
+      </h1>
+
+      <p class="hero__subhead">Buy &middot; Rehab &middot; Rent &middot; Refinance &middot; Repeat &middot; Section&nbsp;8</p>
+
+      <p class="hero__body">
+        The only course that teaches you to combine the BRRRR investment strategy with
+        Section&nbsp;8 guaranteed government-backed rent &mdash; built from 25&nbsp;years of
+        boots-on-the-ground experience investing and contracting in St.&nbsp;Louis.
+      </p>
+
+      <div class="hero__actions">
+        <a href="enroll.html" class="btn btn-primary btn-lg">Enroll Now</a>
+        <a href="courses.html" class="btn btn-ghost btn-lg">View Curriculum</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     3. PROOF BAR
+     ============================================================ -->
+<div class="proof-bar" aria-label="Key statistics">
+  <div class="container">
+    <div class="proof-bar__grid">
+      <div class="proof-stat">
+        <div class="proof-stat__number">25+</div>
+        <div class="proof-stat__label">Years Investing &amp; Contracting</div>
+      </div>
+      <div class="proof-stat">
+        <div class="proof-stat__number">4</div>
+        <div class="proof-stat__label">Specialized Learning Tracks</div>
+      </div>
+      <div class="proof-stat">
+        <div class="proof-stat__number">89+</div>
+        <div class="proof-stat__label">Video Lessons</div>
+      </div>
+      <div class="proof-stat">
+        <div class="proof-stat__number">100%</div>
+        <div class="proof-stat__label">Government-Backed Rent Strategy</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     4. WHO IT'S FOR
+     ============================================================ -->
+<section class="section bg-light" id="who-its-for" aria-labelledby="for-heading">
+  <div class="container">
+    <header class="section-header centered">
+      <p class="section-label">Who It's For</p>
+      <h2 id="for-heading">Built for Investors Who Are Serious About Cash Flow</h2>
+      <p>Whether you're buying your first door or scaling past ten, BRRRR<sup>8</sup> Academy meets you where you are and shows you exactly how to add Section&nbsp;8 guaranteed rent to your strategy.</p>
+    </header>
+
+    <div class="grid grid-4">
+
+      <!-- Card 1 -->
+      <article class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+        </div>
+        <h3>Out-of-State Investors</h3>
+        <p>St. Louis offers some of the best cash-flow fundamentals in the country. Learn how to buy, rehab, and self-manage remotely using Section&nbsp;8 as your tenant stability anchor.</p>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+          </svg>
+        </div>
+        <h3>First-Time Landlords</h3>
+        <p>No prior experience required. The BRRRR<sup>8</sup> Academy Core track starts at the fundamentals &mdash; deal analysis, financing, property selection &mdash; and walks you all the way through your first Section&nbsp;8 placement.</p>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+            <polyline points="16 7 22 7 22 13"/>
+          </svg>
+        </div>
+        <h3>Scaling Investors</h3>
+        <p>Already own rental doors but still chasing market-rate tenants? Learn how to convert your portfolio to guaranteed government rent, systematize your deal flow, and use creative finance to accelerate growth.</p>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          </svg>
+        </div>
+        <h3>Contractors &amp; Builders</h3>
+        <p>You already control rehab costs that other investors can't touch. The Project Management track shows you how to convert your trade skills into equity and build a portfolio alongside your contracting business.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     5. HOW IT WORKS
+     ============================================================ -->
+<section class="section bg-white" id="how-it-works" aria-labelledby="works-heading">
+  <div class="container">
+    <header class="section-header centered">
+      <p class="section-label">The Strategy</p>
+      <h2 id="works-heading">The BRRRR<sup>8</sup> Academy Method, Step by Step</h2>
+      <p>Each letter in BRRRR<sup>8</sup> Academy represents a stage in the cycle. Master all five and you can scale a portfolio indefinitely without leaving equity locked in a single property.</p>
+    </header>
+
+    <div class="steps-strip">
+
+      <div class="step">
+        <div class="step__number">B</div>
+        <div class="step__letter">Buy</div>
+        <div class="step__title">Find the Deal</div>
+        <div class="step__desc">Target distressed properties priced below market value with strong Section&nbsp;8 rent potential. Our deal analyzer tells you in minutes whether a property pencils out.</div>
+      </div>
+
+      <div class="step">
+        <div class="step__number">R</div>
+        <div class="step__letter">Rehab</div>
+        <div class="step__title">Renovate Right</div>
+        <div class="step__desc">Scope, bid, and manage the rehab to HUD inspection standards. We show you exactly which finishes pass inspection and which improvements add the most appraised value.</div>
+      </div>
+
+      <div class="step">
+        <div class="step__number">R</div>
+        <div class="step__letter">Rent</div>
+        <div class="step__title">Section 8 Tenant</div>
+        <div class="step__desc">Work with your local PHA to get listed, pass the HCV inspection, and place a vetted Section&nbsp;8 tenant. The government pays a guaranteed portion every single month.</div>
+      </div>
+
+      <div class="step">
+        <div class="step__number">R</div>
+        <div class="step__letter">Refinance</div>
+        <div class="step__title">Pull Your Capital</div>
+        <div class="step__desc">Use the stabilized rental income and updated appraisal to do a cash-out refinance. Get your original investment back &mdash; or close to it &mdash; and keep the property.</div>
+      </div>
+
+      <div class="step">
+        <div class="step__number">R<span style="color:var(--gold);font-size:.7em;vertical-align:super;">8</span></div>
+        <div class="step__letter">Repeat</div>
+        <div class="step__title">Build the Portfolio</div>
+        <div class="step__desc">Reinvest recovered capital into your next deal. Each cycle adds a cash-flowing Section&nbsp;8 door to your portfolio with little-to-no capital permanently tied up.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     6. TESTIMONIALS
+     ============================================================ -->
+<section class="section bg-light" id="testimonials" aria-labelledby="testimonials-heading">
+  <div class="container">
+    <header class="section-header centered">
+      <p class="section-label">Student Results</p>
+      <h2 id="testimonials-heading">Real Investors, Real Doors</h2>
+      <p>BRRRR<sup>8</sup> Academy students come from all experience levels. Here's what a few of them have to say after putting the method to work.</p>
+    </header>
+
+    <div class="grid grid-4">
+
+      <article class="testimonial-card">
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <p class="testimonial-card__quote">"I was skeptical about investing remotely, but the Section&nbsp;8 module changed everything. Within eight months of finishing the course I closed my first deal in St.&nbsp;Louis and had a tenant placed within two weeks of passing HCV inspection."</p>
+        <footer class="testimonial-card__footer">
+          <div class="testimonial-card__name">Marcus T.</div>
+          <div class="testimonial-card__location">Chicago, IL</div>
+          <span class="testimonial-card__result">First Section 8 door — 8 months out</span>
+        </footer>
+      </article>
+
+      <article class="testimonial-card">
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <p class="testimonial-card__quote">"I've taken three other real estate courses. None of them told me what to actually say to a housing authority or how to prepare for an HCV inspection. BRRRR<sup>8</sup> Academy does. That detail alone was worth the enrollment."</p>
+        <footer class="testimonial-card__footer">
+          <div class="testimonial-card__name">Renée B.</div>
+          <div class="testimonial-card__location">Atlanta, GA</div>
+          <span class="testimonial-card__result">2 units rehabbed and rented — Section 8</span>
+        </footer>
+      </article>
+
+      <article class="testimonial-card">
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <p class="testimonial-card__quote">"As a contractor I thought I knew everything about rehab. What I didn't know was how to turn my trade margin into a portfolio. The Project Management track and the deal analyzer paid for the course on deal one."</p>
+        <footer class="testimonial-card__footer">
+          <div class="testimonial-card__name">David K.</div>
+          <div class="testimonial-card__location">St. Louis, MO</div>
+          <span class="testimonial-card__result">First cash-out refi completed — 11 months</span>
+        </footer>
+      </article>
+
+      <article class="testimonial-card">
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <p class="testimonial-card__quote">"BRRRR always felt like it was for people with deep pockets. The Creative Finance track showed me subject-to and seller finance options I didn't know existed. Three deals later, averaging $1,240 a month in guaranteed rent."</p>
+        <footer class="testimonial-card__footer">
+          <div class="testimonial-card__name">Tamara W.</div>
+          <div class="testimonial-card__location">Kansas City, MO</div>
+          <span class="testimonial-card__result">3 Section 8 doors — avg. $1,240/mo guaranteed</span>
+        </footer>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     7. WHAT'S INCLUDED
+     ============================================================ -->
+<section class="section bg-white" id="includes" aria-labelledby="includes-heading">
+  <div class="container">
+    <header class="section-header centered">
+      <p class="section-label">What's Included</p>
+      <h2 id="includes-heading">Everything You Need to Execute the Strategy</h2>
+      <p>No fluff, no filler. Every resource in BRRRR<sup>8</sup> Academy is designed to move you closer to a placed tenant and a completed refinance.</p>
+    </header>
+
+    <div class="includes-grid">
+
+      <article class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <polygon points="10 8 16 12 10 16 10 8"/>
+          </svg>
+        </div>
+        <h3>89+ Video Lessons</h3>
+        <p>Four structured learning tracks covering every phase of the BRRRR<sup>8</sup> Academy method &mdash; from sourcing your first deal to executing your third refinance. Watch at your own pace, forever.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <h3>Section 8 Deal Analyzer</h3>
+        <p>Plug in an address and instantly model your ARV, Section&nbsp;8 rent ceiling, cash-on-cash return, and projected refinance proceeds. Know if a deal works before you make an offer.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
+        <h3>Rehab &amp; Budget Templates</h3>
+        <p>Contractor bid sheets, scope-of-work templates, HUD inspection checklists, and lease agreements &mdash; ready to use on your first deal or adapt to your market.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3>Private Investor Community</h3>
+        <p>Connect with fellow BRRRR<sup>8</sup> Academy students, share deals, post questions, and get feedback from people actively working the same strategy. All plans include lifetime community access.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <h3>Live Q&amp;A Sessions</h3>
+        <p>Bi-monthly live sessions where you can bring your active deals, your inspection questions, and your financing challenges directly to Chaun. Real answers from someone who's done it.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3>HUD Compliance Guides</h3>
+        <p>Step-by-step walkthroughs for every stage of the HCV process &mdash; applying to your PHA, scheduling your initial inspection, addressing failed items, and managing annual re-inspections.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     8. PRICING
+     ============================================================ -->
+<section class="section bg-light" id="pricing" aria-labelledby="pricing-heading">
+  <div class="container">
+    <header class="section-header centered">
+      <p class="section-label">Enrollment</p>
+      <h2 id="pricing-heading">Choose Your Track</h2>
+      <p>One-time enrollment. Lifetime access. No subscriptions, no upsells after you're in.</p>
+    </header>
+
+    <div class="grid grid-3">
+
+      <!-- Starter -->
+      <article class="card pricing-card">
+        <div class="pricing-card__header">
+          <p class="pricing-card__name">Starter</p>
+          <div class="pricing-card__price"><sup>$</sup>1,497</div>
+          <p class="pricing-card__desc">Core BRRRR<sup>8</sup> Academy strategy + community access</p>
+        </div>
+        <ul class="pricing-card__features" role="list">
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            BRRRR<sup>8</sup> Academy Core Track (28 lessons)
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Section 8 Deal Analyzer
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Private Investor Community
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Bi-Monthly Live Q&amp;A
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            1 Personal Deal Analysis
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Lifetime Access &amp; Updates
+          </li>
+        </ul>
+        <a href="enroll.html?plan=starter" class="btn btn-ghost-dark">Enroll in Starter</a>
+      </article>
+
+      <!-- All Access — FEATURED -->
+      <article class="card card-featured pricing-card" data-badge="Most Popular">
+        <div class="pricing-card__header">
+          <p class="pricing-card__name">All Access</p>
+          <div class="pricing-card__price"><sup>$</sup>1,997</div>
+          <p class="pricing-card__desc">All 4 tracks + templates + deal analysis tools</p>
+        </div>
+        <ul class="pricing-card__features" role="list">
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            All 4 Tracks &mdash; 89+ Lessons
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Creative Finance Track (22 lessons)
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Project Management Track (21 lessons)
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Section 8 Deep Dive Track (18 lessons)
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Rehab &amp; Budget Templates
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            1 Personal Deal Analysis
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            HUD Compliance Guides
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Community + Bi-Monthly Q&amp;A
+          </li>
+        </ul>
+        <a href="enroll.html?plan=all-access" class="btn btn-primary">Enroll in All Access</a>
+      </article>
+
+      <!-- VIP Coaching -->
+      <article class="card pricing-card">
+        <div class="pricing-card__header">
+          <p class="pricing-card__name">VIP Coaching</p>
+          <div class="pricing-card__price"><sup>$</sup>2,497</div>
+          <p class="pricing-card__desc">All Access + 1:1 coaching + unlimited deal analysis</p>
+        </div>
+        <ul class="pricing-card__features" role="list">
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Everything in All Access
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            4 × 1:1 Coaching Calls with Chaun
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Unlimited Personal Deal Analyses
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Priority Email &amp; Message Access
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Full Contractor Bid Review
+          </li>
+          <li class="pricing-card__feature">
+            <span class="pricing-card__feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Community + Bi-Monthly Q&amp;A
+          </li>
+        </ul>
+        <a href="enroll.html?plan=vip" class="btn btn-ghost-dark">Enroll in VIP</a>
+      </article>
+
+    </div>
+
+    <p style="text-align:center; margin-top:var(--space-8); font-size:var(--text-sm); color:var(--muted);">
+      Payment plans available. Contact <a href="mailto:info@midwestinvestorservices.com" style="color:var(--gold-dark); text-decoration:underline;">info@midwestinvestorservices.com</a> after enrolling to discuss options.
+    </p>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     9. FAQ
+     ============================================================ -->
+<section class="section bg-white" id="faq" aria-labelledby="faq-heading">
+  <div class="container">
+    <header class="section-header centered">
+      <p class="section-label">FAQ</p>
+      <h2 id="faq-heading">Common Questions</h2>
+      <p>If you don't see your question here, email us at <a href="mailto:info@midwestinvestorservices.com" style="color:var(--gold-dark);">info@midwestinvestorservices.com</a></p>
+    </header>
+
+    <div class="accordion" style="max-width:760px; margin-inline:auto;" role="list">
+
+      <div class="accordion__item" role="listitem">
+        <button class="accordion__trigger" aria-expanded="false">
+          Do I need prior real estate experience?
+          <span class="accordion__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </button>
+        <div class="accordion__body">
+          No. The BRRRR<sup>8</sup> Academy Core track starts at the very beginning — how to read a deal, how to get financing as a first-time investor, and how Section&nbsp;8 works as a federal program available in every state. Experienced investors often tell us the Section&nbsp;8 Deep Dive track alone was worth the enrollment.
+        </div>
+      </div>
+
+      <div class="accordion__item" role="listitem">
+        <button class="accordion__trigger" aria-expanded="false">
+          Does this only work in St. Louis?
+          <span class="accordion__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </button>
+        <div class="accordion__body">
+          No. Section&nbsp;8 (the Housing Choice Voucher program) is a federal HUD program administered by local Public Housing Authorities in every state. The BRRRR strategy works in any market with distressed inventory and a functional HCV program. The course teaches the underlying principles; we use St.&nbsp;Louis as a live case study throughout.
+        </div>
+      </div>
+
+      <div class="accordion__item" role="listitem">
+        <button class="accordion__trigger" aria-expanded="false">
+          How is BRRRR<sup>8</sup> Academy different from other real estate courses?
+          <span class="accordion__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </button>
+        <div class="accordion__body">
+          Most courses teach BRRRR or Section&nbsp;8 in isolation. BRRRR<sup>8</sup> Academy is built on the insight that they work best together: Section&nbsp;8 provides the guaranteed income that lenders want to see for refinancing, and the BRRRR cycle provides the mechanism for building a large portfolio without permanently tying up capital. Beyond the strategy, the course is taught by someone who has been doing this in the real world for over 25 years — not a content creator.
+        </div>
+      </div>
+
+      <div class="accordion__item" role="listitem">
+        <button class="accordion__trigger" aria-expanded="false">
+          What is included in the personal property analysis?
+          <span class="accordion__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </button>
+        <div class="accordion__body">
+          You submit an address and a few deal parameters; we return a full financial breakdown covering: after-repair value (ARV), local Section&nbsp;8 payment standard and fair market rent, estimated rehab scope, projected cash-on-cash return, cash-flow model, and refinance projection showing estimated equity pull-out at 70–75% LTV. Starter and All Access include one analysis; VIP includes unlimited analyses throughout your membership.
+        </div>
+      </div>
+
+      <div class="accordion__item" role="listitem">
+        <button class="accordion__trigger" aria-expanded="false">
+          What is the difference between All Access and VIP Coaching?
+          <span class="accordion__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </button>
+        <div class="accordion__body">
+          All Access ($1,997) gives you all four learning tracks, one personal deal analysis, all templates and compliance guides, the private community, and bi-monthly Q&amp;A calls. VIP Coaching ($2,497) adds four private 1:1 coaching sessions directly with Chaun, unlimited deal analyses, priority email and direct message access, and a full review of any contractor bids before you sign. VIP is for investors who want direct, ongoing guidance on active deals.
+        </div>
+      </div>
+
+      <div class="accordion__item" role="listitem">
+        <button class="accordion__trigger" aria-expanded="false">
+          Is there a payment plan available?
+          <span class="accordion__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </button>
+        <div class="accordion__body">
+          Yes. Contact us at <a href="mailto:info@midwestinvestorservices.com" style="color:var(--gold-dark);">info@midwestinvestorservices.com</a> after completing enrollment and we'll set up a payment plan that works for you. Your course access begins immediately upon enrollment regardless of payment schedule.
+        </div>
+      </div>
+
+      <div class="accordion__item" role="listitem">
+        <button class="accordion__trigger" aria-expanded="false">
+          How long do I have access?
+          <span class="accordion__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </button>
+        <div class="accordion__body">
+          Lifetime access. All video lessons, templates, compliance guides, deal analyzer tools, and community access are yours permanently — no expiration date, no recurring fee. Future content updates and new modules added to your track are included at no additional cost.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     10. FINAL CTA
+     ============================================================ -->
+<section class="final-cta" aria-labelledby="cta-heading">
+  <div class="final-cta__inner">
+    <p class="section-label" style="display:block; margin-bottom:var(--space-4);">Ready to Start?</p>
+    <h2 id="cta-heading">Your First Section&nbsp;8 Door Starts With One Decision</h2>
+    <p>Thousands of investors are using the Housing Choice Voucher program to collect guaranteed rent every month. BRRRR<sup>8</sup> Academy shows you exactly how to join them — step by step, deal by deal.</p>
+    <div class="final-cta__actions">
+      <a href="enroll.html" class="btn btn-primary btn-lg">Enroll Now</a>
+      <a href="courses.html" class="btn btn-ghost btn-lg">View Full Curriculum</a>
+    </div>
+    <p class="final-cta__note">One-time enrollment &middot; Lifetime access &middot; Payment plans available</p>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     11. FOOTER
+     ============================================================ -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__inner">
+
+      <div class="footer__brand">
+        <a href="index.html" class="footer__logo" aria-label="BRRRR8 Academy home">BRRRR<sup>8</sup> Academy</a>
+        <p>A real estate education platform built on 25+ years of St.&nbsp;Louis investing and contracting experience. Practical strategy, real numbers, guaranteed rent.</p>
+      </div>
+
+      <nav class="footer__links" aria-label="Footer navigation">
+        <a href="index.html">Home</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="courses.html">Curriculum</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="enroll.html">Enroll</a>
+      </nav>
+
+      <div class="footer__contact">
+        <h4>Contact</h4>
+        <a href="mailto:info@midwestinvestorservices.com">info@midwestinvestorservices.com</a>
+      </div>
+
+    </div>
+
+    <div class="footer__bottom">
+      <p class="footer__copyright">&copy; 2025 BRRRR<sup>8</sup> Academy. All rights reserved.</p>
+      <p class="footer__companies">Midwest Investor Services &middot; Missouri Construction Service &middot; Luxe Property Solutions</p>
+    </div>
+  </div>
+</footer>
+
+
+<script src="js/main.js"></script>
+</body>
+</html>

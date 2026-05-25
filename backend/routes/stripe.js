@@ -1,0 +1,195 @@
+const express        = require('express');
+const router         = express.Router();
+const stripe         = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { supabaseAdmin } = require('../db/supabase');
+const { requireAuth } = require('../middleware/auth');
+const { assignDiscordRole } = require('../discord/bot');
+
+// Plan → Stripe price ID mapping
+const PLAN_PRICES = {
+  starter:    process.env.STRIPE_PRICE_STARTER,
+  all_access: process.env.STRIPE_PRICE_ALL_ACCESS,
+  vip:        process.env.STRIPE_PRICE_VIP
+};
+
+const PLAN_NAMES = {
+  starter:    'Starter',
+  all_access: 'All Access',
+  vip:        'VIP'
+};
+
+// ── POST /api/stripe/create-checkout ─────────────────────────────
+// Creates a Stripe Checkout session and returns the URL.
+// Can be called with or without an existing account (guest checkout).
+router.post('/create-checkout', async (req, res) => {
+  const { plan, email, firstName, lastName } = req.body;
+
+  if (!plan || !PLAN_PRICES[plan]) {
+    return res.status(400).json({ error: 'Invalid plan selected' });
+  }
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode:                 'payment',
+      payment_method_types: ['card'],
+      line_items: [{
+        price:    PLAN_PRICES[plan],
+        quantity: 1
+      }],
+      customer_email: email || undefined,
+      metadata: {
+        plan,
+        planName:  PLAN_NAMES[plan],
+        firstName: firstName || '',
+        lastName:  lastName  || ''
+      },
+      success_url: `${process.env.APP_URL}/enroll/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url:  `${process.env.APP_URL}/enroll.html?cancelled=1`
+    });
+
+    res.json({ url: session.url, sessionId: session.id });
+  } catch (err) {
+    console.error('[stripe/create-checkout]', err.message);
+    res.status(500).json({ error: 'Could not create checkout session' });
+  }
+});
+
+// ── POST /api/stripe/webhook ──────────────────────────────────────
+// Raw body required — registered BEFORE json middleware in server.js
+router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    console.error('[stripe/webhook] Signature verification failed:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    await handleCheckoutComplete(event.data.object);
+  }
+
+  res.json({ received: true });
+});
+
+// ── GET /api/stripe/session/:id ───────────────────────────────────
+// Used by the success page to show confirmation details.
+// No auth required — only non-sensitive info is returned (plan name + email).
+// The session_id itself acts as the token (unguessable Stripe ID).
+router.get('/session/:id', async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(req.params.id);
+
+    // Only return data for completed (paid) sessions
+    if (session.payment_status !== 'paid') {
+      return res.status(403).json({ error: 'Payment not completed' });
+    }
+
+    res.json({
+      planName:   session.metadata?.planName,
+      email:      session.customer_email,
+      amountPaid: session.amount_total
+    });
+  } catch (err) {
+    res.status(404).json({ error: 'Session not found' });
+  }
+});
+
+// ── GET /api/stripe/portal ────────────────────────────────────────
+// Redirects to Stripe Customer Portal (manage billing / receipts).
+router.get('/portal', requireAuth, async (req, res) => {
+  const { data: enrollment } = await supabaseAdmin
+    .from('enrollments')
+    .select('stripe_customer_id')
+    .eq('user_id', req.user.id)
+    .not('stripe_customer_id', 'is', null)
+    .limit(1)
+    .single();
+
+  if (!enrollment?.stripe_customer_id) {
+    return res.status(404).json({ error: 'No billing record found' });
+  }
+
+  const session = await stripe.billingPortal.sessions.create({
+    customer:   enrollment.stripe_customer_id,
+    return_url: `${process.env.APP_URL}/dashboard.html`
+  });
+
+  res.json({ url: session.url });
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  Internal: handle successful checkout
+// ═══════════════════════════════════════════════════════════════════
+async function handleCheckoutComplete(session) {
+  const { metadata, customer_email, customer, amount_total, payment_intent } = session;
+  const { plan, planName, firstName, lastName } = metadata || {};
+
+  console.log(`[stripe] Checkout complete — plan=${plan} email=${customer_email}`);
+
+  try {
+    // 1. Find or create the Supabase user
+    let userId;
+    const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
+    const existing = existingUsers?.users?.find(u => u.email === customer_email);
+
+    if (existing) {
+      userId = existing.id;
+    } else {
+      // Create account — send a magic link so they can set their password
+      const tempPassword = generateTempPassword();
+      const { data: newUser, error } = await supabaseAdmin.auth.admin.createUser({
+        email:             customer_email,
+        password:          tempPassword,
+        email_confirm:     true,
+        user_metadata: { firstName, lastName }
+      });
+      if (error) throw new Error(`createUser: ${error.message}`);
+      userId = newUser.user.id;
+
+      // Send password setup email
+      await supabaseAdmin.auth.admin.generateLink({
+        type:       'recovery',
+        email:      customer_email,
+        options: { redirectTo: `${process.env.APP_URL}/reset-password.html` }
+      });
+    }
+
+    // 2. Upsert profile
+    await supabaseAdmin.from('profiles').upsert({
+      id:         userId,
+      email:      customer_email,
+      first_name: firstName || '',
+      last_name:  lastName  || ''
+    }, { onConflict: 'id' });
+
+    // 3. Create enrollment record
+    await supabaseAdmin.from('enrollments').insert({
+      user_id:               userId,
+      plan_id:               plan,
+      stripe_session_id:     session.id,
+      stripe_payment_intent: payment_intent,
+      stripe_customer_id:    customer,
+      amount_paid_cents:     amount_total,
+      status:                'active'
+    });
+
+    console.log(`[stripe] Enrollment created for user=${userId} plan=${plan}`);
+
+    // 4. Assign Discord role (non-blocking)
+    assignDiscordRole(userId, plan).catch(err =>
+      console.error('[discord] Role assignment failed:', err.message)
+    );
+
+  } catch (err) {
+    console.error('[stripe/webhook] handleCheckoutComplete error:', err.message);
+  }
+}
+
+function generateTempPassword() {
+  return Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2).toUpperCase() + '!8';
+}
+
+module.exports = router;

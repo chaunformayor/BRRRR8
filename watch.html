@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watch — BRRRR⁸ Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body { background: #0D1117; min-height: 100vh; color: #E6EDF3; font-family: var(--font-body); }
+
+    /* ── Top nav ── */
+    .watch-nav {
+      background: #161B22;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      padding: 0 var(--space-6);
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .watch-nav__left  { display: flex; align-items: center; gap: var(--space-4); }
+    .watch-nav__logo  { font-family: var(--font-heading); font-weight: 900; font-size: var(--text-lg); color: var(--white); text-decoration: none; }
+    .watch-nav__logo sup { color: var(--gold); font-size: 0.65em; vertical-align: super; }
+    .watch-nav__back  { color: rgba(255,255,255,.5); font-size: var(--text-sm); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color .15s; }
+    .watch-nav__back:hover { color: var(--gold); }
+
+    /* ── Main layout ── */
+    .watch-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      grid-template-rows: auto 1fr;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* ── Video area ── */
+    .video-main {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-container {
+      background: #000;
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+    .video-placeholder {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #0D1117;
+      color: rgba(255,255,255,.3);
+      gap: var(--space-3);
+    }
+    .video-placeholder__icon { font-size: 3rem; }
+    .video-placeholder__text { font-size: var(--text-sm); }
+
+    .video-info {
+      padding: var(--space-6) var(--space-7);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .video-info__track  { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: .1em; color: var(--gold); margin-bottom: var(--space-2); }
+    .video-info__title  { font-family: var(--font-heading); font-size: clamp(1.1rem, 2vw, 1.4rem); color: var(--white); margin-bottom: var(--space-3); }
+    .video-info__meta   { display: flex; align-items: center; gap: var(--space-5); font-size: var(--text-sm); color: rgba(255,255,255,.4); }
+
+    .complete-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: var(--text-sm);
+      font-family: var(--font-body);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+      border: 1.5px solid rgba(255,255,255,.2);
+      background: transparent;
+      color: rgba(255,255,255,.6);
+    }
+    .complete-btn.completed {
+      border-color: #10B981;
+      color: #10B981;
+      background: rgba(16,185,129,.1);
+    }
+    .complete-btn:hover:not(.completed) { border-color: var(--gold); color: var(--gold); }
+
+    .nav-btns {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-5) var(--space-7);
+    }
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-size: var(--text-sm);
+      font-family: var(--font-body);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.7);
+      background: transparent;
+    }
+    .nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .nav-btn.primary { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+    .nav-btn.primary:hover { background: var(--gold-dark); border-color: var(--gold-dark); }
+    .nav-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+    /* ── Sidebar ── */
+    .watch-sidebar {
+      grid-column: 2;
+      grid-row: 1 / 3;
+      background: #161B22;
+      border-left: 1px solid rgba(255,255,255,.07);
+      overflow-y: auto;
+      max-height: calc(100vh - 56px);
+      position: sticky;
+      top: 56px;
+    }
+
+    .sidebar-header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: rgba(255,255,255,.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sidebar-progress { color: var(--gold); font-weight: 600; }
+
+    .track-group { border-bottom: 1px solid rgba(255,255,255,.06); }
+    .track-group__header {
+      padding: 10px var(--space-5);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: rgba(255,255,255,.35);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      background: rgba(255,255,255,.02);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .track-group__header:hover { color: rgba(255,255,255,.6); }
+    .track-group__header.locked { cursor: not-allowed; }
+    .track-group__body { display: block; }
+    .track-group__body.collapsed { display: none; }
+
+    .lesson-row {
+      padding: 10px var(--space-5) 10px var(--space-6);
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,.55);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      transition: all .12s;
+      border-left: 2px solid transparent;
+      line-height: 1.4;
+    }
+    .lesson-row:hover { color: var(--white); background: rgba(255,255,255,.04); }
+    .lesson-row.active { color: var(--white); background: rgba(201,168,76,.08); border-left-color: var(--gold); }
+    .lesson-row.completed .lesson-check { color: #10B981; }
+    .lesson-row.locked { cursor: not-allowed; opacity: .4; }
+    .lesson-check { font-size: .85rem; flex-shrink: 0; width: 16px; text-align: center; }
+    .lesson-num   { font-size: 10px; color: rgba(255,255,255,.25); flex-shrink: 0; width: 20px; }
+
+    /* ── Loading state ── */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: #0D1117;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .loading-overlay.hidden { display: none; }
+    .loading-logo { font-family: var(--font-heading); font-size: var(--text-2xl); font-weight: 900; color: var(--white); }
+    .loading-logo sup { color: var(--gold); font-size: .65em; vertical-align: super; }
+    .loading-spinner { width: 32px; height: 32px; border: 3px solid rgba(201,168,76,.2); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 900px) {
+      .watch-layout { grid-template-columns: 1fr; }
+      .watch-sidebar { grid-column: 1; grid-row: 2; max-height: none; position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div class="loading-overlay" id="loading">
+  <div class="loading-logo">BRRRR<sup>8</sup> Academy</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- Nav -->
+<nav class="watch-nav">
+  <div class="watch-nav__left">
+    <a href="index.html" class="watch-nav__logo" aria-label="BRRRR8 Academy">BRRRR<sup>8</sup> Academy</a>
+    <a href="dashboard.html" class="watch-nav__back">← My Dashboard</a>
+  </div>
+</nav>
+
+<!-- Layout -->
+<div class="watch-layout">
+
+  <!-- Video + info -->
+  <div class="video-main">
+    <div class="video-container">
+      <div class="video-placeholder" id="video-placeholder">
+        <span class="video-placeholder__icon">▶</span>
+        <span class="video-placeholder__text">Select a lesson to begin</span>
+      </div>
+      <iframe id="video-frame" style="display:none"
+        allowfullscreen
+        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture">
+      </iframe>
+    </div>
+
+    <div class="video-info">
+      <div class="video-info__track"  id="info-track">—</div>
+      <div class="video-info__title"  id="info-title">Select a lesson from the sidebar</div>
+      <div class="video-info__meta">
+        <span id="info-duration">—</span>
+        <button class="complete-btn" id="complete-btn" onclick="toggleComplete()" style="display:none">
+          <span id="complete-icon">○</span>
+          <span id="complete-text">Mark Complete</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="nav-btn" id="prev-btn" onclick="navLesson(-1)" disabled>← Previous</button>
+      <button class="nav-btn primary" id="next-btn" onclick="navLesson(1)" disabled>Next Lesson →</button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="watch-sidebar">
+    <div class="sidebar-header">
+      Course Content
+      <span class="sidebar-progress" id="sidebar-progress">0%</span>
+    </div>
+    <div id="lesson-list">
+      <!-- populated by JS -->
+    </div>
+  </aside>
+
+</div>
+
+<script>
+(function () {
+  // ── Curriculum definition ─────────────────────────────────────────
+  const CURRICULUM = [
+    {
+      trackId: 'track1', trackName: 'BRRRR⁸ Core', color: '#C9A84C',
+      modules: [
+        { modId: 'mod1', title: 'The BRRRR⁸ Foundation', lessons: [
+          'What Is BRRRR⁸ and Why Section 8 Changes the Math',
+          'How Government-Backed Rent Removes Your Biggest Risk',
+          'The Section 8 Tenant Profile: Who They Are and Why They Stay',
+          'Overview of the HCV Program and How Payments Work',
+          'Setting Your 12-Month Portfolio Goal'
+        ]},
+        { modId: 'mod2', title: 'Finding & Analyzing Deals', lessons: [
+          'Reading a Deal: ARV, Repair Cost, and the 70% Rule',
+          'The BRRRR⁸ Deal Analyzer Walkthrough',
+          'Finding Distressed Properties in Any Market',
+          'Working with Wholesalers and On-Market Deals',
+          'Making Offers That Get Accepted at the Right Price'
+        ]},
+        { modId: 'mod3', title: 'Acquisition & Financing', lessons: [
+          'Hard Money vs. Private Money vs. DSCR Loans',
+          'Building Your Lender Relationships Before You Need Them',
+          'The Acquisition Closing Checklist'
+        ]},
+        { modId: 'mod4', title: 'The Rehab', lessons: [
+          'Scoping the Rehab for a Section 8 Tenant',
+          'HQS and NSPIRE Standards: What Inspectors Check',
+          'Managing Contractors: Bids, Contracts, and Draws',
+          'Passing Your First HQS Inspection First Try',
+          'The Punch List: Final Walkthrough Before Inspection'
+        ]},
+        { modId: 'mod5', title: 'Rent & Placement', lessons: [
+          'How to Apply to Become a Section 8 Landlord',
+          'Listing Your Unit on the HCV Waiting List',
+          'Screening Section 8 Tenants: What You Can and Can\'t Ask',
+          'The HAP Contract: Understanding What You\'re Signing',
+          'First Rent Payment: Direct Deposit Setup with Your PHA'
+        ]},
+        { modId: 'mod6', title: 'The Refinance & Repeat', lessons: [
+          'Seasoning Requirements by Lender Type',
+          'The Cash-Out Refinance Process Step by Step',
+          'Using HAP Income to Qualify for the Refinance',
+          'Recycling Your Capital Into Deal #2',
+          'Building a Repeatable System: The BRRRR⁸ Cycle at Scale'
+        ]}
+      ]
+    },
+    {
+      trackId: 'track2', trackName: 'Creative Finance', color: '#4A90D9',
+      modules: [
+        { modId: 'mod1', title: 'Creative Strategies', lessons: [
+          'Why Creative Finance Works Better with Section 8 Income',
+          'Subject-To Deals: Taking Over Existing Mortgages',
+          'Seller Financing Structures for Rental Properties',
+          'Lease Options and Sandwich Deals',
+          'Presenting Creative Offers to Motivated Sellers'
+        ]}
+      ]
+    },
+    {
+      trackId: 'track3', trackName: 'Project Management', color: '#4ABFB5',
+      modules: [
+        { modId: 'mod1', title: 'Running Your Rehab', lessons: [
+          'Building Your Contractor Network in Any City',
+          'Scopes of Work That Protect You Legally and Financially',
+          'Project Management Software for Small Landlords'
+        ]}
+      ]
+    },
+    {
+      trackId: 'track4', trackName: 'Section 8 Deep Dive', color: '#D9824A',
+      modules: [
+        { modId: 'mod1', title: 'HCV Program Mastery', lessons: [
+          'The Housing Choice Voucher Program: Deep Dive',
+          'Working with PHAs: Contacts, Portals, and Relationships',
+          'NSPIRE vs. HQS: What Changed and What to Expect',
+          'Maximizing Your Payment Standard in Every Market'
+        ]}
+      ]
+    }
+  ];
+
+  // Flatten all lessons into an ordered array
+  const ALL_LESSONS = [];
+  CURRICULUM.forEach(track => {
+    track.modules.forEach((mod, mi) => {
+      mod.lessons.forEach((title, li) => {
+        ALL_LESSONS.push({
+          lessonId: `${track.trackId}-${mod.modId}-lesson${li + 1}`,
+          trackId:  track.trackId,
+          trackName: track.trackName,
+          modTitle:  mod.title,
+          title,
+          color: track.color
+        });
+      });
+    });
+  });
+
+  let currentLessonId = null;
+  let completedSet    = new Set();
+  let unlockedTracks  = [];
+  let embedUrl        = null;
+  let saveTimer       = null;
+
+  // ── Init ──────────────────────────────────────────────────────────
+  async function init() {
+    // Auth check
+    const meRes = await fetch('/api/auth/me', { credentials: 'include' });
+    if (!meRes.ok) return (window.location.href = '/login.html');
+    const { user } = await meRes.json();
+
+    // Access check
+    const [accessRes, progressRes] = await Promise.all([
+      fetch('/api/courses/my-access', { credentials: 'include' }),
+      fetch('/api/courses/progress',  { credentials: 'include' })
+    ]);
+
+    const { enrolled, tracks } = await accessRes.json();
+    if (!enrolled) return (window.location.href = '/enroll.html');
+    unlockedTracks = tracks || [];
+
+    const { progress } = await progressRes.json();
+    completedSet = new Set((progress || []).filter(p => p.completed).map(p => p.lesson_id));
+
+    buildSidebar();
+    updateProgressBadge();
+
+    // Auto-load lesson from URL param
+    const lessonId = new URLSearchParams(location.search).get('lesson');
+    if (lessonId) loadLesson(lessonId);
+
+    document.getElementById('loading').classList.add('hidden');
+  }
+
+  // ── Build sidebar ─────────────────────────────────────────────────
+  function buildSidebar() {
+    const container = document.getElementById('lesson-list');
+    let lessonCounter = 0;
+
+    container.innerHTML = CURRICULUM.map(track => {
+      const locked   = !unlockedTracks.includes(track.trackId);
+      const lessons  = ALL_LESSONS.filter(l => l.trackId === track.trackId);
+      const done     = lessons.filter(l => completedSet.has(l.lessonId)).length;
+      const pct      = lessons.length ? Math.round((done / lessons.length) * 100) : 0;
+
+      let modulesHtml = '';
+      track.modules.forEach(mod => {
+        mod.lessons.forEach((title, li) => {
+          const lid       = `${track.trackId}-${mod.modId}-lesson${li + 1}`;
+          const isDone    = completedSet.has(lid);
+          lessonCounter++;
+          modulesHtml += `
+            <div class="lesson-row${isDone ? ' completed' : ''}${locked ? ' locked' : ''}"
+                 id="row-${lid}"
+                 onclick="${locked ? '' : `loadLesson('${lid}')`}">
+              <span class="lesson-num">${lessonCounter}</span>
+              <span class="lesson-check">${isDone ? '✓' : '○'}</span>
+              <span>${esc(title)}</span>
+            </div>`;
+        });
+      });
+
+      return `
+        <div class="track-group">
+          <div class="track-group__header${locked ? ' locked' : ''}"
+               style="border-left: 3px solid ${track.color}"
+               onclick="toggleTrackGroup(this)">
+            <span>${track.trackName}${locked ? ' 🔒' : ''}</span>
+            <span style="font-size:10px;color:var(--gold)">${pct}%</span>
+          </div>
+          <div class="track-group__body">${modulesHtml}</div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── Load lesson ───────────────────────────────────────────────────
+  async function loadLesson(lessonId) {
+    const lesson = ALL_LESSONS.find(l => l.lessonId === lessonId);
+    if (!lesson) return;
+    if (!unlockedTracks.includes(lesson.trackId)) return;
+
+    currentLessonId = lessonId;
+
+    // Update URL
+    history.replaceState({}, '', `/watch.html?lesson=${lessonId}`);
+
+    // Update info panel
+    document.getElementById('info-track').textContent  = lesson.trackName + ' · ' + lesson.modTitle;
+    document.getElementById('info-title').textContent  = lesson.title;
+    document.getElementById('info-duration').textContent = '—';
+
+    // Mark active in sidebar
+    document.querySelectorAll('.lesson-row').forEach(r => r.classList.remove('active'));
+    document.getElementById(`row-${lessonId}`)?.classList.add('active');
+
+    // Update complete button
+    const completeBtn  = document.getElementById('complete-btn');
+    const completeIcon = document.getElementById('complete-icon');
+    const completeText = document.getElementById('complete-text');
+    completeBtn.style.display = 'inline-flex';
+    const isDone = completedSet.has(lessonId);
+    completeBtn.classList.toggle('completed', isDone);
+    completeIcon.textContent = isDone ? '✓' : '○';
+    completeText.textContent = isDone ? 'Completed' : 'Mark Complete';
+
+    // Prev / next buttons
+    const idx = ALL_LESSONS.findIndex(l => l.lessonId === lessonId);
+    document.getElementById('prev-btn').disabled = idx <= 0 || !unlockedTracks.includes(ALL_LESSONS[idx - 1]?.trackId);
+    document.getElementById('next-btn').disabled = idx >= ALL_LESSONS.length - 1 || !unlockedTracks.includes(ALL_LESSONS[idx + 1]?.trackId);
+
+    // Fetch video embed URL
+    const placeholder = document.getElementById('video-placeholder');
+    const frame       = document.getElementById('video-frame');
+
+    placeholder.style.display = 'flex';
+    placeholder.querySelector('.video-placeholder__text').textContent = 'Loading video…';
+    frame.style.display = 'none';
+
+    try {
+      const r = await fetch(`/api/courses/video/${lessonId}`, { credentials: 'include' });
+      const d = await r.json();
+
+      if (d.embedUrl) {
+        frame.src = d.embedUrl;
+        frame.style.display = 'block';
+        placeholder.style.display = 'none';
+        embedUrl = d.embedUrl;
+      } else {
+        placeholder.querySelector('.video-placeholder__text').textContent = 'Video coming soon — check back shortly.';
+      }
+    } catch {
+      placeholder.querySelector('.video-placeholder__text').textContent = 'Could not load video. Please refresh.';
+    }
+
+    // Auto-save progress every 30s
+    clearInterval(saveTimer);
+    saveTimer = setInterval(() => saveProgress(lessonId, false), 30000);
+  }
+
+  // ── Complete toggle ───────────────────────────────────────────────
+  async function toggleComplete() {
+    if (!currentLessonId) return;
+    const wasComplete = completedSet.has(currentLessonId);
+    const nowComplete = !wasComplete;
+
+    if (nowComplete) completedSet.add(currentLessonId);
+    else             completedSet.delete(currentLessonId);
+
+    // Update UI immediately
+    const btn  = document.getElementById('complete-btn');
+    const icon = document.getElementById('complete-icon');
+    const text = document.getElementById('complete-text');
+    btn.classList.toggle('completed', nowComplete);
+    icon.textContent = nowComplete ? '✓' : '○';
+    text.textContent = nowComplete ? 'Completed' : 'Mark Complete';
+
+    const row = document.getElementById(`row-${currentLessonId}`);
+    if (row) {
+      row.classList.toggle('completed', nowComplete);
+      row.querySelector('.lesson-check').textContent = nowComplete ? '✓' : '○';
+    }
+
+    updateProgressBadge();
+    await saveProgress(currentLessonId, nowComplete);
+
+    // Auto-advance to next lesson if completed
+    if (nowComplete) {
+      const idx  = ALL_LESSONS.findIndex(l => l.lessonId === currentLessonId);
+      const next = ALL_LESSONS[idx + 1];
+      if (next && unlockedTracks.includes(next.trackId)) {
+        setTimeout(() => loadLesson(next.lessonId), 800);
+      }
+    }
+  }
+  window.toggleComplete = toggleComplete;
+
+  // ── Prev / next ───────────────────────────────────────────────────
+  function navLesson(dir) {
+    const idx  = ALL_LESSONS.findIndex(l => l.lessonId === currentLessonId);
+    const next = ALL_LESSONS[idx + dir];
+    if (next && unlockedTracks.includes(next.trackId)) loadLesson(next.lessonId);
+  }
+  window.navLesson = navLesson;
+
+  // ── Track group collapse ──────────────────────────────────────────
+  window.toggleTrackGroup = function(header) {
+    header.nextElementSibling?.classList.toggle('collapsed');
+  };
+
+  // ── Save progress ─────────────────────────────────────────────────
+  async function saveProgress(lessonId, completed) {
+    await fetch('/api/courses/progress', {
+      method:      'POST',
+      credentials: 'include',
+      headers:     { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lessonId, completed, progressSeconds: 0 })
+    }).catch(() => {});
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────
+  function updateProgressBadge() {
+    const total = ALL_LESSONS.filter(l => unlockedTracks.includes(l.trackId)).length;
+    const done  = ALL_LESSONS.filter(l => unlockedTracks.includes(l.trackId) && completedSet.has(l.lessonId)).length;
+    const pct   = total ? Math.round((done / total) * 100) : 0;
+    document.getElementById('sidebar-progress').textContent = `${pct}% complete`;
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

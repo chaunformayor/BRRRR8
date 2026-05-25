@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enrollment Confirmed — BRRRR⁸ Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    body {
+      background: var(--navy);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8) var(--space-4);
+    }
+
+    .success-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: var(--space-12) var(--space-10);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0,0,0,.35);
+    }
+
+    .success-logo {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: var(--text-xl);
+      color: var(--navy);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: var(--space-8);
+    }
+    .success-logo sup { color: var(--gold); font-size: 0.65em; vertical-align: super; }
+
+    .check-circle {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: rgba(201,168,76,.12);
+      border: 3px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-6);
+      animation: popIn .5s cubic-bezier(.175,.885,.32,1.275) both;
+    }
+    .check-circle svg {
+      width: 38px; height: 38px;
+      stroke: var(--gold); fill: none;
+      stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+      stroke-dasharray: 60;
+      stroke-dashoffset: 0;
+      animation: drawCheck .5s .3s ease both;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    @keyframes drawCheck {
+      from { stroke-dashoffset: 60; }
+      to   { stroke-dashoffset: 0;  }
+    }
+
+    .success-card h1 {
+      font-size: var(--text-3xl);
+      color: var(--navy);
+      margin-bottom: var(--space-3);
+    }
+
+    .success-card .sub {
+      font-size: var(--text-base);
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: var(--space-8);
+    }
+    .success-card .sub strong { color: var(--navy); }
+
+    /* Plan chip */
+    .plan-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: var(--navy);
+      color: var(--gold);
+      padding: 6px 18px;
+      border-radius: 100px;
+      font-size: var(--text-sm);
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-8);
+    }
+
+    /* Next steps */
+    .next-steps {
+      background: #F4F2ED;
+      border-radius: 10px;
+      padding: var(--space-6) var(--space-7);
+      text-align: left;
+      margin-bottom: var(--space-8);
+    }
+
+    .next-steps h2 {
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: var(--space-5);
+    }
+
+    .step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+    .step-row:last-child { margin-bottom: 0; }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--gold);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: var(--text-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-text {
+      font-size: var(--text-sm);
+      color: var(--text);
+      line-height: 1.6;
+      padding-top: 3px;
+    }
+    .step-text strong { color: var(--navy); }
+
+    .cta-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      align-items: center;
+    }
+
+    .btn-go-login {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: var(--gold);
+      color: var(--navy);
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: var(--text-base);
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-go-login:hover { background: var(--gold-dark); }
+
+    .back-home {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .back-home:hover { color: var(--navy); }
+
+    /* Loading skeleton */
+    .skeleton-line {
+      height: 1em;
+      background: linear-gradient(90deg,#EEE 25%,#F8F8F8 50%,#EEE 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    @media (max-width: 480px) {
+      .success-card { padding: var(--space-8) var(--space-5); }
+      .success-card h1 { font-size: var(--text-2xl); }
+      .next-steps { padding: var(--space-5); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="success-card">
+  <a href="../index.html" class="success-logo">BRRRR<sup>8</sup> Academy</a>
+
+  <div class="check-circle" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+
+  <h1>Payment Confirmed!</h1>
+
+  <div id="plan-chip-wrap">
+    <div class="plan-chip" id="plan-chip">
+      <span id="chip-text">Loading…</span>
+    </div>
+  </div>
+
+  <p class="sub" id="sub-text">
+    Welcome to BRRRR<sup>8</sup> Academy. Your enrollment is confirmed —
+    <strong>check your inbox</strong> for login credentials. They'll arrive within a few minutes.
+  </p>
+
+  <div class="next-steps">
+    <h2>What happens next</h2>
+
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        <strong>Email incoming</strong> — Your login credentials and course access link are on their way.
+        Check your spam folder if you don't see it within 5 minutes.
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <strong>Sign in &amp; start learning</strong> — Use the link below to sign in once you have your
+        credentials. Your curriculum is ready immediately.
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-text">
+        <strong>Join Discord</strong> — After logging in, check your dashboard for the Discord community link.
+        Introduce yourself in #general.
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-text">
+        <strong>Questions?</strong> Reply to your confirmation email or reach us at
+        <a href="mailto:info@midwestinvestorservices.com" style="color:var(--gold-dark);">info@midwestinvestorservices.com</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-row">
+    <a href="../login.html" class="btn-go-login">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+      Go to Sign In
+    </a>
+    <a href="../index.html" class="back-home">← Back to home</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  // Grab Stripe session ID from the URL
+  var sessionId = new URLSearchParams(location.search).get('session_id');
+  var chipEl    = document.getElementById('chip-text');
+
+  if (!sessionId) {
+    // Landed here without a session (direct navigation) — just show generic success
+    if (chipEl) chipEl.textContent = 'Enrolled';
+    return;
+  }
+
+  // Try to fetch session details to personalise the page
+  // The user may not have a cookie yet (new account), so we call without requireAuth
+  // The endpoint uses requireAuth — if it fails we just show the generic message
+  fetch('/api/stripe/session/' + encodeURIComponent(sessionId), { credentials: 'include' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (!data) return;
+
+      // Update plan chip
+      if (chipEl && data.planName) {
+        chipEl.textContent = data.planName + ' — Enrolled';
+      }
+
+      // Update subtitle with email
+      if (data.email) {
+        var subEl = document.getElementById('sub-text');
+        if (subEl) {
+          subEl.innerHTML =
+            'Welcome to BRRRR<sup>8</sup> Academy. Your <strong>' + escHtml(data.planName || '') +
+            '</strong> enrollment is confirmed. Login credentials are on their way to ' +
+            '<strong>' + escHtml(data.email) + '</strong>. Check your inbox (and spam folder).';
+        }
+      }
+    })
+    .catch(function () {
+      // Non-critical — page still works without session details
+      if (chipEl) chipEl.textContent = 'Enrolled';
+    });
+
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+})();
+</script>
+
+</body>
+</html>
