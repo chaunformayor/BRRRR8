@@ -146,15 +146,18 @@ router.get('/discord', async (req, res, next) => {
     maxAge:   10 * 60 * 1000   // 10 minutes
   });
 
-  const params = new URLSearchParams({
-    client_id:     process.env.DISCORD_CLIENT_ID,
-    redirect_uri:  `${process.env.APP_URL}/api/auth/discord/callback`,
-    response_type: 'code',
-    scope:         'identify guilds.join',
-    state
-  });
+  const clientId   = process.env.DISCORD_CLIENT_ID;
+  const redirectUri = `${process.env.APP_URL}/api/auth/discord/callback`;
+  console.log(`[discord] OAuth start — client_id=${clientId} redirect_uri=${redirectUri}`);
 
-  res.redirect(`https://discord.com/oauth2/authorize?${params}`);
+  const oauthUrl = 'https://discord.com/oauth2/authorize' +
+    `?client_id=${clientId}` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+    `&response_type=code` +
+    `&scope=identify%20guilds.join` +
+    `&state=${state}`;
+
+  res.redirect(oauthUrl);
 });
 
 // ── GET /api/auth/discord/callback ────────────────────────────────
