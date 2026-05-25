@@ -132,7 +132,12 @@ router.get('/me', requireAuth, async (req, res) => {
 // ── GET /api/auth/discord ─────────────────────────────────────────
 // Kicks off Discord OAuth. Requires the user to already be logged in
 // (sb_token cookie set after password reset).
-router.get('/discord', requireAuth, (req, res) => {
+router.get('/discord', async (req, res, next) => {
+  // If not logged in, redirect to login instead of returning JSON
+  const token = req.cookies?.sb_token;
+  if (!token) return res.redirect('/login.html?redirect=/api/auth/discord');
+  next();
+}, requireAuth, (req, res) => {
   const state = crypto.randomBytes(16).toString('hex');
   res.cookie('discord_state', state, {
     httpOnly: true,
