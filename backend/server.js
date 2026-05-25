@@ -80,9 +80,16 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// ── Start ─────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n🏠 BRRRR⁸ Academy running at http://localhost:${PORT}`);
-  console.log(`   Environment: ${process.env.NODE_ENV || 'development'}\n`);
-  initDiscordBot();
-});
+// ── Start (local dev only) ────────────────────────────────────────
+// On Vercel: module is imported by the serverless runtime — don't listen.
+// Discord.js needs persistent WebSocket connections and can't run on
+// Vercel serverless. Role assignment falls back to "Bot not ready" silently.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n🏠 BRRRR⁸ Academy running at http://localhost:${PORT}`);
+    console.log(`   Environment: ${process.env.NODE_ENV || 'development'}\n`);
+    initDiscordBot();
+  });
+}
+
+module.exports = app;

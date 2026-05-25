@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_in_Chrome__navigate(https://brrrr-8.vercel.app/*)",
+      "mcp__Claude_in_Chrome__navigate(https://checkout.stripe.com/*)",
+      "mcp__Claude_in_Chrome__navigate(https://*.stripe.com/*)"
+    ]
+  }
+}

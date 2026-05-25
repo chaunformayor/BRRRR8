@@ -5,7 +5,8 @@
       "name": "brrrr8",
       "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
       "runtimeArgs": ["backend/server.js"],
-      "port": 7000
+      "port": 7000,
+      "autoPort": false
     }
   ]
 }
