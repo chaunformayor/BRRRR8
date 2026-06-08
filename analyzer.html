@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deal Analyzer — BRRRR⁸ Academy</title>
+  <meta name="description" content="Analyze real estate deals with the BRRRR⁸ Academy Deal Analyzer. Run BRRRR, Section 8, Fix & Flip, and Market Rental scenarios side-by-side with live HUD Fair Market Rent data." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <style>
+    /* ── Analyzer page overrides ──────────────────────────────────── */
+    body { background: var(--navy); color: #e2e8f0; }
+
+    /* reuse site container width */
+    .analyzer-wrap {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--gutter) 80px;
+    }
+
+    /* ── Hero banner ────────────────────────────────────────────────── */
+    .az-hero {
+      background: var(--navy);
+      border-bottom: 1px solid rgba(201,168,76,.2);
+      padding: 52px 0 40px;
+      text-align: center;
+    }
+    .az-hero__eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: var(--text-xs); font-weight: 600; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+    }
+    .az-hero__eyebrow::before {
+      content:''; display:block; width:24px; height:2px;
+      background:var(--gold); border-radius:2px;
+    }
+    .az-hero h1 {
+      font-family: var(--font-heading); font-size: clamp(2rem,4vw,3rem);
+      color: #fff; line-height: 1.15; margin-bottom: 12px;
+    }
+    .az-hero p { font-size: var(--text-base); color: #94a3b8; max-width: 560px; margin: 0 auto; }
+
+    /* ── Scenario tabs ──────────────────────────────────────────────── */
+    .az-tabs {
+      display: flex; overflow-x: auto; gap: 0;
+      border-bottom: 2px solid rgba(201,168,76,.15);
+      margin-top: 36px; margin-bottom: 0;
+    }
+    .az-tab {
+      padding: 14px 22px; cursor: pointer; white-space: nowrap;
+      font-size: 13px; font-weight: 600; color: #64748b;
+      border-bottom: 3px solid transparent; margin-bottom: -2px;
+      transition: color .2s, border-color .2s; user-select: none;
+    }
+    .az-tab:hover { color: #e2e8f0; }
+    .az-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .az-tab .badge {
+      display: inline-block; font-size: 10px; padding: 1px 6px;
+      border-radius: 20px; margin-left: 6px; font-weight: 700; vertical-align: middle;
+    }
+
+    /* ── Scenario pages ─────────────────────────────────────────────── */
+    .az-page { display: none; padding-top: 28px; }
+    .az-page.active { display: block; }
+
+    /* ── Cards ──────────────────────────────────────────────────────── */
+    .az-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(201,168,76,.15);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+    .az-card h3 {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--gold); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ── Grids ──────────────────────────────────────────────────────── */
+    .az-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .az-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    @media (max-width: 800px) {
+      .az-grid-2, .az-grid-3 { grid-template-columns: 1fr; }
+    }
+
+    /* ── Form fields ────────────────────────────────────────────────── */
+    .az-field { margin-bottom: 14px; }
+    .az-field label {
+      display: block; font-size: 12px; color: #94a3b8;
+      margin-bottom: 5px; font-weight: 500;
+    }
+    .az-field input, .az-field select {
+      width: 100%; background: rgba(255,255,255,.06);
+      border: 1px solid rgba(201,168,76,.2); border-radius: 6px;
+      color: #e2e8f0; padding: 9px 12px; font-size: 14px;
+      outline: none; transition: border-color .2s; font-family: var(--font-body);
+    }
+    .az-field input:focus, .az-field select:focus { border-color: var(--gold); }
+    .az-field select option { background: #0f1828; }
+    .px { position: relative; }
+    .px span {
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      color: #64748b; font-size: 13px; pointer-events: none;
+    }
+    .px input { padding-left: 22px; }
+    .sx { position: relative; }
+    .sx span {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      color: #64748b; font-size: 13px; pointer-events: none;
+    }
+    .sx input { padding-right: 28px; }
+
+    /* ── Section title ──────────────────────────────────────────────── */
+    .az-section-title {
+      font-family: var(--font-heading); font-size: 1.25rem;
+      color: #fff; margin: 28px 0 14px; font-weight: 700;
+    }
+    .az-section-title:first-child { margin-top: 0; }
+
+    /* ── Verdict banner ─────────────────────────────────────────────── */
+    .az-verdict {
+      border-radius: var(--radius); padding: 16px 20px;
+      margin-bottom: 20px; border: 1px solid;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .az-verdict.good { background: #052e16; border-color: #166534; }
+    .az-verdict.bad  { background: #1f0000; border-color: #7f1d1d; }
+    .az-verdict.ok   { background: #1c1a00; border-color: #713f12; }
+    .az-verdict .v-icon { font-size: 20px; }
+    .az-verdict .v-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; color: #fff; }
+    .az-verdict .v-desc  { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+
+    /* ── Metric tiles ───────────────────────────────────────────────── */
+    .az-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px,1fr)); gap: 12px; margin-bottom: 20px; }
+    .az-metric {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(201,168,76,.15);
+      border-radius: var(--radius); padding: 14px 16px;
+    }
+    .az-metric .m-label { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+    .az-metric .m-value { font-size: 22px; font-weight: 800; line-height: 1.1; }
+    .az-metric .m-sub   { font-size: 11px; color: #64748b; margin-top: 3px; }
+
+    /* colours */
+    .c-green  { color: #22c55e; }
+    .c-red    { color: #ef4444; }
+    .c-yellow { color: #eab308; }
+    .c-gold   { color: var(--gold); }
+    .c-white  { color: #fff; }
+
+    /* ── Breakdown tables ───────────────────────────────────────────── */
+    .az-breakdown { overflow-x: auto; }
+    .az-breakdown table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .az-breakdown tr { border-bottom: 1px solid rgba(255,255,255,.06); }
+    .az-breakdown tr:last-child { border-bottom: none; }
+    .az-breakdown td { padding: 8px 4px; color: #cbd5e1; }
+    .az-breakdown td:last-child { text-align: right; font-weight: 600; color: #e2e8f0; }
+    .az-breakdown .bd-section td { color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing:.05em; padding-top: 14px; font-weight: 700; }
+    .az-breakdown .bd-total td  { font-weight: 800; font-size: 14px; color: #fff; border-top: 2px solid rgba(201,168,76,.2); }
+
+    /* ── HUD lookup panel ───────────────────────────────────────────── */
+    .az-hud-panel {
+      background: rgba(34,197,94,.06);
+      border: 1px solid rgba(34,197,94,.25);
+      border-radius: var(--radius); padding: 22px; margin-bottom: 20px;
+    }
+    .az-hud-panel h3 { color: #4ade80; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing:.07em; margin-bottom: 16px; }
+    .az-btn-fetch {
+      width: 100%; background: #166534; color: #4ade80;
+      border: 1px solid rgba(34,197,94,.4); border-radius: 7px;
+      padding: 11px; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: background .2s; font-family: var(--font-body);
+    }
+    .az-btn-fetch:hover { background: #15803d; }
+    .az-btn-fetch:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── Compare page ───────────────────────────────────────────────── */
+    .az-compare-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    @media (max-width: 700px) { .az-compare-cards { grid-template-columns: 1fr; } }
+    .az-cmp-card {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(201,168,76,.15);
+      border-radius: var(--radius); padding: 24px; text-align: center;
+    }
+    .az-cmp-card .cc-emoji { font-size: 24px; margin-bottom: 8px; }
+    .az-cmp-card .cc-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing:.07em; color: #64748b; margin-bottom: 10px; }
+    .az-cmp-card .cc-cf    { font-size: 36px; font-weight: 900; line-height: 1; }
+    .az-cmp-card .cc-mo    { font-size: 12px; color: #64748b; margin-top: 4px; }
+    .az-cmp-card .cc-stats { font-size: 12px; color: #64748b; margin-top: 12px; line-height: 1.7; }
+    .az-cmp-card .cc-stats strong { color: #e2e8f0; }
+
+    .az-winner {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(201,168,76,.25);
+      border-radius: var(--radius); padding: 18px 22px; margin-bottom: 24px;
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .az-winner .w-trophy { font-size: 28px; }
+    .az-winner .w-title  { font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 4px; }
+    .az-winner .w-desc   { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+
+    /* Bar chart */
+    .az-bars { display: flex; align-items: flex-end; gap: 20px; height: 160px; padding: 0 12px 0; margin-bottom: 6px; }
+    .az-bars-labels { display: flex; gap: 20px; padding: 0 12px; font-size: 12px; color: #64748b; margin-bottom: 28px; }
+    .az-bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; justify-content: flex-end; gap: 4px; }
+
+    /* Compare table */
+    .az-cmp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .az-cmp-table th { text-align: left; padding: 9px 10px; font-size: 11px; text-transform: uppercase; letter-spacing:.05em; color: #64748b; border-bottom: 2px solid rgba(255,255,255,.1); white-space: nowrap; }
+    .az-cmp-table th:not(:first-child) { text-align: right; }
+    .az-cmp-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,.05); color: #94a3b8; }
+    .az-cmp-table td:not(:first-child) { text-align: right; font-weight: 600; color: #e2e8f0; }
+    .az-cmp-table .ct-section td { padding-top: 14px; font-size: 11px; text-transform: uppercase; letter-spacing:.05em; color: #64748b; font-weight: 700; }
+    .az-cmp-table .ct-total td { font-weight: 800; font-size: 14px; border-top: 2px solid rgba(201,168,76,.2); color: #fff; }
+    .az-cmp-table td:first-child { color: #94a3b8; }
+    .az-cmp-table .ct-total td:first-child { color: #fff; }
+
+    /* ── Footer link tweak ──────────────────────────────────────────── */
+    .footer { margin-top: 0; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ NAV (matches site) ══════════════════ -->
+<nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+  <div class="container">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" aria-label="BRRRR8 Academy home">BRRRR<sup>8</sup> Academy</a>
+      <ul class="nav__links" role="list">
+        <li><a href="index.html#how-it-works">How It Works</a></li>
+        <li><a href="courses.html">Curriculum</a></li>
+        <li><a href="analyzer.html" style="color:var(--gold)">Deal Analyzer</a></li>
+        <li><a href="index.html#pricing">Pricing</a></li>
+        <li><a href="index.html#faq">FAQ</a></li>
+      </ul>
+      <a href="enroll.html" class="btn btn-primary btn-sm nav__cta">Enroll Now</a>
+      <button class="nav__hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav__mobile" id="mobile-menu" role="menu" aria-label="Mobile navigation">
+      <a href="index.html#how-it-works" role="menuitem">How It Works</a>
+      <a href="courses.html"            role="menuitem">Curriculum</a>
+      <a href="analyzer.html"           role="menuitem">Deal Analyzer</a>
+      <a href="index.html#pricing"      role="menuitem">Pricing</a>
+      <a href="index.html#faq"          role="menuitem">FAQ</a>
+      <a href="enroll.html" class="btn btn-primary btn-sm" role="menuitem">Enroll Now</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<div class="az-hero">
+  <div class="analyzer-wrap">
+    <div class="az-hero__eyebrow">BRRRR⁸ Academy · Free Tool</div>
+    <h1>Real Estate Deal Analyzer</h1>
+    <p>Run the numbers on BRRRR, Section 8, Fix &amp; Flip, and Market Rental deals — side-by-side, with live HUD Fair Market Rent data.</p>
+  </div>
+</div>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<div class="analyzer-wrap">
+
+  <!-- TABS -->
+  <div class="az-tabs">
+    <div class="az-tab active" onclick="azTab('brrrr',this)">🔄 BRRRR <span class="badge" style="background:#1e3a5f;color:#60a5fa">Strategy</span></div>
+    <div class="az-tab" onclick="azTab('sec8',this)">🏛 Section 8 <span class="badge" style="background:#14532d;color:#4ade80">Gov</span></div>
+    <div class="az-tab" onclick="azTab('flip',this)">🔨 Fix &amp; Flip <span class="badge" style="background:#431407;color:#fb923c">Short-term</span></div>
+    <div class="az-tab" onclick="azTab('rental',this)">🏘 Market Rental <span class="badge" style="background:#2e1065;color:#c084fc">Long-term</span></div>
+    <div class="az-tab" onclick="azTab('compare',this)">📊 Compare <span class="badge" style="background:#1e293b;color:#94a3b8">All</span></div>
+  </div>
+
+  <!-- ══════ BRRRR ══════ -->
+  <div id="az-brrrr" class="az-page active">
+    <div class="az-section-title">BRRRR Strategy</div>
+    <div class="az-grid-2">
+      <div>
+        <div class="az-card">
+          <h3>📦 Purchase &amp; Rehab</h3>
+          <div class="az-field"><label>Purchase Price</label><div class="px"><span>$</span><input id="b-purchase" type="number" value="120000" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Rehab Cost</label><div class="px"><span>$</span><input id="b-rehab" type="number" value="35000" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Closing Costs (buy)</label><div class="px"><span>$</span><input id="b-closing-buy" type="number" value="3000" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Holding Costs (rehab period)</label><div class="px"><span>$</span><input id="b-holding" type="number" value="4000" oninput="calcBrrrr()"></div></div>
+        </div>
+        <div class="az-card" style="margin-top:16px">
+          <h3>🔄 Refinance</h3>
+          <div class="az-field"><label>After-Repair Value (ARV)</label><div class="px"><span>$</span><input id="b-arv" type="number" value="220000" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Refi LTV %</label><div class="sx"><span>%</span><input id="b-ltv" type="number" value="75" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Refi Interest Rate %</label><div class="sx"><span>%</span><input id="b-rate" type="number" value="7.5" step="0.1" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Loan Term (years)</label><input id="b-term" type="number" value="30" oninput="calcBrrrr()"></div>
+          <div class="az-field"><label>Refi Closing Costs</label><div class="px"><span>$</span><input id="b-refi-close" type="number" value="4000" oninput="calcBrrrr()"></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="az-card">
+          <h3>🏘 Rental Income &amp; Expenses</h3>
+          <div class="az-field"><label>Monthly Rent</label><div class="px"><span>$</span><input id="b-rent" type="number" value="1800" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Vacancy Rate %</label><div class="sx"><span>%</span><input id="b-vacancy" type="number" value="5" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Property Management %</label><div class="sx"><span>%</span><input id="b-mgmt" type="number" value="10" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Property Tax / mo</label><div class="px"><span>$</span><input id="b-tax" type="number" value="150" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Insurance / mo</label><div class="px"><span>$</span><input id="b-ins" type="number" value="100" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Maintenance / mo</label><div class="px"><span>$</span><input id="b-maint" type="number" value="120" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>CapEx Reserve / mo</label><div class="px"><span>$</span><input id="b-capex" type="number" value="100" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Other Expenses / mo</label><div class="px"><span>$</span><input id="b-other" type="number" value="50" oninput="calcBrrrr()"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="az-section-title">Results</div>
+    <div id="b-verdict" class="az-verdict good"><div class="v-icon">✅</div><div><div class="v-title"></div><div class="v-desc"></div></div></div>
+    <div class="az-metrics" id="b-metrics"></div>
+    <div class="az-grid-2">
+      <div class="az-card az-breakdown" id="b-cf-table"></div>
+      <div class="az-card az-breakdown" id="b-stack-table"></div>
+    </div>
+  </div>
+
+  <!-- ══════ SECTION 8 ══════ -->
+  <div id="az-sec8" class="az-page">
+    <div class="az-section-title">Section 8 / Housing Choice Voucher</div>
+
+    <!-- HUD Lookup -->
+    <div class="az-hud-panel">
+      <h3>📡 Live HUD Fair Market Rent Lookup</h3>
+      <div class="az-grid-2" style="gap:14px">
+        <div>
+          <div class="az-field">
+            <label>Property Address</label>
+            <input id="s-address" type="text" placeholder="e.g. 1234 Main St, St. Louis, MO 63101" oninput="onAddressInput()">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="az-field" style="margin-bottom:0">
+              <label>ZIP Code</label>
+              <input id="s-zip" type="text" maxlength="5" placeholder="63101">
+            </div>
+            <div class="az-field" style="margin-bottom:0">
+              <label>Bedrooms</label>
+              <div class="az-field" style="margin-bottom:0">
+                <select id="s-bedrooms">
+                  <option value="studio">Studio</option>
+                  <option value="br1">1 Bedroom</option>
+                  <option value="br2" selected>2 Bedrooms</option>
+                  <option value="br3">3 Bedrooms</option>
+                  <option value="br4">4 Bedrooms</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:flex-end">
+          <button class="az-btn-fetch" id="s-fetch-btn" onclick="fetchFmr()">📡 Fetch HUD Fair Market Rent</button>
+          <div id="s-fmr-status" style="font-size:13px;margin-top:10px;display:none"></div>
+        </div>
+      </div>
+      <!-- All-bedroom results -->
+      <div id="s-fmr-results" style="display:none;margin-top:16px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#4ade80;margin-bottom:10px">All Bedroom FMRs — Click to Apply</div>
+        <div id="s-fmr-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px"></div>
+        <div id="s-fmr-area" style="font-size:11px;color:#64748b;margin-top:8px"></div>
+      </div>
+    </div>
+
+    <div class="az-grid-2">
+      <div>
+        <div class="az-card">
+          <h3>📦 Acquisition</h3>
+          <div class="az-field"><label>Purchase Price</label><div class="px"><span>$</span><input id="s-purchase" type="number" value="130000" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Down Payment %</label><div class="sx"><span>%</span><input id="s-dp" type="number" value="20" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Interest Rate %</label><div class="sx"><span>%</span><input id="s-rate" type="number" value="7.0" step="0.1" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Loan Term (years)</label><input id="s-term" type="number" value="30" oninput="calcSec8()"></div>
+          <div class="az-field"><label>Closing Costs</label><div class="px"><span>$</span><input id="s-closing" type="number" value="3500" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Rehab / Inspection Repairs</label><div class="px"><span>$</span><input id="s-rehab" type="number" value="8000" oninput="calcSec8()"></div></div>
+        </div>
+        <div class="az-card" style="margin-top:16px">
+          <h3>🏛 Section 8 Rent</h3>
+          <div class="az-field">
+            <label>Fair Market Rent (FMR) <span id="s-live-badge" style="display:none;font-size:10px;background:#166534;color:#4ade80;padding:1px 7px;border-radius:20px;margin-left:6px;font-weight:700">LIVE HUD</span></label>
+            <div class="px"><span>$</span><input id="s-fmr" type="number" value="1600" oninput="calcSec8()"></div>
+          </div>
+          <div class="az-field"><label>Tenant Portion / mo</label><div class="px"><span>$</span><input id="s-tenant" type="number" value="200" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Vacancy Rate %</label><div class="sx"><span>%</span><input id="s-vacancy" type="number" value="2" oninput="calcSec8()"></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="az-card">
+          <h3>💸 Monthly Expenses</h3>
+          <div class="az-field"><label>Property Management %</label><div class="sx"><span>%</span><input id="s-mgmt" type="number" value="10" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Property Tax / mo</label><div class="px"><span>$</span><input id="s-tax" type="number" value="160" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Insurance / mo</label><div class="px"><span>$</span><input id="s-ins" type="number" value="120" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Maintenance / mo</label><div class="px"><span>$</span><input id="s-maint" type="number" value="150" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>CapEx Reserve / mo</label><div class="px"><span>$</span><input id="s-capex" type="number" value="100" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Compliance / Inspections / mo</label><div class="px"><span>$</span><input id="s-comply" type="number" value="30" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Other Expenses / mo</label><div class="px"><span>$</span><input id="s-other" type="number" value="40" oninput="calcSec8()"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="az-section-title">Results</div>
+    <div id="s-verdict" class="az-verdict good"><div class="v-icon">✅</div><div><div class="v-title"></div><div class="v-desc"></div></div></div>
+    <div class="az-metrics" id="s-metrics"></div>
+    <div class="az-grid-2">
+      <div class="az-card az-breakdown" id="s-cf-table"></div>
+      <div class="az-card az-breakdown" id="s-cmp-table"></div>
+    </div>
+  </div>
+
+  <!-- ══════ FLIP ══════ -->
+  <div id="az-flip" class="az-page">
+    <div class="az-section-title">Fix &amp; Flip</div>
+    <div class="az-grid-2">
+      <div>
+        <div class="az-card">
+          <h3>📦 Purchase &amp; Financing</h3>
+          <div class="az-field"><label>Purchase Price</label><div class="px"><span>$</span><input id="f-purchase" type="number" value="100000" oninput="calcFlip()"></div></div>
+          <div class="az-field"><label>Closing Costs (buy)</label><div class="px"><span>$</span><input id="f-closing-buy" type="number" value="2500" oninput="calcFlip()"></div></div>
+          <div class="az-field"><label>Hard Money Rate %</label><div class="sx"><span>%</span><input id="f-rate" type="number" value="12" step="0.1" oninput="calcFlip()"></div></div>
+          <div class="az-field"><label>Loan Amount</label><div class="px"><span>$</span><input id="f-loan" type="number" value="80000" oninput="calcFlip()"></div></div>
+          <div class="az-field"><label>Loan Points %</label><div class="sx"><span>%</span><input id="f-points" type="number" value="2" step="0.5" oninput="calcFlip()"></div></div>
+        </div>
+        <div class="az-card" style="margin-top:16px">
+          <h3>🔨 Rehab</h3>
+          <div class="az-field"><label>Rehab Budget</label><div class="px"><span>$</span><input id="f-rehab" type="number" value="40000" oninput="calcFlip()"></div></div>
+          <div class="az-field"><label>Contingency %</label><div class="sx"><span>%</span><input id="f-contingency" type="number" value="10" oninput="calcFlip()"></div></div>
+          <div class="az-field"><label>Project Duration (months)</label><input id="f-months" type="number" value="5" oninput="calcFlip()"></div>
+        </div>
+      </div>
+      <div>
+        <div class="az-card">
+          <h3>🏷 Sale</h3>
+          <div class="az-field"><label>After-Repair Value (ARV)</label><div class="px"><span>$</span><input id="f-arv" type="number" value="200000" oninput="calcFlip()"></div></div>
+          <div class="az-field"><label>Agent Commission %</label><div class="sx"><span>%</span><input id="f-commission" type="number" value="6" step="0.5" oninput="calcFlip()"></div></div>
+          <div class="az-field"><label>Closing Costs (sell)</label><div class="px"><span>$</span><input id="f-closing-sell" type="number" value="2000" oninput="calcFlip()"></div></div>
+          <div class="az-field"><label>Holding Costs / mo</label><div class="px"><span>$</span><input id="f-holding" type="number" value="600" oninput="calcFlip()"></div></div>
+        </div>
+        <div class="az-card" style="margin-top:16px">
+          <h3>💼 Tax</h3>
+          <div class="az-field"><label>Short-Term Cap Gains Rate %</label><div class="sx"><span>%</span><input id="f-tax" type="number" value="25" oninput="calcFlip()"></div></div>
+          <p style="font-size:12px;color:#64748b;margin-top:6px">Short-term gains taxed as ordinary income. Consult a CPA.</p>
+        </div>
+      </div>
+    </div>
+    <div class="az-section-title">Results</div>
+    <div id="f-verdict" class="az-verdict good"><div class="v-icon">✅</div><div><div class="v-title"></div><div class="v-desc"></div></div></div>
+    <div class="az-metrics" id="f-metrics"></div>
+    <div class="az-grid-2">
+      <div class="az-card az-breakdown" id="f-cost-table"></div>
+      <div class="az-card az-breakdown" id="f-profit-table"></div>
+    </div>
+  </div>
+
+  <!-- ══════ MARKET RENTAL ══════ -->
+  <div id="az-rental" class="az-page">
+    <div class="az-section-title">Market Rental — Buy &amp; Hold</div>
+    <div class="az-grid-2">
+      <div>
+        <div class="az-card">
+          <h3>📦 Acquisition</h3>
+          <div class="az-field"><label>Purchase Price</label><div class="px"><span>$</span><input id="r-purchase" type="number" value="180000" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Down Payment %</label><div class="sx"><span>%</span><input id="r-dp" type="number" value="20" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Interest Rate %</label><div class="sx"><span>%</span><input id="r-rate" type="number" value="7.25" step="0.1" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Loan Term (years)</label><input id="r-term" type="number" value="30" oninput="calcRental()"></div>
+          <div class="az-field"><label>Closing Costs</label><div class="px"><span>$</span><input id="r-closing" type="number" value="4000" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Immediate Repairs</label><div class="px"><span>$</span><input id="r-repairs" type="number" value="5000" oninput="calcRental()"></div></div>
+        </div>
+        <div class="az-card" style="margin-top:16px">
+          <h3>📈 Growth Assumptions</h3>
+          <div class="az-field"><label>Annual Appreciation %</label><div class="sx"><span>%</span><input id="r-appre" type="number" value="3" step="0.5" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Annual Rent Growth %</label><div class="sx"><span>%</span><input id="r-rent-growth" type="number" value="2" step="0.5" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Projection (years)</label><input id="r-years" type="number" value="10" min="1" max="30" oninput="calcRental()"></div>
+        </div>
+      </div>
+      <div>
+        <div class="az-card">
+          <h3>🏘 Income &amp; Expenses</h3>
+          <div class="az-field"><label>Monthly Rent</label><div class="px"><span>$</span><input id="r-rent" type="number" value="1900" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Vacancy Rate %</label><div class="sx"><span>%</span><input id="r-vacancy" type="number" value="5" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Property Management %</label><div class="sx"><span>%</span><input id="r-mgmt" type="number" value="10" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Property Tax / mo</label><div class="px"><span>$</span><input id="r-tax" type="number" value="180" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Insurance / mo</label><div class="px"><span>$</span><input id="r-ins" type="number" value="110" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Maintenance / mo</label><div class="px"><span>$</span><input id="r-maint" type="number" value="130" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>CapEx Reserve / mo</label><div class="px"><span>$</span><input id="r-capex" type="number" value="120" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Other Expenses / mo</label><div class="px"><span>$</span><input id="r-other" type="number" value="50" oninput="calcRental()"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="az-section-title">Results</div>
+    <div id="r-verdict" class="az-verdict good"><div class="v-icon">✅</div><div><div class="v-title"></div><div class="v-desc"></div></div></div>
+    <div class="az-metrics" id="r-metrics"></div>
+    <div class="az-grid-2">
+      <div class="az-card az-breakdown" id="r-cf-table"></div>
+      <div class="az-card az-breakdown" id="r-proj-table"></div>
+    </div>
+  </div>
+
+  <!-- ══════ COMPARE ══════ -->
+  <div id="az-compare" class="az-page">
+    <div class="az-section-title">Net Monthly Cash Flow — Strategy Comparison</div>
+    <p style="font-size:13px;color:#64748b;margin-bottom:20px;margin-top:-8px">Live values from each tab. Edit any scenario and return here to compare.</p>
+    <div class="az-compare-cards" id="cmp-cards"></div>
+    <div class="az-winner" id="cmp-winner"></div>
+    <div class="az-section-title">Full Monthly Cash Flow Breakdown</div>
+    <div style="overflow-x:auto"><table class="az-cmp-table" id="cmp-table"></table></div>
+    <div class="az-section-title" style="margin-top:28px">Cash Flow Bar Chart</div>
+    <div class="az-bars" id="cmp-bars"></div>
+    <div class="az-bars-labels" id="cmp-bars-labels"></div>
+    <div class="az-section-title">Key Metrics</div>
+    <div style="overflow-x:auto"><table class="az-cmp-table" id="cmp-metrics"></table></div>
+  </div>
+
+</div><!-- /.analyzer-wrap -->
+
+<!-- ══════════════════ FOOTER (matches site) ══════════════════ -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="index.html" class="footer__logo" aria-label="BRRRR8 Academy home">BRRRR<sup>8</sup> Academy</a>
+        <p>A real estate education platform built on 25+ years of St.&nbsp;Louis investing and contracting experience. Practical strategy, real numbers, guaranteed rent.</p>
+      </div>
+      <nav class="footer__links" aria-label="Footer navigation">
+        <a href="index.html">Home</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="courses.html">Curriculum</a>
+        <a href="analyzer.html">Deal Analyzer</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="enroll.html">Enroll</a>
+      </nav>
+      <div class="footer__contact">
+        <h4>Contact</h4>
+        <a href="mailto:info@midwestinvestorservices.com">info@midwestinvestorservices.com</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copyright">&copy; 2025 BRRRR<sup>8</sup> Academy. All rights reserved.</p>
+      <p class="footer__companies">Midwest Investor Services &middot; Missouri Construction Service &middot; Luxe Property Solutions</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  BRRRR8 ACADEMY — DEAL ANALYZER  (analyzer.html)
+// ═══════════════════════════════════════════════════════════════════
+
+const el  = id => document.getElementById(id);
+const val = id => parseFloat(el(id).value) || 0;
+const fmt  = n  => '$' + Math.round(n).toLocaleString();
+const fmtP = n  => n.toFixed(2) + '%';
+const fmtK = n  => {
+  if (Math.abs(n) >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+  if (Math.abs(n) >= 1e3) return '$' + Math.round(n/1e3) + 'K';
+  return fmt(n);
+};
+
+// Shared state written by each calc, read by Compare
+const ST = { b:{}, s:{}, r:{} };
+
+// ── Amortisation helpers ──────────────────────────────────────────
+function mortgagePmt(principal, annRate, years) {
+  if (!annRate) return principal / (years * 12);
+  const r = annRate / 100 / 12, n = years * 12;
+  return principal * r * Math.pow(1+r,n) / (Math.pow(1+r,n) - 1);
+}
+function loanBalance(loan, annRate, termYears, yearsElapsed) {
+  const r = annRate / 100 / 12, n = termYears * 12, k = yearsElapsed * 12;
+  if (!r) return loan - (loan / n) * k;
+  return loan * (Math.pow(1+r,n) - Math.pow(1+r,k)) / (Math.pow(1+r,n) - 1);
+}
+
+// ── UI helpers ────────────────────────────────────────────────────
+function metric(label, value, cls, sub='') {
+  return `<div class="az-metric">
+    <div class="m-label">${label}</div>
+    <div class="m-value ${cls}">${value}</div>
+    ${sub ? `<div class="m-sub">${sub}</div>` : ''}
+  </div>`;
+}
+function cfColor(n) { return n >= 0 ? 'var(--green, #22c55e)' : '#ef4444'; }
+function verdict(id, cf, good, ok, gDesc, oDesc, bDesc) {
+  const e = el(id);
+  const [ico, cls, title, desc] =
+    cf >= good ? ['✅','good',  'Strong Deal',        gDesc] :
+    cf >= ok   ? ['⚠️','ok',   'Marginal Deal',       oDesc] :
+                 ['❌','bad',  'Weak / Losing Deal',  bDesc];
+  e.className = `az-verdict ${cls}`;
+  e.innerHTML = `<div class="v-icon">${ico}</div><div><div class="v-title">${title}</div><div class="v-desc">${desc}</div></div>`;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  BRRRR
+// ══════════════════════════════════════════════════════════════════
+function calcBrrrr() {
+  const purchase = val('b-purchase'), rehab   = val('b-rehab'),
+        cbuy     = val('b-closing-buy'), hold = val('b-holding'),
+        arv      = val('b-arv'), ltv          = val('b-ltv'),
+        rate     = val('b-rate'), term        = val('b-term'),
+        rclose   = val('b-refi-close'),
+        rent     = val('b-rent'), vac         = val('b-vacancy'),
+        mgmtPct  = val('b-mgmt'), tax         = val('b-tax'),
+        ins      = val('b-ins'), maint        = val('b-maint'),
+        capex    = val('b-capex'), other       = val('b-other');
+
+  const totalIn   = purchase + rehab + cbuy + hold;
+  const refiLoan  = arv * ltv / 100;
+  const cashOOP   = totalIn + rclose - refiLoan;
+  const equityRefi= arv - refiLoan;
+  const pmt       = mortgagePmt(refiLoan, rate, term);
+  const egi       = rent * (1 - vac/100);
+  const mgmt      = egi * mgmtPct / 100;
+  const fixedExp  = tax + ins + maint + capex + other;
+  const noi       = egi - mgmt - fixedExp;
+  const totalExp  = pmt + mgmt + fixedExp;
+  const cf        = egi - totalExp;
+  const cfAnn     = cf * 12;
+  const capRate   = arv  ? noi  * 12 / arv  * 100 : 0;
+  const coc       = cashOOP > 0 ? cfAnn / cashOOP * 100 : null;
+  const grm       = rent  ? arv / (rent * 12) : 0;
+  const cocDisp   = coc === null ? '∞' : fmtP(coc);
+  const cocCls    = coc === null ? 'c-green' : coc>=10?'c-green':coc>=6?'c-yellow':'c-red';
+
+  ST.b = { cf, pmt, egi, rent, vacLoss:rent*vac/100, mgmt, tax, ins, maint, capex, other, comply:0,
+           totalExp, noi, capRate, coc, totalCash: Math.max(0, cashOOP) };
+
+  el('b-metrics').innerHTML =
+    metric('Net Cash Flow / mo',    fmt(cf),      cf>=200?'c-green':cf>=0?'c-yellow':'c-red') +
+    metric('Annual Cash Flow',      fmt(cfAnn),   cfAnn>=2400?'c-green':cfAnn>=0?'c-yellow':'c-red') +
+    metric('Cash-on-Cash Return',   cocDisp,      cocCls, coc===null?'All cash returned!':'on cash left in') +
+    metric('Cap Rate',              fmtP(capRate),capRate>=6?'c-green':capRate>=4?'c-yellow':'c-red') +
+    metric('Refi Loan',             fmt(refiLoan),'c-gold') +
+    metric('Cash Left in Deal',     cashOOP<=0?fmt(0):fmt(cashOOP), cashOOP<=0?'c-green':cashOOP<20000?'c-yellow':'c-red', cashOOP<=0?`+${fmt(Math.abs(cashOOP))} back`:'') +
+    metric('Equity at Refi',        fmt(equityRefi),'c-gold') +
+    metric('GRM',                   grm.toFixed(1)+'x','c-gold','Lower is better');
+
+  el('b-cf-table').innerHTML = `<h3>📊 Monthly Cash Flow</h3>
+    <table><tbody>
+    <tr class="bd-section"><td colspan="2">Income</td></tr>
+    <tr><td>Gross Rent</td><td class="c-green">${fmt(rent)}</td></tr>
+    <tr><td>Less Vacancy (${vac}%)</td><td class="c-red">-${fmt(rent*vac/100)}</td></tr>
+    <tr><td><b>Effective Income</b></td><td class="c-green">${fmt(egi)}</td></tr>
+    <tr class="bd-section"><td colspan="2">Expenses</td></tr>
+    <tr><td>Mortgage (P&amp;I)</td><td>-${fmt(pmt)}</td></tr>
+    <tr><td>Mgmt (${mgmtPct}%)</td><td>-${fmt(mgmt)}</td></tr>
+    <tr><td>Property Tax</td><td>-${fmt(tax)}</td></tr>
+    <tr><td>Insurance</td><td>-${fmt(ins)}</td></tr>
+    <tr><td>Maintenance</td><td>-${fmt(maint)}</td></tr>
+    <tr><td>CapEx</td><td>-${fmt(capex)}</td></tr>
+    <tr><td>Other</td><td>-${fmt(other)}</td></tr>
+    <tr class="bd-total"><td>Net Cash Flow / mo</td><td style="color:${cfColor(cf)}">${fmt(cf)}</td></tr>
+    </tbody></table>`;
+
+  el('b-stack-table').innerHTML = `<h3>🔄 BRRRR Stack</h3>
+    <table><tbody>
+    <tr class="bd-section"><td colspan="2">Total Cash In</td></tr>
+    <tr><td>Purchase</td><td>${fmt(purchase)}</td></tr>
+    <tr><td>Rehab</td><td>${fmt(rehab)}</td></tr>
+    <tr><td>Closing (buy)</td><td>${fmt(cbuy)}</td></tr>
+    <tr><td>Holding</td><td>${fmt(hold)}</td></tr>
+    <tr><td><b>Total Invested</b></td><td>${fmt(totalIn)}</td></tr>
+    <tr class="bd-section"><td colspan="2">Refinance</td></tr>
+    <tr><td>ARV</td><td>${fmt(arv)}</td></tr>
+    <tr><td>Refi Loan (${ltv}% LTV)</td><td class="c-green">${fmt(refiLoan)}</td></tr>
+    <tr><td>Refi Closing Costs</td><td class="c-red">-${fmt(rclose)}</td></tr>
+    <tr><td>Net Refi Proceeds</td><td class="c-green">${fmt(refiLoan - rclose)}</td></tr>
+    <tr class="bd-total"><td>Cash Left in Deal</td><td style="color:${cashOOP<=0?'#22c55e':'#eab308'}">${cashOOP<=0?fmt(0):fmt(cashOOP)}${cashOOP<=0?' ('+fmt(Math.abs(cashOOP))+' back)':''}</td></tr>
+    <tr><td>Equity at Refi</td><td class="c-gold">${fmt(equityRefi)}</td></tr>
+    </tbody></table>`;
+
+  verdict('b-verdict', cf, 200, 0,
+    `Monthly cash flow of ${fmt(cf)} · ${cocDisp} CoC return · ${fmt(Math.max(0,cashOOP))} left in deal.`,
+    `Marginal deal — ${fmt(cf)}/mo. Verify ARV and expense estimates.`,
+    `Negative cash flow of ${fmt(cf)}/mo after refi. Renegotiate purchase price, reduce rehab, or find higher rents.`);
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  SECTION 8
+// ══════════════════════════════════════════════════════════════════
+function calcSec8() {
+  const purchase = val('s-purchase'), dpPct  = val('s-dp'),
+        rate     = val('s-rate'),     term   = val('s-term'),
+        closing  = val('s-closing'),  rehab  = val('s-rehab'),
+        fmr      = val('s-fmr'),      tenant = val('s-tenant'),
+        vac      = val('s-vacancy'),  mgmtPct= val('s-mgmt'),
+        tax      = val('s-tax'),      ins    = val('s-ins'),
+        maint    = val('s-maint'),    capex  = val('s-capex'),
+        comply   = val('s-comply'),   other  = val('s-other');
+
+  const dp         = purchase * dpPct / 100;
+  const loan       = purchase - dp;
+  const totalCash  = dp + closing + rehab;
+  const pmt        = mortgagePmt(loan, rate, term);
+  const totalRent  = fmr + tenant;
+  const egi        = totalRent * (1 - vac/100);
+  const mgmt       = egi * mgmtPct / 100;
+  const fixedExp   = tax + ins + maint + capex + comply + other;
+  const noi        = egi - mgmt - fixedExp;
+  const totalExp   = pmt + mgmt + fixedExp;
+  const cf         = egi - totalExp;
+  const cfAnn      = cf * 12;
+  const capRate    = purchase ? noi * 12 / purchase * 100 : 0;
+  const coc        = totalCash ? cfAnn / totalCash * 100 : 0;
+  const dscr       = pmt ? noi / pmt : 0;
+
+  // Market comparison (FMR × 95% at 5% vacancy)
+  const mktRent    = fmr * 0.95;
+  const mktEgi     = mktRent * 0.95;
+  const sec8Adv    = egi - mktEgi;
+
+  ST.s = { cf, pmt, egi, rent: totalRent, vacLoss: totalRent*vac/100, mgmt, tax, ins, maint, capex, other, comply,
+           totalExp, noi, capRate, coc, totalCash };
+
+  el('s-metrics').innerHTML =
+    metric('Net Cash Flow / mo',  fmt(cf),       cf>=200?'c-green':cf>=0?'c-yellow':'c-red') +
+    metric('Annual Cash Flow',    fmt(cfAnn),    cfAnn>=2400?'c-green':cfAnn>=0?'c-yellow':'c-red') +
+    metric('Cash-on-Cash Return', fmtP(coc),     coc>=8?'c-green':coc>=5?'c-yellow':'c-red') +
+    metric('Cap Rate',            fmtP(capRate), capRate>=6?'c-green':capRate>=4?'c-yellow':'c-red') +
+    metric('DSCR',                dscr.toFixed(2)+'x', dscr>=1.25?'c-green':dscr>=1?'c-yellow':'c-red','≥1.25 preferred') +
+    metric('Gov Portion (FMR)',   fmt(fmr),      'c-green','Paid by Housing Authority') +
+    metric('Tenant Portion',      fmt(tenant),   'c-gold') +
+    metric('Total Cash In',       fmt(totalCash),'c-gold');
+
+  el('s-cf-table').innerHTML = `<h3>📊 Monthly Cash Flow</h3>
+    <table><tbody>
+    <tr class="bd-section"><td colspan="2">Income</td></tr>
+    <tr><td>Housing Authority (FMR)</td><td class="c-green">${fmt(fmr)}</td></tr>
+    <tr><td>Tenant Portion</td><td class="c-green">${fmt(tenant)}</td></tr>
+    <tr><td>Total Rent</td><td class="c-green">${fmt(totalRent)}</td></tr>
+    <tr><td>Less Vacancy (${vac}%)</td><td class="c-red">-${fmt(totalRent*vac/100)}</td></tr>
+    <tr><td><b>Effective Income</b></td><td class="c-green">${fmt(egi)}</td></tr>
+    <tr class="bd-section"><td colspan="2">Expenses</td></tr>
+    <tr><td>Mortgage (P&amp;I)</td><td>-${fmt(pmt)}</td></tr>
+    <tr><td>Mgmt (${mgmtPct}%)</td><td>-${fmt(mgmt)}</td></tr>
+    <tr><td>Property Tax</td><td>-${fmt(tax)}</td></tr>
+    <tr><td>Insurance</td><td>-${fmt(ins)}</td></tr>
+    <tr><td>Maintenance</td><td>-${fmt(maint)}</td></tr>
+    <tr><td>CapEx</td><td>-${fmt(capex)}</td></tr>
+    <tr><td>Compliance</td><td>-${fmt(comply)}</td></tr>
+    <tr><td>Other</td><td>-${fmt(other)}</td></tr>
+    <tr class="bd-total"><td>Net Cash Flow / mo</td><td style="color:${cfColor(cf)}">${fmt(cf)}</td></tr>
+    </tbody></table>`;
+
+  el('s-cmp-table').innerHTML = `<h3>🆚 Sec 8 vs Market</h3>
+    <table><tbody>
+    <tr class="bd-section"><td colspan="2">Income Comparison</td></tr>
+    <tr><td>Section 8 Effective Income</td><td class="c-green">${fmt(egi)}/mo</td></tr>
+    <tr><td>Est. Market Rent Effective</td><td class="c-gold">${fmt(mktEgi)}/mo</td></tr>
+    <tr><td><b>Sec 8 Advantage</b></td><td style="color:${sec8Adv>=0?'#22c55e':'#ef4444'};font-weight:700">${fmt(sec8Adv)}/mo</td></tr>
+    <tr class="bd-section"><td colspan="2">Sec 8 Benefits</td></tr>
+    <tr><td>✅ Guaranteed gov payment</td><td>FMR portion</td></tr>
+    <tr><td>✅ Lower vacancy (${vac}%)</td><td>vs ~5% market</td></tr>
+    <tr><td>✅ Long-term tenancy</td><td>Stable</td></tr>
+    <tr class="bd-section"><td colspan="2">Considerations</td></tr>
+    <tr><td>⚠️ Annual HUD inspections</td><td>${fmt(comply)}/mo</td></tr>
+    <tr><td>⚠️ Rent capped at HUD FMR</td><td>Less flexibility</td></tr>
+    <tr class="bd-total"><td>Total Cash Invested</td><td class="c-gold">${fmt(totalCash)}</td></tr>
+    </tbody></table>`;
+
+  verdict('s-verdict', cf, 150, 0,
+    `${fmt(cf)}/mo cash flow with government-guaranteed rent. ${fmtP(coc)} CoC on ${fmt(totalCash)} invested.`,
+    `Marginal deal — ${fmt(cf)}/mo. Gov-guaranteed income and lower vacancy may offset thin margin.`,
+    `Negative cash flow of ${fmt(cf)}/mo. Even reliable gov rent can't fix an over-priced purchase.`);
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  FIX & FLIP
+// ══════════════════════════════════════════════════════════════════
+function calcFlip() {
+  const purchase = val('f-purchase'), cbuy   = val('f-closing-buy'),
+        rate     = val('f-rate'),     loan   = val('f-loan'),
+        points   = val('f-points'),   rehab  = val('f-rehab'),
+        cont     = val('f-contingency'), months = val('f-months'),
+        arv      = val('f-arv'),      comm   = val('f-commission'),
+        csell    = val('f-closing-sell'), holdMo = val('f-holding'),
+        taxRate  = val('f-tax');
+
+  const rehabTot  = rehab * (1 + cont/100);
+  const loanFees  = loan * points / 100;
+  const interest  = loan * (rate/100/12) * months;
+  const holdTot   = holdMo * months;
+  const commAmt   = arv * comm / 100;
+  const totalCost = purchase + cbuy + rehabTot + loanFees + interest + holdTot;
+  const netSale   = arv - commAmt - csell;
+  const grossProf = netSale - totalCost;
+  const taxAmt    = grossProf > 0 ? grossProf * taxRate/100 : 0;
+  const netProf   = grossProf - taxAmt;
+  const cashIn    = totalCost - loan;
+  const roi       = cashIn > 0 ? netProf / cashIn * 100 : 0;
+  const annRoi    = months > 0 ? (Math.pow(1 + netProf/Math.max(cashIn,1), 12/months) - 1) * 100 : 0;
+  const mao       = arv * 0.70 - rehab;
+
+  el('f-metrics').innerHTML =
+    metric('Gross Profit',         fmt(grossProf),  grossProf>=30000?'c-green':grossProf>=0?'c-yellow':'c-red') +
+    metric('Net Profit (after tax)',fmt(netProf),   netProf>=20000?'c-green':netProf>=0?'c-yellow':'c-red') +
+    metric('ROI on Cash In',       fmtP(roi),       roi>=15?'c-green':roi>=8?'c-yellow':'c-red') +
+    metric('Annualized ROI',       fmtP(annRoi),    annRoi>=25?'c-green':annRoi>=15?'c-yellow':'c-red') +
+    metric('Total Project Cost',   fmt(totalCost),  'c-gold') +
+    metric('Net Sale Price',       fmt(netSale),    'c-gold') +
+    metric('70% Rule MAO',         fmt(mao),        purchase<=mao?'c-green':'c-red', purchase<=mao?'✅ Under MAO':'❌ Over MAO') +
+    metric('Cash Invested',        fmt(cashIn),     'c-gold');
+
+  el('f-cost-table').innerHTML = `<h3>💸 Cost Breakdown</h3>
+    <table><tbody>
+    <tr class="bd-section"><td colspan="2">Acquisition</td></tr>
+    <tr><td>Purchase Price</td><td>${fmt(purchase)}</td></tr>
+    <tr><td>Closing Costs (buy)</td><td>${fmt(cbuy)}</td></tr>
+    <tr class="bd-section"><td colspan="2">Financing</td></tr>
+    <tr><td>Loan Amount</td><td>${fmt(loan)}</td></tr>
+    <tr><td>Loan Points (${points}%)</td><td>${fmt(loanFees)}</td></tr>
+    <tr><td>Interest (${rate}% × ${months}mo)</td><td>${fmt(interest)}</td></tr>
+    <tr class="bd-section"><td colspan="2">Rehab</td></tr>
+    <tr><td>Rehab Budget</td><td>${fmt(rehab)}</td></tr>
+    <tr><td>Contingency (${cont}%)</td><td>${fmt(rehab*cont/100)}</td></tr>
+    <tr class="bd-section"><td colspan="2">Holding</td></tr>
+    <tr><td>Holding (${months}mo)</td><td>${fmt(holdTot)}</td></tr>
+    <tr class="bd-total"><td>Total Cost</td><td>${fmt(totalCost)}</td></tr>
+    </tbody></table>`;
+
+  el('f-profit-table').innerHTML = `<h3>📈 Profit Summary</h3>
+    <table><tbody>
+    <tr class="bd-section"><td colspan="2">Sale</td></tr>
+    <tr><td>ARV</td><td class="c-green">${fmt(arv)}</td></tr>
+    <tr><td>Agent Commission (${comm}%)</td><td class="c-red">-${fmt(commAmt)}</td></tr>
+    <tr><td>Closing Costs (sell)</td><td class="c-red">-${fmt(csell)}</td></tr>
+    <tr><td><b>Net Sale Price</b></td><td class="c-gold">${fmt(netSale)}</td></tr>
+    <tr class="bd-section"><td colspan="2">Profit</td></tr>
+    <tr><td>Gross Profit</td><td style="color:${cfColor(grossProf)}">${fmt(grossProf)}</td></tr>
+    <tr><td>Tax (${taxRate}%)</td><td class="c-red">-${fmt(taxAmt)}</td></tr>
+    <tr class="bd-total"><td>Net Profit</td><td style="color:${cfColor(netProf)}">${fmt(netProf)}</td></tr>
+    <tr><td>70% Rule MAO</td><td style="color:${purchase<=mao?'#22c55e':'#ef4444'}">${fmt(mao)}</td></tr>
+    </tbody></table>`;
+
+  verdict('f-verdict', netProf, 25000, 0,
+    `Net profit ${fmt(netProf)} (${fmtP(roi)} ROI) in ${months} months. Annualized: ${fmtP(annRoi)}. ${purchase<=mao?'Within 70% rule.':'⚠️ Over MAO.'}`,
+    `Marginal flip — ${fmt(netProf)} net. Any rehab overrun could wipe the margin. Tighten your numbers.`,
+    `Losing deal — net loss of ${fmt(Math.abs(netProf))}. Purchase price too high or ARV overstated. MAO = ${fmt(mao)}.`);
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  MARKET RENTAL
+// ══════════════════════════════════════════════════════════════════
+function calcRental() {
+  const purchase = val('r-purchase'), dpPct  = val('r-dp'),
+        rate     = val('r-rate'),     term   = val('r-term'),
+        closing  = val('r-closing'),  repairs= val('r-repairs'),
+        appre    = val('r-appre'),    rg     = val('r-rent-growth'),
+        years    = val('r-years'),    rent   = val('r-rent'),
+        vac      = val('r-vacancy'),  mgmtPct= val('r-mgmt'),
+        tax      = val('r-tax'),      ins    = val('r-ins'),
+        maint    = val('r-maint'),    capex  = val('r-capex'),
+        other    = val('r-other');
+
+  const dp       = purchase * dpPct / 100;
+  const loan     = purchase - dp;
+  const totalCash= dp + closing + repairs;
+  const pmt      = mortgagePmt(loan, rate, term);
+  const egi      = rent * (1 - vac/100);
+  const mgmt     = egi * mgmtPct / 100;
+  const fixedExp = pmt + tax + ins + maint + capex + other;
+  const noi      = egi - mgmt - (tax + ins + maint + capex + other);
+  const totalExp = fixedExp + mgmt;
+  const cf       = egi - totalExp;
+  const cfAnn    = cf * 12;
+  const capRate  = purchase ? noi * 12 / purchase * 100 : 0;
+  const coc      = totalCash ? cfAnn / totalCash * 100 : 0;
+  const grm      = rent ? purchase / (rent * 12) : 0;
+  const dscr     = pmt ? noi / pmt : 0;
+
+  ST.r = { cf, pmt, egi, rent, vacLoss: rent*vac/100, mgmt, tax, ins, maint, capex, other, comply:0,
+           totalExp, noi, capRate, coc, totalCash };
+
+  el('r-metrics').innerHTML =
+    metric('Net Cash Flow / mo',  fmt(cf),       cf>=200?'c-green':cf>=0?'c-yellow':'c-red') +
+    metric('Annual Cash Flow',    fmt(cfAnn),    cfAnn>=2400?'c-green':cfAnn>=0?'c-yellow':'c-red') +
+    metric('Cash-on-Cash Return', fmtP(coc),     coc>=8?'c-green':coc>=5?'c-yellow':'c-red') +
+    metric('Cap Rate',            fmtP(capRate), capRate>=6?'c-green':capRate>=4?'c-yellow':'c-red') +
+    metric('GRM',                 grm.toFixed(1)+'x', grm<=12?'c-green':grm<=15?'c-yellow':'c-red','Lower is better') +
+    metric('DSCR',                dscr.toFixed(2)+'x', dscr>=1.25?'c-green':dscr>=1?'c-yellow':'c-red') +
+    metric('Total Cash In',       fmt(totalCash),'c-gold') +
+    metric('Mortgage Payment',    fmt(pmt),      'c-gold');
+
+  el('r-cf-table').innerHTML = `<h3>📊 Monthly Cash Flow</h3>
+    <table><tbody>
+    <tr class="bd-section"><td colspan="2">Income</td></tr>
+    <tr><td>Gross Rent</td><td class="c-green">${fmt(rent)}</td></tr>
+    <tr><td>Less Vacancy (${vac}%)</td><td class="c-red">-${fmt(rent*vac/100)}</td></tr>
+    <tr><td><b>Effective Income</b></td><td class="c-green">${fmt(egi)}</td></tr>
+    <tr class="bd-section"><td colspan="2">Expenses</td></tr>
+    <tr><td>Mortgage (P&amp;I)</td><td>-${fmt(pmt)}</td></tr>
+    <tr><td>Mgmt (${mgmtPct}%)</td><td>-${fmt(mgmt)}</td></tr>
+    <tr><td>Property Tax</td><td>-${fmt(tax)}</td></tr>
+    <tr><td>Insurance</td><td>-${fmt(ins)}</td></tr>
+    <tr><td>Maintenance</td><td>-${fmt(maint)}</td></tr>
+    <tr><td>CapEx</td><td>-${fmt(capex)}</td></tr>
+    <tr><td>Other</td><td>-${fmt(other)}</td></tr>
+    <tr class="bd-total"><td>Net Cash Flow / mo</td><td style="color:${cfColor(cf)}">${fmt(cf)}</td></tr>
+    </tbody></table>`;
+
+  // Projection
+  let rows = '';
+  let cumCF = 0;
+  const fxd = fixedExp; // mortgage + fixed opex — stays flat
+  for (let y = 1; y <= Math.min(years, 30); y++) {
+    const rentY = rent * Math.pow(1 + rg/100, y);
+    const egiY  = rentY * (1 - vac/100);
+    const mgmtY = egiY * mgmtPct / 100;
+    const cfY   = egiY - mgmtY - fxd;
+    const propVal = purchase * Math.pow(1 + appre/100, y);
+    const balY    = loanBalance(loan, rate, term, y);
+    const equity  = propVal - balY;
+    cumCF += cfY * 12;
+    if (y===1 || y % Math.max(1, Math.floor(years/5))===0 || y===years) {
+      rows += `<tr><td>Yr ${y}</td><td class="c-gold">${fmtK(propVal)}</td><td class="c-green">${fmtK(equity)}</td><td style="color:${cfColor(cfY)}">${fmtK(cfY*12)}</td><td class="c-green">${fmtK(cumCF)}</td></tr>`;
+    }
+  }
+  el('r-proj-table').innerHTML = `<h3>📈 ${years}-Year Projection</h3>
+    <table><tbody>
+    <tr style="font-size:11px;color:#64748b"><td>Year</td><td>Value</td><td>Equity</td><td>Ann CF</td><td>Cum CF</td></tr>
+    ${rows}
+    </tbody></table>
+    <div style="font-size:11px;color:#64748b;margin-top:8px">Appreciation ${appre}%/yr · Rent Growth ${rg}%/yr · Fixed expenses flat</div>`;
+
+  verdict('r-verdict', cf, 200, 0,
+    `${fmt(cf)}/mo cash flow · ${fmtP(capRate)} cap rate · ${fmtP(coc)} CoC return on ${fmt(totalCash)} invested.`,
+    `Marginal rental — ${fmt(cf)}/mo. Appreciation + principal paydown may justify the thin margin in your market.`,
+    `Negative cash flow of ${fmt(cf)}/mo. Reduce purchase price, increase rents, or cut expenses.`);
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  COMPARE
+// ══════════════════════════════════════════════════════════════════
+function calcCompare() {
+  const B = ST.b, S = ST.s, R = ST.r;
+  if (B.cf === undefined) return;
+
+  const scs = [
+    { lbl:'BRRRR',        emoji:'🔄', color:'#60a5fa', d:B },
+    { lbl:'Section 8',    emoji:'🏛', color:'#4ade80', d:S },
+    { lbl:'Market Rental',emoji:'🏘', color:'#c084fc', d:R },
+  ];
+
+  // Cards
+  el('cmp-cards').innerHTML = scs.map(sc => {
+    const c = sc.d.cf, cls = c>=200?'c-green':c>=0?'c-yellow':'c-red';
+    return `<div class="az-cmp-card">
+      <div class="cc-emoji">${sc.emoji}</div>
+      <div class="cc-label">${sc.lbl}</div>
+      <div class="cc-cf ${cls}">${fmt(c)}</div>
+      <div class="cc-mo">per month</div>
+      <div class="cc-stats">Annual: <strong>${fmt(c*12)}</strong><br>CoC: <strong>${sc.d.coc===null?'∞':fmtP(sc.d.coc)}</strong></div>
+    </div>`;
+  }).join('');
+
+  // Winner
+  const best  = scs.reduce((a,b) => a.d.cf >= b.d.cf ? a : b);
+  const worst = scs.reduce((a,b) => a.d.cf <= b.d.cf ? a : b);
+  el('cmp-winner').innerHTML = `<div class="w-trophy">🏆</div><div>
+    <div class="w-title">${best.emoji} ${best.lbl} leads with ${fmt(best.d.cf)}/mo</div>
+    <div class="w-desc">${fmt(best.d.cf - worst.d.cf)}/mo more than ${worst.lbl} (${fmt(worst.d.cf)}/mo).
+    Over 10 years that gap is roughly <strong style="color:#22c55e">${fmt((best.d.cf - worst.d.cf)*120)}</strong>.</div>
+  </div>`;
+
+  // Breakdown table
+  const th  = t => `<th>${t}</th>`;
+  const tdr = (v,c='') => `<td style="${c?'color:'+c:''}">${v}</td>`;
+  const rows = [
+    ['section','INCOME'],
+    ['Gross Rent / mo',      fmt(B.rent),    fmt(S.rent),    fmt(R.rent)],
+    ['Vacancy Loss',        '-'+fmt(B.vacLoss),'-'+fmt(S.vacLoss),'-'+fmt(R.vacLoss)],
+    ['Effective Income',    fmt(B.egi),      fmt(S.egi),      fmt(R.egi), true],
+    ['section','EXPENSES'],
+    ['Mortgage (P&I)',      fmt(B.pmt),      fmt(S.pmt),      fmt(R.pmt)],
+    ['Property Mgmt',       fmt(B.mgmt),     fmt(S.mgmt),     fmt(R.mgmt)],
+    ['Property Tax',        fmt(B.tax),      fmt(S.tax),      fmt(R.tax)],
+    ['Insurance',           fmt(B.ins),      fmt(S.ins),      fmt(R.ins)],
+    ['Maintenance',         fmt(B.maint),    fmt(S.maint),    fmt(R.maint)],
+    ['CapEx Reserve',       fmt(B.capex),    fmt(S.capex),    fmt(R.capex)],
+    ['Other / Compliance',  fmt(B.other),    fmt(S.comply+S.other), fmt(R.other)],
+    ['Total Expenses',      fmt(B.totalExp), fmt(S.totalExp), fmt(R.totalExp), true],
+    ['section','NET RESULT'],
+    ['NET CASH FLOW / MO',  fmt(B.cf),       fmt(S.cf),       fmt(R.cf), true, true],
+    ['Annual Cash Flow',    fmt(B.cf*12),    fmt(S.cf*12),    fmt(R.cf*12)],
+  ];
+  el('cmp-table').innerHTML = `<thead><tr>${th('Line Item')}${th('🔄 BRRRR')}${th('🏛 Section 8')}${th('🏘 Market Rental')}</tr></thead><tbody>` +
+    rows.map(r => {
+      if (r[0]==='section') return `<tr class="ct-section"><td colspan="4">${r[1]}</td></tr>`;
+      const isCF=r[5], bold=r[4];
+      const style = t => isCF ? `color:${cfColor(parseFloat(t.replace(/[$,]/g,'')))}` : bold?'color:#fff':'';
+      const cls = bold?'ct-total':'';
+      return `<tr class="${cls}"><td>${r[0]}</td>${tdr(r[1],isCF?cfColor(B.cf):'')}${tdr(r[2],isCF?cfColor(S.cf):'')}${tdr(r[3],isCF?cfColor(R.cf):'')}</tr>`;
+    }).join('') + '</tbody>';
+
+  // Bar chart
+  const vals=[B.cf,S.cf,R.cf], colors=['#60a5fa','#4ade80','#c084fc'], lbls=['🔄 BRRRR','🏛 Sec 8','🏘 Rental'];
+  const mx = Math.max(...vals.map(Math.abs), 1);
+  el('cmp-bars').innerHTML = vals.map((v,i)=>{
+    const h=Math.round(Math.abs(v)/mx*140), neg=v<0;
+    return `<div class="az-bar-wrap">
+      ${!neg?`<div style="font-size:12px;font-weight:700;color:${colors[i]}">${fmt(v)}</div>`:''}
+      <div style="width:100%;max-width:80px;height:${h}px;background:${colors[i]};border-radius:${neg?'0 0 5px 5px':'5px 5px 0 0'};min-height:4px"></div>
+      ${neg?`<div style="font-size:12px;font-weight:700;color:#ef4444">${fmt(v)}</div>`:''}
+    </div>`;
+  }).join('');
+  el('cmp-bars-labels').innerHTML = lbls.map(l=>`<div style="flex:1;text-align:center">${l}</div>`).join('');
+
+  // Metrics table
+  el('cmp-metrics').innerHTML = `<thead><tr>${th('Metric')}${th('🔄 BRRRR')}${th('🏛 Section 8')}${th('🏘 Rental')}</tr></thead><tbody>
+    <tr><td>Net Cash Flow / mo</td><td>${fmt(B.cf)}</td><td>${fmt(S.cf)}</td><td>${fmt(R.cf)}</td></tr>
+    <tr><td>Annual Cash Flow</td><td>${fmt(B.cf*12)}</td><td>${fmt(S.cf*12)}</td><td>${fmt(R.cf*12)}</td></tr>
+    <tr><td>Cash-on-Cash Return</td><td>${B.coc===null?'∞':fmtP(B.coc)}</td><td>${fmtP(S.coc)}</td><td>${fmtP(R.coc)}</td></tr>
+    <tr><td>Cap Rate</td><td>${fmtP(B.capRate)}</td><td>${fmtP(S.capRate)}</td><td>${fmtP(R.capRate)}</td></tr>
+    <tr><td>Total Cash Invested</td><td>${fmt(B.totalCash)}</td><td>${fmt(S.totalCash)}</td><td>${fmt(R.totalCash)}</td></tr>
+    <tr><td>Effective Income / mo</td><td>${fmt(B.egi)}</td><td>${fmt(S.egi)}</td><td>${fmt(R.egi)}</td></tr>
+    <tr><td>Total Expenses / mo</td><td>${fmt(B.totalExp)}</td><td>${fmt(S.totalExp)}</td><td>${fmt(R.totalExp)}</td></tr>
+    <tr><td>DSCR</td><td>${(B.noi/B.pmt).toFixed(2)}x</td><td>${(S.noi/S.pmt).toFixed(2)}x</td><td>${(R.noi/R.pmt).toFixed(2)}x</td></tr>
+  </tbody>`;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  HUD FMR LOOKUP  (calls /api/fmr — token is server-side)
+// ══════════════════════════════════════════════════════════════════
+function onAddressInput() {
+  const z = (el('s-address').value.match(/\b(\d{5})(?:-\d{4})?\b/) || [])[1];
+  if (z) el('s-zip').value = z;
+}
+
+function fmrStatus(msg, type) {
+  const e = el('s-fmr-status');
+  e.style.display = 'block';
+  const c = {info:'#60a5fa',ok:'#4ade80',error:'#f87171',loading:'#fbbf24'};
+  e.innerHTML = `<span style="color:${c[type]||c.info}">${msg}</span>`;
+}
+
+async function fetchFmr() {
+  const zip = (el('s-zip').value.trim() || (el('s-address').value.match(/\b(\d{5})\b/)||[])[1] || '');
+  const br  = el('s-bedrooms').value;
+
+  if (!/^\d{5}$/.test(zip)) {
+    fmrStatus('⚠️ Enter a valid 5-digit ZIP code (or include it in the address).','error');
+    return;
+  }
+
+  const btn = el('s-fetch-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Loading…';
+  fmrStatus('Fetching HUD Fair Market Rents for ZIP ' + zip + '…', 'loading');
+
+  try {
+    const res  = await fetch(`/api/fmr?zip=${zip}`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      fmrStatus('❌ ' + (data.error || 'Unknown error from HUD lookup.'), 'error');
+      return;
+    }
+
+    const { fmr, areaName, year } = data;
+    const labels = { studio:'Studio', br1:'1 BR', br2:'2 BR', br3:'3 BR', br4:'4 BR' };
+    const selected = fmr[br] || 0;
+
+    // Auto-fill FMR field
+    el('s-fmr').value = selected;
+    el('s-live-badge').style.display = 'inline';
+    calcSec8();
+
+    // Show all-bedroom grid
+    el('s-fmr-results').style.display = 'block';
+    el('s-fmr-grid').innerHTML = Object.entries(fmr).map(([k, v]) => {
+      const active = k === br;
+      return `<div onclick="applyFmrVal(${v},'${k}')" style="background:${active?'#166534':'rgba(255,255,255,.04)'};border:1px solid ${active?'#22c55e':'rgba(201,168,76,.2)'};border-radius:8px;padding:10px;text-align:center;cursor:pointer;transition:all .2s" data-brkey="${k}">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:${active?'#4ade80':'#64748b'};margin-bottom:4px">${labels[k]}</div>
+        <div style="font-size:17px;font-weight:800;color:${active?'#4ade80':'#e2e8f0'}">${v?'$'+v.toLocaleString():'N/A'}</div>
+      </div>`;
+    }).join('');
+    el('s-fmr-area').textContent = `📍 ${areaName} · FY${year} HUD FMR · Click any tile to apply`;
+
+    fmrStatus(`✅ ${labels[br]} FMR for ${areaName}: $${selected.toLocaleString()}/mo (FY${year})`, 'ok');
+
+  } catch (err) {
+    fmrStatus('❌ Network error — check your connection.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📡 Fetch HUD Fair Market Rent';
+  }
+}
+
+function applyFmrVal(val, key) {
+  el('s-fmr').value = val;
+  el('s-live-badge').style.display = 'inline';
+  el('s-bedrooms').value = key;
+  // Update tile highlights
+  document.querySelectorAll('#s-fmr-grid > div').forEach(tile => {
+    const active = tile.dataset.brkey === key;
+    tile.style.background    = active ? '#166534' : 'rgba(255,255,255,.04)';
+    tile.style.borderColor   = active ? '#22c55e' : 'rgba(201,168,76,.2)';
+    tile.querySelector('div:first-child').style.color = active ? '#4ade80' : '#64748b';
+    tile.querySelector('div:last-child').style.color  = active ? '#4ade80' : '#e2e8f0';
+  });
+  calcSec8();
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  TAB SWITCHING
+// ══════════════════════════════════════════════════════════════════
+function azTab(name, tabEl) {
+  document.querySelectorAll('.az-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.az-page').forEach(p => p.classList.remove('active'));
+  tabEl.classList.add('active');
+  el('az-' + name).classList.add('active');
+  if (name === 'compare') calcCompare();
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════════
+calcBrrrr(); calcSec8(); calcFlip(); calcRental();
+</script>
+</body>
+</html>

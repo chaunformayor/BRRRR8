@@ -10,6 +10,7 @@ const authRoutes   = require('./routes/auth');
 const stripeRoutes = require('./routes/stripe');
 const courseRoutes = require('./routes/courses');
 const adminRoutes  = require('./routes/admin');
+const fmrRoutes    = require('./routes/fmr');
 const { initDiscordBot } = require('./discord/bot');
 
 const app  = express();
@@ -66,6 +67,7 @@ app.use('/api/auth',    authRoutes);
 app.use('/api/stripe',  stripeRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/admin',   adminRoutes);
+app.use('/api/fmr',     fmrRoutes);   // HUD Fair Market Rent proxy
 
 // ── Health check ──────────────────────────────────────────────────
 app.get('/api/health', (req, res) => res.json({ ok: true, ts: new Date().toISOString() }));
