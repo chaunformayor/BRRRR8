@@ -75,12 +75,15 @@ router.get('/', async (req, res) => {
     }
 
     // Pull a few comparable listings for context
-    const listings = (data.listings || data.comparables || []).slice(0, 5).map(l => ({
+    // Rentcast returns comparables in data.comparables; each comp's rent is data.price
+    const listings = (data.comparables || data.listings || []).slice(0, 5).map(l => ({
       address:   l.formattedAddress || l.address || '',
       rent:      l.price            || l.rent    || 0,
       bedrooms:  l.bedrooms         || 0,
       bathrooms: l.bathrooms        || 0,
       distance:  l.distance         || null,
+      daysOnMarket: l.daysOnMarket  || null,
+      correlation:  l.correlation   || null,
     }));
 
     const payload = {

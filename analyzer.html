@@ -1207,9 +1207,10 @@ async function fetchRentEstimate() {
       el('r-rent-comps').style.display = 'block';
       el('r-rent-comps-list').innerHTML = listings.map(l => `
         <div data-rentval="${l.rent}" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:10px;cursor:pointer">
-          <div style="font-size:12px;color:#e2e8f0;font-weight:600;margin-bottom:2px">$${l.rent.toLocaleString()}/mo</div>
-          <div style="font-size:11px;color:#64748b">${l.bedrooms}BR${l.bathrooms?'/'+l.bathrooms+'BA':''} ${l.distance ? '· '+l.distance.toFixed(1)+'mi away' : ''}</div>
-          <div style="font-size:11px;color:#64748b;margin-top:2px">${l.address}</div>
+          <div style="font-size:13px;color:#e2e8f0;font-weight:700;margin-bottom:3px">$${l.rent.toLocaleString()}/mo</div>
+          <div style="font-size:11px;color:#94a3b8">${l.bedrooms}BR${l.bathrooms ? ' / '+l.bathrooms+'BA' : ''}${l.distance ? ' · '+l.distance.toFixed(2)+'mi' : ''}</div>
+          <div style="font-size:11px;color:#64748b;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.address}</div>
+          ${l.daysOnMarket ? `<div style="font-size:10px;color:#64748b;margin-top:2px">${l.daysOnMarket}d on market${l.correlation ? ' · '+(l.correlation*100).toFixed(0)+'% match' : ''}</div>` : ''}
         </div>`).join('');
     }
 
