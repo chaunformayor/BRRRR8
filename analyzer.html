@@ -263,11 +263,11 @@
 
   <!-- TABS -->
   <div class="az-tabs">
-    <div class="az-tab active" onclick="azTab('brrrr',this)">🔄 BRRRR <span class="badge" style="background:#1e3a5f;color:#60a5fa">Strategy</span></div>
-    <div class="az-tab" onclick="azTab('sec8',this)">🏛 Section 8 <span class="badge" style="background:#14532d;color:#4ade80">Gov</span></div>
-    <div class="az-tab" onclick="azTab('flip',this)">🔨 Fix &amp; Flip <span class="badge" style="background:#431407;color:#fb923c">Short-term</span></div>
-    <div class="az-tab" onclick="azTab('rental',this)">🏘 Market Rental <span class="badge" style="background:#2e1065;color:#c084fc">Long-term</span></div>
-    <div class="az-tab" onclick="azTab('compare',this)">📊 Compare <span class="badge" style="background:#1e293b;color:#94a3b8">All</span></div>
+    <div class="az-tab active">🔄 BRRRR <span class="badge" style="background:#1e3a5f;color:#60a5fa">Strategy</span></div>
+    <div class="az-tab">🏛 Section 8 <span class="badge" style="background:#14532d;color:#4ade80">Gov</span></div>
+    <div class="az-tab">🔨 Fix &amp; Flip <span class="badge" style="background:#431407;color:#fb923c">Short-term</span></div>
+    <div class="az-tab">🏘 Market Rental <span class="badge" style="background:#2e1065;color:#c084fc">Long-term</span></div>
+    <div class="az-tab">📊 Compare <span class="badge" style="background:#1e293b;color:#94a3b8">All</span></div>
   </div>
 
   <!-- ══════ BRRRR ══════ -->
@@ -277,31 +277,31 @@
       <div>
         <div class="az-card">
           <h3>📦 Purchase &amp; Rehab</h3>
-          <div class="az-field"><label>Purchase Price</label><div class="px"><span>$</span><input id="b-purchase" type="number" value="120000" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>Rehab Cost</label><div class="px"><span>$</span><input id="b-rehab" type="number" value="35000" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>Closing Costs (buy)</label><div class="px"><span>$</span><input id="b-closing-buy" type="number" value="3000" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>Holding Costs (rehab period)</label><div class="px"><span>$</span><input id="b-holding" type="number" value="4000" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Purchase Price</label><div class="px"><span>$</span><input id="b-purchase" type="number" value="120000"></div></div>
+          <div class="az-field"><label>Rehab Cost</label><div class="px"><span>$</span><input id="b-rehab" type="number" value="35000"></div></div>
+          <div class="az-field"><label>Closing Costs (buy)</label><div class="px"><span>$</span><input id="b-closing-buy" type="number" value="3000"></div></div>
+          <div class="az-field"><label>Holding Costs (rehab period)</label><div class="px"><span>$</span><input id="b-holding" type="number" value="4000"></div></div>
         </div>
         <div class="az-card" style="margin-top:16px">
           <h3>🔄 Refinance</h3>
-          <div class="az-field"><label>After-Repair Value (ARV)</label><div class="px"><span>$</span><input id="b-arv" type="number" value="220000" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>Refi LTV %</label><div class="sx"><span>%</span><input id="b-ltv" type="number" value="75" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>Refi Interest Rate %</label><div class="sx"><span>%</span><input id="b-rate" type="number" value="7.5" step="0.1" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>Loan Term (years)</label><input id="b-term" type="number" value="30" oninput="calcBrrrr()"></div>
-          <div class="az-field"><label>Refi Closing Costs</label><div class="px"><span>$</span><input id="b-refi-close" type="number" value="4000" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>After-Repair Value (ARV)</label><div class="px"><span>$</span><input id="b-arv" type="number" value="220000"></div></div>
+          <div class="az-field"><label>Refi LTV %</label><div class="sx"><span>%</span><input id="b-ltv" type="number" value="75"></div></div>
+          <div class="az-field"><label>Refi Interest Rate %</label><div class="sx"><span>%</span><input id="b-rate" type="number" value="7.5" step="0.1"></div></div>
+          <div class="az-field"><label>Loan Term (years)</label><input id="b-term" type="number" value="30"></div>
+          <div class="az-field"><label>Refi Closing Costs</label><div class="px"><span>$</span><input id="b-refi-close" type="number" value="4000"></div></div>
         </div>
       </div>
       <div>
         <div class="az-card">
           <h3>🏘 Rental Income &amp; Expenses</h3>
-          <div class="az-field"><label>Monthly Rent</label><div class="px"><span>$</span><input id="b-rent" type="number" value="1800" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>Vacancy Rate %</label><div class="sx"><span>%</span><input id="b-vacancy" type="number" value="5" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>Property Management %</label><div class="sx"><span>%</span><input id="b-mgmt" type="number" value="10" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>Property Tax / mo</label><div class="px"><span>$</span><input id="b-tax" type="number" value="150" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>Insurance / mo</label><div class="px"><span>$</span><input id="b-ins" type="number" value="100" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>Maintenance / mo</label><div class="px"><span>$</span><input id="b-maint" type="number" value="120" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>CapEx Reserve / mo</label><div class="px"><span>$</span><input id="b-capex" type="number" value="100" oninput="calcBrrrr()"></div></div>
-          <div class="az-field"><label>Other Expenses / mo</label><div class="px"><span>$</span><input id="b-other" type="number" value="50" oninput="calcBrrrr()"></div></div>
+          <div class="az-field"><label>Monthly Rent</label><div class="px"><span>$</span><input id="b-rent" type="number" value="1800"></div></div>
+          <div class="az-field"><label>Vacancy Rate %</label><div class="sx"><span>%</span><input id="b-vacancy" type="number" value="5"></div></div>
+          <div class="az-field"><label>Property Management %</label><div class="sx"><span>%</span><input id="b-mgmt" type="number" value="10"></div></div>
+          <div class="az-field"><label>Property Tax / mo</label><div class="px"><span>$</span><input id="b-tax" type="number" value="150"></div></div>
+          <div class="az-field"><label>Insurance / mo</label><div class="px"><span>$</span><input id="b-ins" type="number" value="100"></div></div>
+          <div class="az-field"><label>Maintenance / mo</label><div class="px"><span>$</span><input id="b-maint" type="number" value="120"></div></div>
+          <div class="az-field"><label>CapEx Reserve / mo</label><div class="px"><span>$</span><input id="b-capex" type="number" value="100"></div></div>
+          <div class="az-field"><label>Other Expenses / mo</label><div class="px"><span>$</span><input id="b-other" type="number" value="50"></div></div>
         </div>
       </div>
     </div>
@@ -325,7 +325,7 @@
         <div>
           <div class="az-field">
             <label>Property Address</label>
-            <input id="s-address" type="text" placeholder="e.g. 1234 Main St, St. Louis, MO 63101" oninput="onAddressInput()">
+            <input id="s-address" type="text" placeholder="e.g. 1234 Main St, St. Louis, MO 63101">
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
             <div class="az-field" style="margin-bottom:0">
@@ -347,7 +347,7 @@
           </div>
         </div>
         <div style="display:flex;flex-direction:column;justify-content:flex-end">
-          <button class="az-btn-fetch" id="s-fetch-btn" onclick="fetchFmr()">📡 Fetch HUD Fair Market Rent</button>
+          <button class="az-btn-fetch" id="s-fetch-btn">📡 Fetch HUD Fair Market Rent</button>
           <div id="s-fmr-status" style="font-size:13px;margin-top:10px;display:none"></div>
         </div>
       </div>
@@ -363,33 +363,33 @@
       <div>
         <div class="az-card">
           <h3>📦 Acquisition</h3>
-          <div class="az-field"><label>Purchase Price</label><div class="px"><span>$</span><input id="s-purchase" type="number" value="130000" oninput="calcSec8()"></div></div>
-          <div class="az-field"><label>Down Payment %</label><div class="sx"><span>%</span><input id="s-dp" type="number" value="20" oninput="calcSec8()"></div></div>
-          <div class="az-field"><label>Interest Rate %</label><div class="sx"><span>%</span><input id="s-rate" type="number" value="7.0" step="0.1" oninput="calcSec8()"></div></div>
-          <div class="az-field"><label>Loan Term (years)</label><input id="s-term" type="number" value="30" oninput="calcSec8()"></div>
-          <div class="az-field"><label>Closing Costs</label><div class="px"><span>$</span><input id="s-closing" type="number" value="3500" oninput="calcSec8()"></div></div>
-          <div class="az-field"><label>Rehab / Inspection Repairs</label><div class="px"><span>$</span><input id="s-rehab" type="number" value="8000" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Purchase Price</label><div class="px"><span>$</span><input id="s-purchase" type="number" value="130000"></div></div>
+          <div class="az-field"><label>Down Payment %</label><div class="sx"><span>%</span><input id="s-dp" type="number" value="20"></div></div>
+          <div class="az-field"><label>Interest Rate %</label><div class="sx"><span>%</span><input id="s-rate" type="number" value="7.0" step="0.1"></div></div>
+          <div class="az-field"><label>Loan Term (years)</label><input id="s-term" type="number" value="30"></div>
+          <div class="az-field"><label>Closing Costs</label><div class="px"><span>$</span><input id="s-closing" type="number" value="3500"></div></div>
+          <div class="az-field"><label>Rehab / Inspection Repairs</label><div class="px"><span>$</span><input id="s-rehab" type="number" value="8000"></div></div>
         </div>
         <div class="az-card" style="margin-top:16px">
           <h3>🏛 Section 8 Rent</h3>
           <div class="az-field">
             <label>Fair Market Rent (FMR) <span id="s-live-badge" style="display:none;font-size:10px;background:#166534;color:#4ade80;padding:1px 7px;border-radius:20px;margin-left:6px;font-weight:700">LIVE HUD</span></label>
-            <div class="px"><span>$</span><input id="s-fmr" type="number" value="1600" oninput="calcSec8()"></div>
+            <div class="px"><span>$</span><input id="s-fmr" type="number" value="1600"></div>
           </div>
-          <div class="az-field"><label>Tenant Portion / mo</label><div class="px"><span>$</span><input id="s-tenant" type="number" value="200" oninput="calcSec8()"></div></div>
-          <div class="az-field"><label>Vacancy Rate %</label><div class="sx"><span>%</span><input id="s-vacancy" type="number" value="2" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Tenant Portion / mo</label><div class="px"><span>$</span><input id="s-tenant" type="number" value="200"></div></div>
+          <div class="az-field"><label>Vacancy Rate %</label><div class="sx"><span>%</span><input id="s-vacancy" type="number" value="2"></div></div>
         </div>
       </div>
       <div>
         <div class="az-card">
           <h3>💸 Monthly Expenses</h3>
-          <div class="az-field"><label>Property Management %</label><div class="sx"><span>%</span><input id="s-mgmt" type="number" value="10" oninput="calcSec8()"></div></div>
-          <div class="az-field"><label>Property Tax / mo</label><div class="px"><span>$</span><input id="s-tax" type="number" value="160" oninput="calcSec8()"></div></div>
-          <div class="az-field"><label>Insurance / mo</label><div class="px"><span>$</span><input id="s-ins" type="number" value="120" oninput="calcSec8()"></div></div>
-          <div class="az-field"><label>Maintenance / mo</label><div class="px"><span>$</span><input id="s-maint" type="number" value="150" oninput="calcSec8()"></div></div>
-          <div class="az-field"><label>CapEx Reserve / mo</label><div class="px"><span>$</span><input id="s-capex" type="number" value="100" oninput="calcSec8()"></div></div>
-          <div class="az-field"><label>Compliance / Inspections / mo</label><div class="px"><span>$</span><input id="s-comply" type="number" value="30" oninput="calcSec8()"></div></div>
-          <div class="az-field"><label>Other Expenses / mo</label><div class="px"><span>$</span><input id="s-other" type="number" value="40" oninput="calcSec8()"></div></div>
+          <div class="az-field"><label>Property Management %</label><div class="sx"><span>%</span><input id="s-mgmt" type="number" value="10"></div></div>
+          <div class="az-field"><label>Property Tax / mo</label><div class="px"><span>$</span><input id="s-tax" type="number" value="160"></div></div>
+          <div class="az-field"><label>Insurance / mo</label><div class="px"><span>$</span><input id="s-ins" type="number" value="120"></div></div>
+          <div class="az-field"><label>Maintenance / mo</label><div class="px"><span>$</span><input id="s-maint" type="number" value="150"></div></div>
+          <div class="az-field"><label>CapEx Reserve / mo</label><div class="px"><span>$</span><input id="s-capex" type="number" value="100"></div></div>
+          <div class="az-field"><label>Compliance / Inspections / mo</label><div class="px"><span>$</span><input id="s-comply" type="number" value="30"></div></div>
+          <div class="az-field"><label>Other Expenses / mo</label><div class="px"><span>$</span><input id="s-other" type="number" value="40"></div></div>
         </div>
       </div>
     </div>
@@ -409,30 +409,30 @@
       <div>
         <div class="az-card">
           <h3>📦 Purchase &amp; Financing</h3>
-          <div class="az-field"><label>Purchase Price</label><div class="px"><span>$</span><input id="f-purchase" type="number" value="100000" oninput="calcFlip()"></div></div>
-          <div class="az-field"><label>Closing Costs (buy)</label><div class="px"><span>$</span><input id="f-closing-buy" type="number" value="2500" oninput="calcFlip()"></div></div>
-          <div class="az-field"><label>Hard Money Rate %</label><div class="sx"><span>%</span><input id="f-rate" type="number" value="12" step="0.1" oninput="calcFlip()"></div></div>
-          <div class="az-field"><label>Loan Amount</label><div class="px"><span>$</span><input id="f-loan" type="number" value="80000" oninput="calcFlip()"></div></div>
-          <div class="az-field"><label>Loan Points %</label><div class="sx"><span>%</span><input id="f-points" type="number" value="2" step="0.5" oninput="calcFlip()"></div></div>
+          <div class="az-field"><label>Purchase Price</label><div class="px"><span>$</span><input id="f-purchase" type="number" value="100000"></div></div>
+          <div class="az-field"><label>Closing Costs (buy)</label><div class="px"><span>$</span><input id="f-closing-buy" type="number" value="2500"></div></div>
+          <div class="az-field"><label>Hard Money Rate %</label><div class="sx"><span>%</span><input id="f-rate" type="number" value="12" step="0.1"></div></div>
+          <div class="az-field"><label>Loan Amount</label><div class="px"><span>$</span><input id="f-loan" type="number" value="80000"></div></div>
+          <div class="az-field"><label>Loan Points %</label><div class="sx"><span>%</span><input id="f-points" type="number" value="2" step="0.5"></div></div>
         </div>
         <div class="az-card" style="margin-top:16px">
           <h3>🔨 Rehab</h3>
-          <div class="az-field"><label>Rehab Budget</label><div class="px"><span>$</span><input id="f-rehab" type="number" value="40000" oninput="calcFlip()"></div></div>
-          <div class="az-field"><label>Contingency %</label><div class="sx"><span>%</span><input id="f-contingency" type="number" value="10" oninput="calcFlip()"></div></div>
-          <div class="az-field"><label>Project Duration (months)</label><input id="f-months" type="number" value="5" oninput="calcFlip()"></div>
+          <div class="az-field"><label>Rehab Budget</label><div class="px"><span>$</span><input id="f-rehab" type="number" value="40000"></div></div>
+          <div class="az-field"><label>Contingency %</label><div class="sx"><span>%</span><input id="f-contingency" type="number" value="10"></div></div>
+          <div class="az-field"><label>Project Duration (months)</label><input id="f-months" type="number" value="5"></div>
         </div>
       </div>
       <div>
         <div class="az-card">
           <h3>🏷 Sale</h3>
-          <div class="az-field"><label>After-Repair Value (ARV)</label><div class="px"><span>$</span><input id="f-arv" type="number" value="200000" oninput="calcFlip()"></div></div>
-          <div class="az-field"><label>Agent Commission %</label><div class="sx"><span>%</span><input id="f-commission" type="number" value="6" step="0.5" oninput="calcFlip()"></div></div>
-          <div class="az-field"><label>Closing Costs (sell)</label><div class="px"><span>$</span><input id="f-closing-sell" type="number" value="2000" oninput="calcFlip()"></div></div>
-          <div class="az-field"><label>Holding Costs / mo</label><div class="px"><span>$</span><input id="f-holding" type="number" value="600" oninput="calcFlip()"></div></div>
+          <div class="az-field"><label>After-Repair Value (ARV)</label><div class="px"><span>$</span><input id="f-arv" type="number" value="200000"></div></div>
+          <div class="az-field"><label>Agent Commission %</label><div class="sx"><span>%</span><input id="f-commission" type="number" value="6" step="0.5"></div></div>
+          <div class="az-field"><label>Closing Costs (sell)</label><div class="px"><span>$</span><input id="f-closing-sell" type="number" value="2000"></div></div>
+          <div class="az-field"><label>Holding Costs / mo</label><div class="px"><span>$</span><input id="f-holding" type="number" value="600"></div></div>
         </div>
         <div class="az-card" style="margin-top:16px">
           <h3>💼 Tax</h3>
-          <div class="az-field"><label>Short-Term Cap Gains Rate %</label><div class="sx"><span>%</span><input id="f-tax" type="number" value="25" oninput="calcFlip()"></div></div>
+          <div class="az-field"><label>Short-Term Cap Gains Rate %</label><div class="sx"><span>%</span><input id="f-tax" type="number" value="25"></div></div>
           <p style="font-size:12px;color:#64748b;margin-top:6px">Short-term gains taxed as ordinary income. Consult a CPA.</p>
         </div>
       </div>
@@ -453,31 +453,31 @@
       <div>
         <div class="az-card">
           <h3>📦 Acquisition</h3>
-          <div class="az-field"><label>Purchase Price</label><div class="px"><span>$</span><input id="r-purchase" type="number" value="180000" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>Down Payment %</label><div class="sx"><span>%</span><input id="r-dp" type="number" value="20" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>Interest Rate %</label><div class="sx"><span>%</span><input id="r-rate" type="number" value="7.25" step="0.1" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>Loan Term (years)</label><input id="r-term" type="number" value="30" oninput="calcRental()"></div>
-          <div class="az-field"><label>Closing Costs</label><div class="px"><span>$</span><input id="r-closing" type="number" value="4000" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>Immediate Repairs</label><div class="px"><span>$</span><input id="r-repairs" type="number" value="5000" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Purchase Price</label><div class="px"><span>$</span><input id="r-purchase" type="number" value="180000"></div></div>
+          <div class="az-field"><label>Down Payment %</label><div class="sx"><span>%</span><input id="r-dp" type="number" value="20"></div></div>
+          <div class="az-field"><label>Interest Rate %</label><div class="sx"><span>%</span><input id="r-rate" type="number" value="7.25" step="0.1"></div></div>
+          <div class="az-field"><label>Loan Term (years)</label><input id="r-term" type="number" value="30"></div>
+          <div class="az-field"><label>Closing Costs</label><div class="px"><span>$</span><input id="r-closing" type="number" value="4000"></div></div>
+          <div class="az-field"><label>Immediate Repairs</label><div class="px"><span>$</span><input id="r-repairs" type="number" value="5000"></div></div>
         </div>
         <div class="az-card" style="margin-top:16px">
           <h3>📈 Growth Assumptions</h3>
-          <div class="az-field"><label>Annual Appreciation %</label><div class="sx"><span>%</span><input id="r-appre" type="number" value="3" step="0.5" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>Annual Rent Growth %</label><div class="sx"><span>%</span><input id="r-rent-growth" type="number" value="2" step="0.5" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>Projection (years)</label><input id="r-years" type="number" value="10" min="1" max="30" oninput="calcRental()"></div>
+          <div class="az-field"><label>Annual Appreciation %</label><div class="sx"><span>%</span><input id="r-appre" type="number" value="3" step="0.5"></div></div>
+          <div class="az-field"><label>Annual Rent Growth %</label><div class="sx"><span>%</span><input id="r-rent-growth" type="number" value="2" step="0.5"></div></div>
+          <div class="az-field"><label>Projection (years)</label><input id="r-years" type="number" value="10" min="1" max="30"></div>
         </div>
       </div>
       <div>
         <div class="az-card">
           <h3>🏘 Income &amp; Expenses</h3>
-          <div class="az-field"><label>Monthly Rent</label><div class="px"><span>$</span><input id="r-rent" type="number" value="1900" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>Vacancy Rate %</label><div class="sx"><span>%</span><input id="r-vacancy" type="number" value="5" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>Property Management %</label><div class="sx"><span>%</span><input id="r-mgmt" type="number" value="10" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>Property Tax / mo</label><div class="px"><span>$</span><input id="r-tax" type="number" value="180" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>Insurance / mo</label><div class="px"><span>$</span><input id="r-ins" type="number" value="110" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>Maintenance / mo</label><div class="px"><span>$</span><input id="r-maint" type="number" value="130" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>CapEx Reserve / mo</label><div class="px"><span>$</span><input id="r-capex" type="number" value="120" oninput="calcRental()"></div></div>
-          <div class="az-field"><label>Other Expenses / mo</label><div class="px"><span>$</span><input id="r-other" type="number" value="50" oninput="calcRental()"></div></div>
+          <div class="az-field"><label>Monthly Rent</label><div class="px"><span>$</span><input id="r-rent" type="number" value="1900"></div></div>
+          <div class="az-field"><label>Vacancy Rate %</label><div class="sx"><span>%</span><input id="r-vacancy" type="number" value="5"></div></div>
+          <div class="az-field"><label>Property Management %</label><div class="sx"><span>%</span><input id="r-mgmt" type="number" value="10"></div></div>
+          <div class="az-field"><label>Property Tax / mo</label><div class="px"><span>$</span><input id="r-tax" type="number" value="180"></div></div>
+          <div class="az-field"><label>Insurance / mo</label><div class="px"><span>$</span><input id="r-ins" type="number" value="110"></div></div>
+          <div class="az-field"><label>Maintenance / mo</label><div class="px"><span>$</span><input id="r-maint" type="number" value="130"></div></div>
+          <div class="az-field"><label>CapEx Reserve / mo</label><div class="px"><span>$</span><input id="r-capex" type="number" value="120"></div></div>
+          <div class="az-field"><label>Other Expenses / mo</label><div class="px"><span>$</span><input id="r-other" type="number" value="50"></div></div>
         </div>
       </div>
     </div>
@@ -1064,7 +1064,7 @@ async function fetchFmr() {
     el('s-fmr-results').style.display = 'block';
     el('s-fmr-grid').innerHTML = Object.entries(fmr).map(([k, v]) => {
       const active = k === br;
-      return `<div onclick="applyFmrVal(${v},'${k}')" style="background:${active?'#166534':'rgba(255,255,255,.04)'};border:1px solid ${active?'#22c55e':'rgba(201,168,76,.2)'};border-radius:8px;padding:10px;text-align:center;cursor:pointer;transition:all .2s" data-brkey="${k}">
+      return `<div data-fmrval="${v}" data-brkey="${k}" style="background:${active?'#166534':'rgba(255,255,255,.04)'};border:1px solid ${active?'#22c55e':'rgba(201,168,76,.2)'};border-radius:8px;padding:10px;text-align:center;cursor:pointer;transition:all .2s">
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:${active?'#4ade80':'#64748b'};margin-bottom:4px">${labels[k]}</div>
         <div style="font-size:17px;font-weight:800;color:${active?'#4ade80':'#e2e8f0'}">${v?'$'+v.toLocaleString():'N/A'}</div>
       </div>`;
@@ -1108,8 +1108,35 @@ function azTab(name, tabEl) {
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  INIT
+//  INIT — wire all events via addEventListener (no inline handlers)
 // ══════════════════════════════════════════════════════════════════
+
+// ── Tab switching ──────────────────────────────────────────────────
+const TAB_NAMES = ['brrrr', 'sec8', 'flip', 'rental', 'compare'];
+document.querySelectorAll('.az-tab').forEach((tab, i) => {
+  tab.addEventListener('click', () => azTab(TAB_NAMES[i], tab));
+});
+
+// ── Input listeners (one per scenario page) ───────────────────────
+document.querySelectorAll('#az-brrrr input').forEach(inp => inp.addEventListener('input', calcBrrrr));
+document.querySelectorAll('#az-sec8 input, #az-sec8 select').forEach(inp => inp.addEventListener('input', calcSec8));
+document.querySelectorAll('#az-flip input').forEach(inp => inp.addEventListener('input', calcFlip));
+document.querySelectorAll('#az-rental input').forEach(inp => inp.addEventListener('input', calcRental));
+
+// ── Address → auto-extract ZIP ────────────────────────────────────
+el('s-address').addEventListener('input', onAddressInput);
+
+// ── Fetch HUD FMR button ──────────────────────────────────────────
+el('s-fetch-btn').addEventListener('click', fetchFmr);
+
+// ── FMR tile clicks (delegated — tiles are dynamically generated) ─
+el('s-fmr-grid').addEventListener('click', e => {
+  const tile = e.target.closest('[data-brkey]');
+  if (!tile) return;
+  applyFmrVal(parseInt(tile.dataset.fmrval), tile.dataset.brkey);
+});
+
+// ── Initial calculations ──────────────────────────────────────────
 calcBrrrr(); calcSec8(); calcFlip(); calcRental();
 </script>
 </body>
