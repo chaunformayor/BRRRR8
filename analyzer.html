@@ -449,6 +449,55 @@
   <!-- ══════ MARKET RENTAL ══════ -->
   <div id="az-rental" class="az-page">
     <div class="az-section-title">Market Rental — Buy &amp; Hold</div>
+
+    <!-- Rentcast Market Rent Lookup -->
+    <div class="az-hud-panel" style="border-color:rgba(192,132,252,.3);background:rgba(192,132,252,.06)">
+      <h3 style="color:#c084fc">🏘 Live Market Rent Lookup — Powered by Rentcast</h3>
+      <div class="az-grid-2" style="gap:14px">
+        <div>
+          <div class="az-field">
+            <label>Property Address</label>
+            <input id="r-address" type="text" placeholder="e.g. 4234 Flad Ave, St. Louis, MO 63110">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="az-field" style="margin-bottom:0">
+              <label>Bedrooms</label>
+              <select id="r-bedrooms">
+                <option value="0">Studio</option>
+                <option value="1">1 Bedroom</option>
+                <option value="2">2 Bedrooms</option>
+                <option value="3" selected>3 Bedrooms</option>
+                <option value="4">4 Bedrooms</option>
+              </select>
+            </div>
+            <div class="az-field" style="margin-bottom:0">
+              <label>Property Type</label>
+              <select id="r-proptype">
+                <option value="Single Family" selected>Single Family</option>
+                <option value="Multi-Family">Multi-Family</option>
+                <option value="Condo">Condo</option>
+                <option value="Townhouse">Townhouse</option>
+                <option value="Apartment">Apartment</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:flex-end">
+          <button class="az-btn-fetch" id="r-fetch-btn" style="background:#4c1d95;color:#c084fc;border-color:rgba(192,132,252,.4)">🏘 Fetch Market Rent Estimate</button>
+          <div id="r-rent-status" style="font-size:13px;margin-top:10px;display:none"></div>
+        </div>
+      </div>
+      <!-- Results -->
+      <div id="r-rent-results" style="display:none;margin-top:16px">
+        <div id="r-rent-summary" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px"></div>
+        <div id="r-rent-comps" style="display:none">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#c084fc;margin-bottom:8px">Nearby Rental Comps</div>
+          <div id="r-rent-comps-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px"></div>
+        </div>
+        <div id="r-rent-area" style="font-size:11px;color:#64748b;margin-top:8px"></div>
+      </div>
+    </div>
+
     <div class="az-grid-2">
       <div>
         <div class="az-card">
@@ -470,7 +519,10 @@
       <div>
         <div class="az-card">
           <h3>🏘 Income &amp; Expenses</h3>
-          <div class="az-field"><label>Monthly Rent</label><div class="px"><span>$</span><input id="r-rent" type="number" value="1900"></div></div>
+          <div class="az-field">
+            <label>Monthly Rent <span id="r-rent-badge" style="display:none;font-size:10px;background:#4c1d95;color:#c084fc;padding:1px 7px;border-radius:20px;margin-left:6px;font-weight:700">LIVE RENTCAST</span></label>
+            <div class="px"><span>$</span><input id="r-rent" type="number" value="1900"></div>
+          </div>
           <div class="az-field"><label>Vacancy Rate %</label><div class="sx"><span>%</span><input id="r-vacancy" type="number" value="5"></div></div>
           <div class="az-field"><label>Property Management %</label><div class="sx"><span>%</span><input id="r-mgmt" type="number" value="10"></div></div>
           <div class="az-field"><label>Property Tax / mo</label><div class="px"><span>$</span><input id="r-tax" type="number" value="180"></div></div>
@@ -1097,6 +1149,89 @@ function applyFmrVal(val, key) {
 }
 
 // ══════════════════════════════════════════════════════════════════
+//  RENTCAST MARKET RENT LOOKUP
+// ══════════════════════════════════════════════════════════════════
+function rentStatus(msg, type) {
+  const e = el('r-rent-status');
+  e.style.display = 'block';
+  const c = { info:'#c084fc', ok:'#4ade80', error:'#f87171', loading:'#fbbf24' };
+  e.innerHTML = `<span style="color:${c[type]||c.info}">${msg}</span>`;
+}
+
+async function fetchRentEstimate() {
+  const address  = (el('r-address').value || '').trim();
+  const bedrooms = el('r-bedrooms').value;
+  const proptype = el('r-proptype').value;
+
+  if (!address || address.length < 10) {
+    rentStatus('⚠️ Enter a full property address to look up market rent.', 'error');
+    return;
+  }
+
+  const btn = el('r-fetch-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Fetching…';
+  rentStatus('Looking up market rent for ' + address + '…', 'loading');
+
+  try {
+    const params = new URLSearchParams({ address, bedrooms, propertyType: proptype });
+    const res  = await fetch(`/api/rentcast?${params}`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      rentStatus('❌ ' + (data.error || 'Could not fetch rent estimate.'), 'error');
+      return;
+    }
+
+    const { estimate, rangeLow, rangeHigh, listings } = data;
+
+    // Auto-fill the monthly rent field
+    el('r-rent').value = estimate;
+    el('r-rent-badge').style.display = 'inline';
+    calcRental();
+
+    // Show summary tiles
+    el('r-rent-results').style.display = 'block';
+    el('r-rent-summary').innerHTML = [
+      { label: 'Rent Estimate', value: estimate,  color: '#c084fc', active: true },
+      { label: 'Range Low',     value: rangeLow,  color: '#94a3b8' },
+      { label: 'Range High',    value: rangeHigh, color: '#94a3b8' },
+    ].map(t => `
+      <div data-rentval="${t.value}" style="background:${t.active?'rgba(76,29,149,.5)':'rgba(255,255,255,.04)'};border:1px solid ${t.active?'rgba(192,132,252,.6)':'rgba(201,168,76,.15)'};border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:all .2s">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:${t.color};margin-bottom:5px">${t.label}</div>
+        <div style="font-size:20px;font-weight:800;color:${t.active?'#c084fc':'#e2e8f0'}">$${t.value.toLocaleString()}/mo</div>
+      </div>`).join('');
+
+    // Show comps
+    if (listings && listings.length > 0) {
+      el('r-rent-comps').style.display = 'block';
+      el('r-rent-comps-list').innerHTML = listings.map(l => `
+        <div data-rentval="${l.rent}" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:10px;cursor:pointer">
+          <div style="font-size:12px;color:#e2e8f0;font-weight:600;margin-bottom:2px">$${l.rent.toLocaleString()}/mo</div>
+          <div style="font-size:11px;color:#64748b">${l.bedrooms}BR${l.bathrooms?'/'+l.bathrooms+'BA':''} ${l.distance ? '· '+l.distance.toFixed(1)+'mi away' : ''}</div>
+          <div style="font-size:11px;color:#64748b;margin-top:2px">${l.address}</div>
+        </div>`).join('');
+    }
+
+    el('r-rent-area').textContent = `📍 ${address} · Rentcast AVM · Click any tile or comp to apply`;
+    rentStatus(`✅ Market rent estimate: $${estimate.toLocaleString()}/mo (range $${rangeLow.toLocaleString()}–$${rangeHigh.toLocaleString()})`, 'ok');
+
+  } catch (err) {
+    rentStatus('❌ Network error — check your connection.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🏘 Fetch Market Rent Estimate';
+  }
+}
+
+function applyRentVal(val) {
+  if (!val || isNaN(val)) return;
+  el('r-rent').value = val;
+  el('r-rent-badge').style.display = 'inline';
+  calcRental();
+}
+
+// ══════════════════════════════════════════════════════════════════
 //  TAB SWITCHING
 // ══════════════════════════════════════════════════════════════════
 function azTab(name, tabEl) {
@@ -1128,6 +1263,17 @@ el('s-address').addEventListener('input', onAddressInput);
 
 // ── Fetch HUD FMR button ──────────────────────────────────────────
 el('s-fetch-btn').addEventListener('click', fetchFmr);
+
+// ── Rentcast market rent button ───────────────────────────────────
+el('r-fetch-btn').addEventListener('click', fetchRentEstimate);
+
+// ── Rentcast summary tiles + comp clicks (delegated) ─────────────
+['r-rent-summary', 'r-rent-comps-list'].forEach(id => {
+  el(id).addEventListener('click', e => {
+    const tile = e.target.closest('[data-rentval]');
+    if (tile) applyRentVal(parseInt(tile.dataset.rentval));
+  });
+});
 
 // ── FMR tile clicks (delegated — tiles are dynamically generated) ─
 el('s-fmr-grid').addEventListener('click', e => {
