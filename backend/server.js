@@ -28,13 +28,13 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc:      ["'self'"],
-      scriptSrc:       ["'self'", "'unsafe-inline'", 'https://js.stripe.com'],
+      scriptSrc:       ["'self'", "'unsafe-inline'", 'https://js.stripe.com', 'https://f.convertkit.com'],
       scriptSrcAttr:   ["'unsafe-inline'"],   // allow onclick/oninput handlers (analyzer.html)
       styleSrc:        ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       fontSrc:         ["'self'", 'https://fonts.gstatic.com'],
       imgSrc:          ["'self'", 'data:', 'https:', 'blob:'],
       frameSrc:        ["'self'", 'https://js.stripe.com', 'https://iframe.mediadelivery.net'],
-      connectSrc:      ["'self'", 'https://*.supabase.co', 'https://api.stripe.com']
+      connectSrc:      ["'self'", 'https://*.supabase.co', 'https://api.stripe.com', 'https://app.kit.com']
     }
   }
 }));
