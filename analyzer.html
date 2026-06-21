@@ -589,6 +589,20 @@
 
 <script src="js/main.js"></script>
 <script>
+// ── Auth guard ────────────────────────────────────────────────────
+document.body.style.display = 'none';
+fetch('/api/auth/me', { credentials: 'include' })
+  .then(function(r) {
+    if (!r.ok) throw new Error('not authed');
+    return r.json();
+  })
+  .then(function() {
+    document.body.style.display = '';
+  })
+  .catch(function() {
+    window.location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname);
+  });
+
 // ═══════════════════════════════════════════════════════════════════
 //  BRRRR8 ACADEMY — DEAL ANALYZER  (analyzer.html)
 // ═══════════════════════════════════════════════════════════════════
