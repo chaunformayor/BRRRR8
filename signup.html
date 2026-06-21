@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Free Account — BRRRR⁸ Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body { background: var(--navy); min-height: 100vh; display: flex; flex-direction: column; }
+
+    .signup-shell {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8) var(--space-4);
+    }
+
+    .signup-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: var(--space-10) var(--space-8);
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .signup-logo {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: var(--text-2xl);
+      color: var(--navy);
+      text-decoration: none;
+      display: block;
+      margin-bottom: var(--space-6);
+    }
+    .signup-logo sup { color: var(--gold); font-size: 0.65em; vertical-align: super; }
+
+    .signup-card h1 { font-size: var(--text-xl); margin-bottom: var(--space-1); color: var(--navy); }
+    .signup-card p.sub { color: var(--text-muted); font-size: var(--text-sm); margin-bottom: var(--space-6); }
+
+    .name-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+
+    .form-group { margin-bottom: var(--space-4); }
+    .form-label { display: block; font-size: var(--text-sm); font-weight: 500; margin-bottom: var(--space-1); color: var(--navy); }
+    .form-input {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid #D4C9B8;
+      border-radius: 6px;
+      font-size: var(--text-base);
+      font-family: var(--font-body);
+      color: var(--navy);
+      transition: border-color 0.15s;
+      box-sizing: border-box;
+    }
+    .form-input:focus { outline: none; border-color: var(--gold); }
+    .form-input.error { border-color: #C0392B; }
+
+    .perks {
+      background: #F9F7F3;
+      border-radius: 8px;
+      padding: var(--space-4);
+      margin-bottom: var(--space-5);
+      font-size: var(--text-sm);
+      color: var(--navy);
+    }
+    .perks ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+    .perks li::before { content: '✓ '; color: var(--gold); font-weight: 700; }
+
+    .btn-signup {
+      width: 100%;
+      padding: 14px;
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: var(--space-2);
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+    }
+    .btn-signup:hover:not(:disabled) { background: var(--gold-dark); }
+    .btn-signup:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    .error-msg {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      color: #C0392B;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-4);
+      display: none;
+    }
+    .error-msg.visible { display: block; }
+
+    .signin-prompt {
+      text-align: center;
+      margin-top: var(--space-6);
+      padding-top: var(--space-5);
+      border-top: 1px solid #EEE;
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+    }
+    .signin-prompt a { color: var(--gold-dark); font-weight: 600; text-decoration: none; }
+    .signin-prompt a:hover { text-decoration: underline; }
+
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(10,22,40,.3);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .login-footer { text-align: center; padding: var(--space-6); }
+    .login-footer a { color: rgba(255,255,255,.45); font-size: var(--text-xs); text-decoration: none; }
+
+    @media (max-width: 480px) {
+      .signup-card { padding: var(--space-8) var(--space-5); }
+      .name-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<main class="signup-shell">
+  <div class="signup-card">
+    <a href="index.html" class="signup-logo">BRRRR<sup>8</sup> Academy</a>
+
+    <h1>Create your free account</h1>
+    <p class="sub">Get instant access to the Deal Analyzer and investor community.</p>
+
+    <div class="perks">
+      <ul>
+        <li>BRRRR Deal Analyzer — run numbers on any property</li>
+        <li>Private Discord community access</li>
+        <li>Free Section 8 Landlord Starter Checklist</li>
+        <li>Blog &amp; investor resources</li>
+      </ul>
+    </div>
+
+    <div class="error-msg" id="signup-error" role="alert"></div>
+
+    <form id="signup-form" novalidate>
+      <div class="name-row">
+        <div class="form-group">
+          <label class="form-label" for="firstName">First name</label>
+          <input class="form-input" type="text" id="firstName" name="firstName" autocomplete="given-name" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="lastName">Last name</label>
+          <input class="form-input" type="text" id="lastName" name="lastName" autocomplete="family-name" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email address</label>
+        <input class="form-input" type="email" id="email" name="email" autocomplete="email" required />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password <span style="font-weight:400;color:var(--text-muted);">(min. 8 characters)</span></label>
+        <input class="form-input" type="password" id="password" name="password" autocomplete="new-password" required />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="confirm">Confirm password</label>
+        <input class="form-input" type="password" id="confirm" name="confirm" autocomplete="new-password" required />
+      </div>
+
+      <button class="btn-signup" type="submit" id="signup-btn">
+        <span class="spinner" id="signup-spinner"></span>
+        <span id="signup-btn-text">Create Free Account</span>
+      </button>
+    </form>
+
+    <div class="signin-prompt">
+      Already have an account? <a href="login.html">Sign in &rarr;</a>
+    </div>
+  </div>
+</main>
+
+<footer class="login-footer">
+  <a href="index.html">&copy; 2025 BRRRR⁸ Academy &nbsp;&middot;&nbsp; Back to home</a>
+</footer>
+
+<script>
+(function () {
+  // Redirect if already logged in
+  fetch('/api/auth/me', { credentials: 'include' })
+    .then(r => r.ok ? r.json() : null)
+    .then(d => { if (d?.user) window.location.href = '/dashboard.html'; })
+    .catch(() => {});
+
+  const form    = document.getElementById('signup-form');
+  const errEl   = document.getElementById('signup-error');
+  const btn     = document.getElementById('signup-btn');
+  const spinner = document.getElementById('signup-spinner');
+  const btnText = document.getElementById('signup-btn-text');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errEl.classList.remove('visible');
+
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const password  = document.getElementById('password').value;
+    const confirm   = document.getElementById('confirm').value;
+
+    if (!firstName || !lastName || !email || !password) {
+      errEl.textContent = 'Please fill in all fields.';
+      return errEl.classList.add('visible');
+    }
+    if (password.length < 8) {
+      errEl.textContent = 'Password must be at least 8 characters.';
+      return errEl.classList.add('visible');
+    }
+    if (password !== confirm) {
+      errEl.textContent = 'Passwords do not match.';
+      return errEl.classList.add('visible');
+    }
+
+    btn.disabled = true;
+    spinner.style.display = 'inline-block';
+    btnText.textContent = 'Creating account…';
+
+    try {
+      const res  = await fetch('/api/auth/register', {
+        method:      'POST',
+        headers:     { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body:        JSON.stringify({ firstName, lastName, email, password })
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Registration failed.');
+      window.location.href = data.redirectTo || '/dashboard.html';
+
+    } catch (err) {
+      errEl.textContent = err.message;
+      errEl.classList.add('visible');
+      btn.disabled = false;
+      spinner.style.display = 'none';
+      btnText.textContent = 'Create Free Account';
+    }
+  });
+}());
+</script>
+</body>
+</html>

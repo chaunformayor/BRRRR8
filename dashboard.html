@@ -280,12 +280,15 @@
       const { progress }    = await progressRes.json();
       const { plan, tracks: unlockedTracks, enrolled } = await accessRes.json();
 
-      // Admin goes to admin panel; unenrolled goes to enroll
+      // Admin goes to admin panel
       if (user.role === 'admin') return (window.location.href = '/admin/');
-      if (!enrolled) return (window.location.href = '/enroll.html');
 
-      renderDashboard(user, plan, progress || [], unlockedTracks || []);
-      showDiscordBannerIfNeeded();
+      if (!enrolled) {
+        renderFreeDashboard(user);
+      } else {
+        renderDashboard(user, plan, progress || [], unlockedTracks || []);
+        showDiscordBannerIfNeeded();
+      }
     } catch (err) {
       console.error('[dashboard]', err);
       redirectToLogin();
@@ -299,6 +302,64 @@
 
   function redirectToLogin() {
     window.location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname);
+  }
+
+  // ── Free tier render ─────────────────────────────────────────────
+  function renderFreeDashboard(user) {
+    const name = user.firstName || user.email.split('@')[0];
+    document.getElementById('nav-name').textContent = name;
+    document.getElementById('welcome-heading').textContent = `Welcome, ${name}`;
+
+    document.getElementById('plan-badge').textContent = 'Community Member';
+    document.getElementById('plan-badge').style.background = '#3B4A6B';
+
+    // Hide paid stats, show upgrade banner
+    document.querySelector('.stats-row').innerHTML = `
+      <div style="grid-column:1/-1;background:var(--gold);color:var(--navy);border-radius:10px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+        <div>
+          <div style="font-weight:700;font-size:1rem;margin-bottom:4px;">Unlock the full BRRRR⁸ course</div>
+          <div style="font-size:0.875rem;opacity:0.8;">You have free access to the Deal Analyzer and community. Enroll to unlock all 89 lessons.</div>
+        </div>
+        <a href="enroll.html" style="background:var(--navy);color:var(--gold);font-weight:700;padding:12px 24px;border-radius:6px;text-decoration:none;white-space:nowrap;font-size:0.875rem;">Enroll Now &rarr;</a>
+      </div>`;
+
+    // Show all tracks as locked
+    document.getElementById('tracks-grid').innerHTML = TRACKS.map((t, i) => `
+      <div class="track-progress-card locked" style="opacity:0.75;">
+        <div class="track-progress-card__header" style="background:${t.color}">
+          <div>
+            <div class="track-progress-card__num">0${i + 1}</div>
+            <div class="track-progress-card__name">${t.name}</div>
+          </div>
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="track-progress-card__body">
+          <div class="track-progress-card__meta">${t.lessons} lessons</div>
+          <span class="upgrade-pill">Enroll to unlock</span>
+        </div>
+      </div>`).join('');
+
+    // Free quick links — analyzer + discord only, no billing
+    document.querySelector('.quick-links').innerHTML = `
+      <a href="analyzer.html" class="quick-link">
+        <span class="quick-link__icon">🧮</span> Deal Analyzer
+      </a>
+      <a href="#" class="quick-link" id="discord-link">
+        <span class="quick-link__icon">💬</span> Discord Community
+      </a>
+      <a href="blog/" class="quick-link">
+        <span class="quick-link__icon">📖</span> Blog &amp; Resources
+      </a>
+      <a href="enroll.html" class="quick-link" style="border:2px solid var(--gold);">
+        <span class="quick-link__icon">⬆️</span> Enroll &amp; Unlock Course
+      </a>`;
+
+    document.getElementById('discord-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.open('https://discord.gg/U9jB4y7Xxg', '_blank', 'noopener');
+    });
+
+    showDiscordBannerIfNeeded();
   }
 
   // ── Render ────────────────────────────────────────────────────────

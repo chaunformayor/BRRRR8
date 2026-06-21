@@ -17,6 +17,63 @@ const COOKIE_OPTS = {
   maxAge:   7 * 24 * 60 * 60 * 1000   // 7 days
 };
 
+// ── POST /api/auth/register ──────────────────────────────────────
+router.post('/register', async (req, res) => {
+  const { firstName, lastName, email, password } = req.body;
+
+  if (!firstName || !lastName || !email || !password) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+  if (password.length < 8) {
+    return res.status(400).json({ error: 'Password must be at least 8 characters.' });
+  }
+
+  try {
+    // Create user via admin API (skips email confirmation)
+    const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true
+    });
+    if (createErr) {
+      if (createErr.message?.toLowerCase().includes('already')) {
+        return res.status(409).json({ error: 'An account with that email already exists.' });
+      }
+      return res.status(400).json({ error: createErr.message });
+    }
+
+    // Save profile
+    await supabaseAdmin.from('profiles').upsert({
+      id:         created.user.id,
+      first_name: firstName.trim(),
+      last_name:  lastName.trim(),
+      role:       'student'
+    });
+
+    // Sign them in immediately
+    const { data: signIn, error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
+    if (signInErr) return res.status(400).json({ error: signInErr.message });
+
+    res.cookie('sb_token', signIn.session.access_token, COOKIE_OPTS);
+
+    // Welcome email (non-blocking)
+    if (process.env.RESEND_API_KEY) {
+      const { Resend } = require('resend');
+      new Resend(process.env.RESEND_API_KEY).emails.send({
+        from:    process.env.EMAIL_FROM || 'BRRRR⁸ Academy <noreply@brrrr8academy.com>',
+        to:      email,
+        subject: 'Welcome to BRRRR⁸ Academy',
+        html:    `<p>Hi ${firstName},</p><p>Your free account is ready. Use it to access the Deal Analyzer, join the community Discord, and explore what the course covers.</p><p><a href="${process.env.APP_URL}/dashboard.html">Go to your dashboard &rarr;</a></p><p>Ready to unlock the full course? <a href="${process.env.APP_URL}/enroll.html">Enroll here</a>.</p>`
+      }).catch(e => console.error('[register] welcome email:', e.message));
+    }
+
+    res.json({ redirectTo: '/dashboard.html' });
+  } catch (err) {
+    console.error('[register]', err.message);
+    res.status(500).json({ error: 'Registration failed. Please try again.' });
+  }
+});
+
 // ── POST /api/auth/login ──────────────────────────────────────────
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
@@ -208,7 +265,9 @@ router.get('/discord/callback', requireAuth, async (req, res) => {
       .limit(1)
       .single();
 
-    const roleId = enrollment?.plan_id ? process.env[PLAN_ROLE_ENV[enrollment.plan_id]] : null;
+    const roleId = enrollment?.plan_id
+      ? process.env[PLAN_ROLE_ENV[enrollment.plan_id]]
+      : process.env.DISCORD_ROLE_FREE;
 
     // 4. Add to guild + assign role in one REST call
     const memberRes = await fetch(
